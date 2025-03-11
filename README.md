@@ -1,6 +1,6 @@
 # Best practices for AI-enhanced Sanity development
 
-The `sanity-opinionated.mdc` file is a deliberately short, manually curated document covering opinionated best practices for writing Sanity Studio configuration and GROQ queries.
+The `sanity-opinionated.mdc` file is a deliberately short, manually curated document for opinionated best practices when writing Sanity Studio configuration and GROQ queries.
 
 ## Installation
 
