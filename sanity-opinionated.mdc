@@ -137,3 +137,9 @@ export const POST_QUERY = defineQuery(`*[
   }
 }`)
 ```
+
+## TypeScript
+
+- ONLY write Types for responses if you cannot generate them with Sanity TypeGen
+- ALWAYS export a schema extraction first from inside of the Studio code-base with `npx sanity@latest typegen generate`
+- ALWAYS move that schema extraction file to the root of a front-end project before running `npx sanity@latest typegen generate`
