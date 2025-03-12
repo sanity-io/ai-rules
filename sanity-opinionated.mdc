@@ -106,7 +106,7 @@ When asked to write content:
 - NEVER include image references because you don't know what image documents exist
 - ALWAYS write images in this format below, replacing the document ID value to generate the same placeholder image
 ```JSON
-{"_type":"image","_sanityAsset":"image@https://picsum.photos/[[REPLACE_WITH_DOCUMENT_ID]]/picsum/1920/1080"}
+{"_type":"image","_sanityAsset":"image@https://picsum.photos/seed/[[REPLACE_WITH_DOCUMENT_ID]]/1920/1080"}
 ```
 
 ## Writing GROQ queries
