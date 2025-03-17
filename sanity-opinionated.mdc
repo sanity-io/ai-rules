@@ -138,8 +138,30 @@ export const POST_QUERY = defineQuery(`*[
 }`)
 ```
 
-## TypeScript
+## TypeScript generation
 
-- ONLY write Types for responses if you cannot generate them with Sanity TypeGen
-- ALWAYS export a schema extraction first from inside of the Studio code-base with `npx sanity@latest typegen generate`
-- ALWAYS move that schema extraction file to the root of a front-end project before running `npx sanity@latest typegen generate`
+### For the Studio
+
+- ALWAYS re-run schema extraction after making schema file changes with `npx sanity@latest schema extract` 
+
+### For monorepos with a studio and a front-end
+
+- ALWAYS extract the schema to the web folder with `npx sanity@latest schema extract --path=../<front-end-folder>/sanity/extract.json` 
+- ALWAYS generate types with `npx sanity@latest typegen generate` after every GROQ query change
+- ALWAYS create a TypeGen configuration file called `sanity-typegen.json` at the root of the front-end code-base
+
+```json
+{
+  "path": "./**/*.{ts,tsx,js,jsx}",
+  "schema": "./<front-end-folder>/sanity/extract.json",
+  "generates": "./<web-folder>/sanity/types.ts"
+}
+```
+
+### For the front-end
+
+- ONLY write Types for document types and query responses if you cannot generate them with Sanity TypeGen
+
+## Project settings and data
+
+- ALWAYS check if there is a way to interact with a project via the CLI before writing custom scripts `npx sanity --help`
