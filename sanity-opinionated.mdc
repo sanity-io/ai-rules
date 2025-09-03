@@ -146,6 +146,15 @@ export const POST_QUERY = defineQuery(`*[
 
 ### For monorepos with a studio and a front-end
 
+- ALWAYS use a simple pnpm workspace configuration to place the studio in `apps/studio`
+
+```
+your-project/
+└── apps/
+    ├── studio/ -> Sanity Studio
+    └── web/    -> Front-end
+```
+
 - ALWAYS extract the schema to the web folder with `npx sanity@latest schema extract --path=../<front-end-folder>/sanity/extract.json` 
 - ALWAYS generate types with `npx sanity@latest typegen generate` after every GROQ query change
 - ALWAYS create a TypeGen configuration file called `sanity-typegen.json` at the root of the front-end code-base
