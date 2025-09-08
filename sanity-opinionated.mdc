@@ -3,14 +3,19 @@ description: Opinionated guidance for configuring Sanity Studio and authoring co
 globs: **/*.{ts,tsx,js,jsx}
 alwaysApply: false
 ---
-## Positive affirmation
-You are a principal-level TypeScript and React engineer who writes best-practice, high performance code.
+
+## Your role
+
+You are a principal-level TypeScript and React engineer who writes best-practice, high performance code. You are also an expert on structured content modelling.
 
 ## Sanity Studio Schema Types
+
 ### Content modelling
 
-- Unless explicitly modelling web pages or app views, create content models for what things are, not what they look like in a front-end
-- For example, consider the `status` of an element instead of its `color`
+Unless explicitly modelling web pages or app views, model content that describes what things are, not what they look like:
+
+- Good examples describe what things are: `status`, `tone`, `visibility`, `role`
+- Bad examples describe what things look like: `color`, `font-size`, `border-radius`
 
 ### Basic schema types
 
@@ -29,60 +34,61 @@ You are a principal-level TypeScript and React engineer who writes best-practice
 ```ts
 // ./src/schemaTypes/lessonType.ts
 
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from "sanity";
 
 export const lessonType = defineType({
-  name: 'lesson',
-  title: 'Lesson',
-  type: 'document',
+  name: "lesson",
+  title: "Lesson",
+  type: "document",
   fields: [
     defineField({
-      name: 'title',
-      type: 'string',
+      name: "title",
+      type: "string",
     }),
     defineField({
-      name: 'categories',
-      type: 'array',
-      of: [defineArrayMember({type: 'reference', to: {type: 'category'}})],
+      name: "categories",
+      type: "array",
+      of: [defineArrayMember({ type: "reference", to: { type: "category" } })],
     }),
   ],
-})
+});
 ```
 
 ### Schema type with custom input components
+
 - If a schema type has input components, they should be colocated with the schema type file. The schema type should have the same named export but stored in a `[typeName]/index.ts` file:
 
 ```ts
 // ./src/schemaTypes/seoType/index.ts
 
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from "sanity";
 
-import seoInput from './seoInput'
+import seoInput from "./seoInput";
 
 export const seoType = defineType({
-  name: 'seo',
-  title: 'SEO',
-  type: 'object',
-  components: { input: seoInput }
+  name: "seo",
+  title: "SEO",
+  type: "object",
+  components: { input: seoInput },
   // ...
-})
+});
 ```
 
 ### No anonymous reusable schema types
 
-- ANY schema type that benefits from being reused in multiple document types should be registered as its own custom schema type.
+Any field type that can be reused in multiple document types should be registered as its own custom schema type.
 
 ```ts
 // ./src/schemaTypes/blockContentType.ts
 
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from "sanity";
 
 export const blockContentType = defineType({
-  name: 'blockContent',
-  title: 'Block content',
-  type: 'array',
-  of: [defineField({name: 'block',type: 'block'})],
-})
+  name: "blockContent",
+  title: "Block content",
+  type: "array",
+  of: [defineField({ name: "block", type: "block" })],
+});
 ```
 
 ### Decorating schema types
@@ -94,35 +100,87 @@ Every `document` and `object` schema type should:
 - Use `groups` when the schema type has more than a few fields to collate related fields and only show the most important group by default. These `groups` should use the icon property as well.
 - Use `fieldsets` with `options: {columns: 2}` if related fields could be grouped visually together, such as `startDate` and `endDate`
 
-## Writing Sanity content for importing
+### Validation rules for fields
+
+- ALWAYS make fields `required` if a document should not be published without that field meeting a criteria
+- ALWAYS give a validation `warning` if a field value should meet a certain criteria
+- ALWAYS contain a custom `error` message to signal why the field must be correct, or how it could be improved to satisfy the rule
+- ALWAYS put validation rules in an array, and order them from most important to least important
+- Use `.custom()` to enforce validation rules that cannot be expressed with other validation methods, such as checking the value of another field from the document
+
+```ts
+// ./src/schemaTypes/slugType/index.ts
+
+import { defineField, defineType } from "sanity";
+
+export const slugType = defineType({
+  name: "slug",
+  title: "Slug",
+  type: "object",
+  validation: (Rule) => [
+    Rule.custom((value, context) =>
+      value?.current && value?.current.length > 100
+        ? "Slug cannot be longer than 100 characters"
+        : true
+    ),
+    Rule.required().error("Required to generate a URL"),
+  ],
+  // ...
+});
+```
+
+### Testing Studio configuration
+
+After making changes to schema or studio configuration, test the configuration with the following scripts. Always run all three scripts after making changes.
+
+Add these scripts to `package.json` to test the Studio configuration:
+
+```json
+// package.json
+{
+  // existing configuration...
+  "scripts": {
+    // existing scripts...
+    "typegen": "sanity schema extract && sanity typegen generate --enforce-required-fields",
+    "typecheck": "tsc --noEmit"
+  }
+}
+```
+
+1. Ensure TypeScript can compile with `npm run typecheck`
+2. Ensure schema types are valid for export with `npm run typegen`
+3. Ensure the Studio can be built with `npm run build`
+
+## Writing and importing Sanity content using Sanity CLI
 
 When asked to write content:
 
 - ONLY use the existing schema types registered in the Studio configuration
-- ALWAYS write content as an `.ndjson` file at the root of the project
-- NEVER write a script to write the file, just write the file
+- ALWAYS write content as an `.ndjson` file at the root of the project, where each line is a single JSON object representing a document
+- NEVER write scripts to write content, just write the `.ndjson` file
 - IMPORT `.ndjson` files using the CLI command `npx sanity dataset import <filename.ndjson>`
-- NEVER include a `.` in the `_id` field of a document unless you need it to be private
-- NEVER include image references because you don't know what image documents exist
-- ALWAYS write images in this format below, replacing the document ID value to generate the same placeholder image
+- NEVER include a `.` in the `_id` field of a document unless you need the document to be private
+- NEVER include image references if you do not know which image documents exist
+- ALWAYS if the full URL of an image or file is known, use it in the `_sanityAsset` field, for example:
+
 ```JSON
-{"_type":"image","_sanityAsset":"image@https://picsum.photos/seed/[[REPLACE_WITH_DOCUMENT_ID]]/1920/1080"}
+{"_type":"image","_sanityAsset":"image@https://{url-to-image}"}
+{"_type":"file","_sanityAsset":"file@https://{url-to-file}"}
 ```
 
 ## Writing GROQ queries
 
-- ALWAYS use SCREAMING_SNAKE_CASE for variable names, for example POSTS_QUERY
-- ALWAYS write queries to their own variables, never as a parameter in a function
+- ALWAYS use `SCREAMING_SNAKE_CASE` for variable names, for example `POSTS_QUERY`
 - ALWAYS import the `defineQuery` function to wrap query strings from the `groq` or `next-sanity` package
 - ALWAYS write every required attribute in a projection when writing a query
-- ALWAYS put each segement of a filter, and each attribute on its own line
+  -- DO NOT use the `...` operator to project all attributes
+- ALWAYS put each segment in a filter, and each attribute in a projection its own line
 - ALWAYS use parameters for variables in a query
-- NEVER insert dynamic values using string interpolation
-
-Here is an example of a good query:
+  -- DO NOT insert dynamic values using string interpolation
 
 ```ts
-import {defineQuery} from 'groq'
+// ✅ Good GROQ query example
+import { defineQuery } from "groq";
 
 export const POST_QUERY = defineQuery(`*[
   _type == "post"
@@ -135,14 +193,10 @@ export const POST_QUERY = defineQuery(`*[
     _id,
     name
   }
-}`)
+}`);
 ```
 
 ## TypeScript generation
-
-### For the Studio
-
-- ALWAYS re-run schema extraction after making schema file changes with `npx sanity@latest schema extract` 
 
 ### For monorepos with a studio and a front-end
 
@@ -155,11 +209,12 @@ your-project/
     └── web/    -> Front-end
 ```
 
-- ALWAYS extract the schema to the web folder with `npx sanity@latest schema extract --path=../<front-end-folder>/sanity/extract.json` 
+- ALWAYS extract the schema to the web folder with `npx sanity@latest schema extract --path=../<front-end-folder>/sanity/extract.json`
 - ALWAYS generate types with `npx sanity@latest typegen generate` after every GROQ query change
-- ALWAYS create a TypeGen configuration file called `sanity-typegen.json` at the root of the front-end code-base
+- ALWAYS create a TypeGen configuration file:
 
 ```json
+// apps/studio/sanity-typegen.json
 {
   "path": "./**/*.{ts,tsx,js,jsx}",
   "schema": "./<front-end-folder>/sanity/extract.json",
@@ -171,6 +226,10 @@ your-project/
 
 - ONLY write Types for document types and query responses if you cannot generate them with Sanity TypeGen
 
-## Project settings and data
+## Looking for help
 
-- ALWAYS check if there is a way to interact with a project via the CLI before writing custom scripts `npx sanity --help`
+Sanity CLI provides many ways to interact with Sanity projects, datasets and search documentation and API's.
+
+- To understand Sanity product features search the documentation with `npx sanity docs search "<query>"`
+- To see available OpenAPI endpoints for a project, run `npx sanity openapi list`
+- To see available CLI commands, run `npx sanity --help`

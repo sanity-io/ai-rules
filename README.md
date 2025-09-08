@@ -8,7 +8,7 @@ The `sanity-opinionated.mdc` file is a deliberately short, manually curated docu
 
 ### Cursor
 
-Add the file to your project at `.cursor/rules/sanity-opinionated.mdc`
+Add the [Cursor Rules](https://docs.cursor.com/en/context/rules) to your project at `.cursor/rules/sanity-opinionated.mdc`
 
 ### Other IDEs
 
