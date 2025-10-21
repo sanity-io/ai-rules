@@ -150,7 +150,7 @@ Add these scripts to `package.json` to test the Studio configuration:
 
 ### Write using Sanity MCP Server
 
-- ALWAYS use the [Sanity MCP Server](https://www.sanity.io/docs/compute-and-ai/mcp-server) if available use to query and create content
+- ALWAYS use the [Sanity MCP Server](https://mcp.sanity.io) if available use to query and create content
 
 ### Write and import using Sanity CLI
 
