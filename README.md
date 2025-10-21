@@ -2,14 +2,10 @@
 
 [Documentation: Best practices for AI-enhanced Sanity development](https://www.sanity.io/docs/ai-best-practices)
 
-The `sanity-opinionated.mdc` file is a deliberately short, manually curated document for opinionated best practices when writing Sanity Studio configuration and GROQ queries.
+The `AGENTS.md` file is a deliberately concise, manually curated document for opinionated best practices when writing Sanity Studio configuration and GROQ queries.
 
 ## Installation
 
-### Cursor
-
-Add the [Cursor Rules](https://docs.cursor.com/en/context/rules) to your project at `.cursor/rules/sanity-opinionated.mdc`
-
 ### Other IDEs
 
-Add the file to your project as a `.txt` file and refer to it when prompting new Sanity code
+Add `AGENTS.md` to your project and refer to it when prompting new Sanity code
