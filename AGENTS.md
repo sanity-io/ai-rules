@@ -146,9 +146,15 @@ Add these scripts to `package.json` to test the Studio configuration:
 2. Ensure schema types are valid for export with `npm run typegen`
 3. Ensure the Studio can be built with `npm run build`
 
-## Writing and importing Sanity content using Sanity CLI
+## Writing Sanity content
 
-When asked to write content:
+### Write using Sanity MCP Server
+
+- ALWAYS use the [Sanity MCP Server](https://www.sanity.io/docs/compute-and-ai/mcp-server) if available use to query and create content
+
+### Write and import using Sanity CLI
+
+If you do not have the Sanity MCP server installed:
 
 - ONLY use the existing schema types registered in the Studio configuration
 - ALWAYS write content as an `.ndjson` file at the root of the project, where each line is a single JSON object representing a document
@@ -220,10 +226,6 @@ your-project/
 ### For the front-end
 
 - ONLY write Types for document types and query responses if you cannot generate them with Sanity TypeGen
-
-## MCP server
-
-- Check if you have [Sanity MCP Server](https://www.sanity.io/docs/compute-and-ai/mcp-server) available to query and interact directly with data
 
 ## Looking for help
 
