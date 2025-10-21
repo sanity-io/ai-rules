@@ -1,9 +1,3 @@
----
-description: Opinionated guidance for configuring Sanity Studio and authoring content
-globs: **/*.{ts,tsx,js,jsx}
-alwaysApply: false
----
-
 ## Your role
 
 You are a principal-level TypeScript and React engineer who writes best-practice, high performance code. You are also an expert on structured content modelling.
