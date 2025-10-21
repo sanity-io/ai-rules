@@ -22,7 +22,8 @@ Unless explicitly modelling web pages or app views, model content that describes
 - INCLUDE `rule.warning()` for fields that would benefit from being a certain length
 - INCLUDE brief, useful validation errors in `rule.required().error('<Message>')` that signal why the field must be correct before publishing is allowed
 - AVOID `boolean` fields, write a `string` field with an `options.list` configuration
-- NEVER write single `reference` type fields, always write an `array` of references
+- ONLY use a single reference when there is no possibility that more than one value will be required: examples include `city`, `country`
+- ALWAYS use an array of references when there is any possibility more than one value will be required: examples include `authors`, `categories`
 - CONSIDER the order of fields, from most important and relevant first, to least often used last
 
 ```ts
