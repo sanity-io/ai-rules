@@ -221,6 +221,10 @@ your-project/
 
 - ONLY write Types for document types and query responses if you cannot generate them with Sanity TypeGen
 
+## MCP server
+
+- Check if you have [Sanity MCP Server](https://www.sanity.io/docs/compute-and-ai/mcp-server) available to query and interact directly with data
+
 ## Looking for help
 
 Sanity CLI provides many ways to interact with Sanity projects, datasets and search documentation and API's.
