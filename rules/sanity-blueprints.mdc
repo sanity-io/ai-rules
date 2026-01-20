@@ -1,0 +1,199 @@
+---
+description: Rules for Sanity Blueprints, the Infrastructure as Code solution for declaratively managing Sanity resources (like functions)
+globs: sanity.blueprint.ts, sanity.blueprint.json, .sanity/blueprint.config.json
+alwaysApply: false
+---
+
+# Sanity Blueprints
+
+## Overview
+
+Blueprints is Sanity's Infrastructure as Code (IaC) solution. Define Sanity resources declaratively in code, track them in version control, and deploy them programmatically via the CLI.
+
+**Use Blueprints when:**
+- Setting up multiple environments (dev, staging, production)
+- Managing Sanity resources (like functions) as code
+- Automating infrastructure provisioning
+- Needing reproducible, version-controlled infrastructure
+
+## Core Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Blueprint** | Declarative configuration file (`sanity.blueprint.ts`) defining resources |
+| **Resources** | Individual Sanity components: Projects, Datasets, CORS, Webhooks, Functions, Roles, Robots |
+| **Stack** | The deployed collection of resources in Sanity (created/updated by the Blueprints service) |
+| **Operation** | A deployment execution (shows `SUCCESSFUL` or `FAILED` status) |
+
+## File Structure
+
+After running `sanity blueprints init`:
+
+```
+.
+├── .sanity/
+│   └── blueprint.config.json   # Links blueprint to a Sanity project and stack
+├── package.json
+└── sanity.blueprint.ts         # Your blueprint manifest
+```
+
+## Defining a Blueprint
+
+Always use the helper functions from `@sanity/blueprints` for type safety.
+
+```typescript
+import {
+  defineBlueprint,
+  defineDocumentFunction,
+} from '@sanity/blueprints'
+
+export default defineBlueprint({
+  resources: [
+    defineDocumentFunction({
+      name: 'my-function',
+    }),
+  ],
+})
+```
+
+## Available Resource Types
+
+| Type | Helper | Status |
+|------|--------|--------|
+| Document Function | `defineDocumentFunction` | Released |
+| Media Library Asset Function | `defineMediaLibraryAssetFunction` | Released |
+| CORS Origin | `defineCorsOrigin` | Planned |
+| Webhook | `defineDocumentWebhook` | Planned |
+| Dataset | `defineDataset` | Planned |
+| Role | `defineRole`, `defineProjectRole` | Planned |
+| Robot | `defineRobot` | Planned |
+
+## References Between Resources
+
+Resources can reference each other using the `$.resources.<name>` syntax:
+
+```typescript
+import {defineBlueprint, defineDocumentFunction} from '@sanity/blueprints'
+
+export default defineBlueprint({
+  resources: [
+    defineDocumentFunction({
+      name: 'my-function',
+    }),
+    defineDocumentFunction({
+      name: 'my-other-function',
+      dependsOn: '$.resources.my-function',
+    }),
+  ],
+})
+```
+
+**Reference syntax:** `$.[location].[name].[property]`
+- `$.resources.my-resource` — Reference a resource by its name
+- `$.resources.my-resource.id` — Reference a specific property
+
+## CLI Commands
+
+```bash
+sanity blueprints init <name>    # Initialize a new blueprint project
+sanity blueprints info           # Show current stack status and resources
+sanity blueprints plan           # Preview changes before deploying
+sanity blueprints deploy         # Deploy the blueprint (creates/updates stack)
+sanity blueprints config         # Configure the blueprint (edit project and stack)
+sanity blueprints logs           # View deployment logs
+sanity blueprints doctor         # Check for potential issues
+sanity blueprints stacks         # List all stacks for the project
+sanity blueprints destroy        # Destroy all resources in the stack
+```
+
+Note: All blueprints commands have a `--help` flag to show usage information.
+
+## Workflow
+
+### Creating Your First Blueprint
+
+1. Initialize a blueprint project:
+   ```bash
+   sanity blueprints init my-blueprint
+   cd my-blueprint && npm install
+   ```
+
+2. Edit `sanity.blueprint.ts` to add resources
+
+3. Preview changes:
+   ```bash
+   sanity blueprints plan
+   ```
+
+4. Deploy:
+   ```bash
+   sanity blueprints deploy
+   ```
+
+### Updating Resources
+
+1. Modify `sanity.blueprint.ts`
+2. Run `sanity blueprints plan` to see what will change
+3. Run `sanity blueprints deploy` to apply changes
+
+### Removing Resources
+
+When you remove a resource from the blueprint file and deploy:
+- The resource is destroyed from Sanity
+- Local files remain unchanged
+
+## Best Practices
+
+### Resource Naming
+
+- Use descriptive, unique names for each resource
+- Names are used for references: `$.resources.<name>`
+- Names should be stable (changing them will destroy and create a new resource)
+
+### Environment Management
+
+Use environment variables for different environments:
+
+```typescript
+defineBlueprint({
+  resources: [
+    defineDocumentFunction({
+      name: 'app-origin',
+      env: {
+        SECRET_KEY: process.env.SECRET_KEY,
+      }
+    }),
+  ],
+})
+```
+
+### Dependency Order
+
+Blueprints automatically handles dependencies based on references. Resources referencing other resources are created after their dependencies.
+
+### Error Handling
+
+- If a deployment fails, Blueprints attempts to rollback successful actions
+- Check logs with `sanity blueprints logs` for debugging
+- Fix the issue in your blueprint file and redeploy
+
+<!-- 
+## Common Patterns
+
+### Multi-Environment Setup
+
+### Multi-Blueprint Setup 
+-->
+
+## Boundaries
+
+- **Always:**
+  - Use `defineBlueprint` and typed helper functions
+  - Run `sanity blueprints plan` before deploying
+  - Use references (`$.resources.<name>`) to link related resources
+  - Keep blueprint files in version control
+
+- **Never:**
+  - Manually edit deployed resources outside of Blueprints (changes won't sync)
+  - Hardcode sensitive values in a blueprint manifest file (use environment variables)
+  - Manually edit the `.sanity/blueprint.config.json`; use `sanity blueprints config` instead
