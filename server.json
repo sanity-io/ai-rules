@@ -1,13 +1,13 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.sanity-io/mcp",
-  "description": "Sanity MCP server for managing content, datasets, and projects",
+  "description": "Direct access to your Sanity projects (content, datasets, releases, schemas) and agent rules",
   "title": "Sanity",
   "repository": {
     "url": "https://github.com/sanity-io/agent-toolkit",
     "source": "github"
   },
-  "version": "1.0.0",
+  "version": "2.12.0",
   "remotes": [
     {
       "type": "streamable-http",
