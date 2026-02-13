@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.sanity-io/mcp",
+  "name": "io.sanity/mcp",
   "description": "Direct access to your Sanity projects (content, datasets, releases, schemas) and agent rules",
   "title": "Sanity",
   "repository": {
