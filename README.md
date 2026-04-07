@@ -307,14 +307,13 @@ Focused topic skills keep their supporting docs in `resources/`. The main `sanit
 
 ## Contributing
 
-Found a better pattern? Missing a framework or best practice?
+Found a better pattern? Missing a framework or best practice? Read the [contributing guide](CONTRIBUTING.md) for how skills work and what makes a good contribution, then:
 
 1. Fork the repo.
-2. Install dependencies with `npm ci`.
-3. Update the relevant file in `skills/<skill-name>/SKILL.md`, `skills/<skill-name>/references/`, or `skills/<skill-name>/resources/`.
-4. Keep `SKILL.md` frontmatter focused on `name` and `description`, since those are the primary discovery fields for skills.
-5. Run `npm run validate:all` to check skill and plugin validity.
-6. Submit a PR.
+2. Install dependencies with `npm install`.
+3. Make your changes in `skills/<skill-name>/`.
+4. Run `npm run validate:all` to check skill and plugin validity.
+5. Submit a PR.
 
 ---
 
