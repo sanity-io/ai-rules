@@ -28,11 +28,9 @@ For a thorough guide on skill authoring, structure, and patterns, see [Anthropic
 skills/
 └── skill-name/
     ├── SKILL.md              # Required. Frontmatter + routing table + core guidance.
-    ├── references/            # Optional. Detailed content loaded on demand.
-    │   ├── topic-one.md
-    │   └── topic-two.md
-    └── resources/             # Optional. Same as references, used by focused topic skills.
-        └── topic.md
+    └── references/            # Optional. Detailed content loaded on demand.
+        ├── topic-one.md
+        └── topic-two.md
 ```
 
 A few conventions:
