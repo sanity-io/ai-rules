@@ -284,12 +284,12 @@ sanity-io/agent-toolkit/
     │       ├── groq.md            # GROQ patterns & performance
     │       ├── schema.md          # Schema design & validation
     │       └── ...                # See SKILL.md for full index
-    ├── content-modeling-best-practices/      # Modeling guidance + topic resources
-    ├── seo-aeo-best-practices/               # SEO/AEO guidance + topic resources
-    └── content-experimentation-best-practices/ # Experiment design + stats resources
+    ├── content-modeling-best-practices/      # Modeling guidance + topic references
+    ├── seo-aeo-best-practices/               # SEO/AEO guidance + topic references
+    └── content-experimentation-best-practices/ # Experiment design + stats references
 ```
 
-Focused topic skills keep their supporting docs in `resources/`. The main `sanity-best-practices` skill uses `references/` because those files are also the canonical source for the MCP server's Sanity rules.
+All skills use `references/` for detailed content loaded on demand. The `sanity-best-practices` references are also the canonical source for the MCP server's Sanity rules.
 
 ---
 

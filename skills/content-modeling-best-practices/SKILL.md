@@ -23,10 +23,10 @@ Reference these guidelines when:
 3. **Future-proof** — Design for channels that don't exist yet
 4. **Editor-centric** — Optimize for the people creating content
 
-## Resources
+## References
 
-Start with the resource that matches the modeling decision in front of you, instead of loading every topic at once. See `resources/` for detailed guidance on specific topics:
-- `resources/separation-of-concerns.md` — Separating content from presentation
-- `resources/reference-vs-embedding.md` — When to use references vs embedded objects
-- `resources/content-reuse.md` — Content reuse patterns and the reuse spectrum
-- `resources/taxonomy-classification.md` — Flat, hierarchical, and faceted classification
+Start with the reference that matches the modeling decision in front of you, instead of loading every topic at once. See `references/` for detailed guidance on specific topics:
+- `references/separation-of-concerns.md` — Separating content from presentation
+- `references/reference-vs-embedding.md` — When to use references vs embedded objects
+- `references/content-reuse.md` — Content reuse patterns and the reuse spectrum
+- `references/taxonomy-classification.md` — Flat, hierarchical, and faceted classification

@@ -30,10 +30,10 @@ The confidence level that results aren't due to random chance.
 ### Experimentation Culture
 Making decisions based on data rather than opinions (HiPPO avoidance).
 
-## Resources
+## References
 
-Start with the resource that matches the current problem, such as design, statistics, CMS integration, or pitfalls. See `resources/` for detailed guidance:
-- `resources/experiment-design.md` — Hypothesis framework, metrics, sample size, and what to test
-- `resources/statistical-foundations.md` — p-values, confidence intervals, power analysis, Bayesian methods
-- `resources/cms-integration.md` — CMS-managed variants, field-level variants, external platforms
-- `resources/common-pitfalls.md` — 17 common mistakes across statistics, design, execution, and interpretation
+Start with the reference that matches the current problem, such as design, statistics, CMS integration, or pitfalls. See `references/` for detailed guidance:
+- `references/experiment-design.md` — Hypothesis framework, metrics, sample size, and what to test
+- `references/statistical-foundations.md` — p-values, confidence intervals, power analysis, Bayesian methods
+- `references/cms-integration.md` — CMS-managed variants, field-level variants, external platforms
+- `references/common-pitfalls.md` — 17 common mistakes across statistics, design, execution, and interpretation

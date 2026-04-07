@@ -28,10 +28,10 @@ Optimizing content to be selected as authoritative answers by AI systems.
 ### EEAT (Experience, Expertise, Authoritativeness, Trustworthiness)
 Google's framework for evaluating content quality.
 
-## Resources
+## References
 
-Start with the one resource that matches the task, such as technical SEO, structured data, EEAT, or AI-answer readiness. See `resources/` for detailed guidance:
-- `resources/eeat-principles.md` — EEAT implementation and author schema
-- `resources/structured-data.md` — JSON-LD patterns (Article, FAQ, Breadcrumb, Product)
-- `resources/technical-seo.md` — Technical SEO checklist (metadata, sitemaps, hreflang, robots.txt)
-- `resources/aeo-considerations.md` — AI/AEO considerations (AI Overviews, crawler management)
+Start with the one reference that matches the task, such as technical SEO, structured data, EEAT, or AI-answer readiness. See `references/` for detailed guidance:
+- `references/eeat-principles.md` — EEAT implementation and author schema
+- `references/structured-data.md` — JSON-LD patterns (Article, FAQ, Breadcrumb, Product)
+- `references/technical-seo.md` — Technical SEO checklist (metadata, sitemaps, hreflang, robots.txt)
+- `references/aeo-considerations.md` — AI/AEO considerations (AI Overviews, crawler management)
