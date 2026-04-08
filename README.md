@@ -41,43 +41,23 @@ npx sanity@latest mcp configure
 
 Uses your logged-in CLI user for authentication — no manual tokens or OAuth needed.
 
-#### Client-specific instructions
+#### Cross-host install via agent-add
 
-<details>
-<summary><strong>Cursor</strong></summary>
+Alternatively, install the MCP server into any AI host (Cursor, Claude Code, Claude Desktop, Windsurf, VS Code, GitHub Copilot, Gemini, and [12 more](https://github.com/pea3nut/agent-get)) with one command via [agent-add](https://github.com/pea3nut/agent-get):
 
-One-click install:<br>
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=Sanity&config=eyJ0eXBlIjoiaHR0cCIsInVybCI6Imh0dHBzOi8vbWNwLnNhbml0eS5pbyJ9)
-
-Or manually: Open **Command Palette** (`Cmd+Shift+P` / `Ctrl+Shift+P`) → **View: Open MCP Settings** → **+ New MCP Server** → add to `mcp.json`:
-```json
-{
-  "mcpServers": {
-    "Sanity": {
-      "type": "http",
-      "url": "https://mcp.sanity.io"
-    }
-  }
-}
-```
-</details>
-
-<details>
-<summary><strong>Claude Code</strong></summary>
-
-Run in terminal. Authenticate with OAuth on next launch:
 ```bash
-claude mcp add Sanity -t http https://mcp.sanity.io --scope user
+npx -y agent-add --mcp 'https://raw.githubusercontent.com/sanity-io/agent-toolkit/main/.mcp.json'
 ```
-</details>
 
-<details>
-<summary><strong>VS Code</strong></summary>
+`agent-add` auto-detects your AI host and writes the MCP config to the right location.
 
-Open **Command Palette** (`Cmd+Shift+P` / `Ctrl+Shift+P`) → **MCP: Open User Configuration** → add:
+#### Manual configuration
+
+Add the following to your AI tool's MCP configuration file:
+
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "Sanity": {
       "type": "http",
       "url": "https://mcp.sanity.io"
@@ -85,62 +65,7 @@ Open **Command Palette** (`Cmd+Shift+P` / `Ctrl+Shift+P`) → **MCP: Open User C
   }
 }
 ```
-</details>
 
-<details>
-<summary><strong>Lovable</strong></summary>
-
-**Settings** → **Connectors** → **Personal connectors** → **New MCP server** → Enter `Sanity` as name and `https://mcp.sanity.io` as Server URL → **Add & authorize** → Authenticate with OAuth.
-</details>
-
-<details>
-<summary><strong>v0</strong></summary>
-
-In the prompt input field, click **Prompt Tools** → **MCPs** → **Add New** → Select **Sanity** → **Authorize** → Authenticate with OAuth.
-</details>
-
-<details>
-<summary><strong>Replit</strong></summary>
-
-Go to [Integrations Page](https://replit.com/integrations) → scroll to **MCP Servers for Replit Agent** → **Add MCP server** → Enter `Sanity` as name and `https://mcp.sanity.io` as Server URL → **Test & Save** → Authenticate with OAuth.
-</details>
-
-<details>
-<summary><strong>OpenCode</strong></summary>
-
-Add to your `opencode.json`:
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "sanity": {
-      "type": "remote",
-      "url": "https://mcp.sanity.io",
-      "oauth": {}
-    }
-  }
-}
-```
-Then run: `opencode mcp auth sanity`
-</details>
-
-<details>
-<summary><strong>Other clients</strong></summary>
-
-For any MCP-compatible client, add `https://mcp.sanity.io` as the server URL.
-
-If your client doesn't support remote MCP servers, use a proxy like `mcp-remote`:
-```json
-{
-  "mcpServers": {
-    "Sanity": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://mcp.sanity.io", "--transport", "http-only"]
-    }
-  }
-}
-```
-</details>
 
 <br />
 
@@ -150,9 +75,25 @@ See the [Sanity MCP docs](https://www.sanity.io/docs/compute-and-ai/mcp-server) 
 
 Install best practices skills that work with any [Agent Skills](https://agentskills.io)-compatible agent.
 
+
+Install via [agent-add](https://github.com/pea3nut/agent-get) for any compatible AI host:
+
+```bash
+# Install the Sanity best practices skill
+npx -y agent-add --skill 'https://github.com/sanity-io/agent-toolkit#skills/sanity-best-practices'
+
+# Other skills:
+npx -y agent-add --skill 'https://github.com/sanity-io/agent-toolkit#skills/content-modeling-best-practices'
+npx -y agent-add --skill 'https://github.com/sanity-io/agent-toolkit#skills/seo-aeo-best-practices'
+npx -y agent-add --skill 'https://github.com/sanity-io/agent-toolkit#skills/content-experimentation-best-practices'
+```
+
+Or, using the `skills` CLI:
+
 ```bash
 npx skills add sanity-io/agent-toolkit
 ```
+
 
 See [Option 3](#option-3-install-plugin) for plugin installation.
 
