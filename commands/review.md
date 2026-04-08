@@ -1,4 +1,5 @@
 ---
+name: review
 description: Review code for Sanity best practices and common issues.
 ---
 

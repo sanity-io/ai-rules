@@ -1,10 +1,6 @@
 ---
 name: content-modeling-best-practices
-description: General principles for structured content modeling that apply across CMSs, with Sanity-specific guidance. Use when designing content schemas, planning content architecture, or evaluating content reuse strategies.
-license: MIT
-metadata:
-  author: sanity
-  version: "1.0.0"
+description: Structured content modeling guidance for schema design, content architecture, content reuse, references versus embedded objects, separation of concerns, and taxonomies across Sanity and other headless CMSes. Use this skill when designing or refactoring content types, deciding field shapes, debating reusable versus nested content, planning omnichannel content models, or reviewing whether a schema is too page-shaped or presentation-driven.
 ---
 
 # Content Modeling Best Practices
@@ -27,10 +23,10 @@ Reference these guidelines when:
 3. **Future-proof** — Design for channels that don't exist yet
 4. **Editor-centric** — Optimize for the people creating content
 
-## Resources
+## References
 
-See `resources/` for detailed guidance on specific topics:
-- Separation of content and presentation
-- Reference vs embedding strategies
-- Content reuse patterns
-- Taxonomy and classification
+Start with the reference that matches the modeling decision in front of you, instead of loading every topic at once. See `references/` for detailed guidance on specific topics:
+- `references/separation-of-concerns.md` — Separating content from presentation
+- `references/reference-vs-embedding.md` — When to use references vs embedded objects
+- `references/content-reuse.md` — Content reuse patterns and the reuse spectrum
+- `references/taxonomy-classification.md` — Flat, hierarchical, and faceted classification

@@ -6,14 +6,14 @@
     "url": "https://www.sanity.io"
   },
   "metadata": {
-    "description": "Sanity plugin for Claude Code with MCP server, agent skills, and agent rules.",
+    "description": "Sanity plugin for Cursor with MCP server, agent skills, and agent rules.",
     "version": "1.0.0"
   },
   "plugins": [
     {
-      "name": "sanity-plugin",
+      "name": "sanity",
       "source": "./",
-      "description": "Sanity plugin for Claude Code with MCP server, agent skills, agent rules, and slash commands.",
+      "description": "Sanity plugin for Cursor with MCP server, agent skills, agent rules, and commands.",
       "version": "1.0.0",
       "homepage": "https://github.com/sanity-io/agent-toolkit",
       "repository": "https://github.com/sanity-io/agent-toolkit",

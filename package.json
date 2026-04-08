@@ -10,17 +10,20 @@
     "validate:seo": "skills-ref validate ./skills/seo-aeo-best-practices",
     "validate:experimentation": "skills-ref validate ./skills/content-experimentation-best-practices",
     "validate:pt-serialization": "skills-ref validate ./skills/portable-text-serialization",
-    "validate:pt-conversion": "skills-ref validate ./skills/portable-text-conversion"
+    "validate:pt-conversion": "skills-ref validate ./skills/portable-text-conversion",
+    "validate:cursor-plugin": "node scripts/validate-cursor-plugin.mjs",
+    "validate:all": "npm run validate && npm run validate:cursor-plugin"
   },
   "devDependencies": {
-    "skills-ref": "^0.1.5"
+    "skills-ref": "0.1.5"
   },
   "keywords": [
     "sanity",
     "ai",
     "agent",
     "skills",
-    "claude"
+    "claude",
+    "cursor"
   ],
   "license": "MIT"
 }

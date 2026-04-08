@@ -1,0 +1,24 @@
+{
+  "name": "sanity",
+  "displayName": "Sanity",
+  "version": "1.0.0",
+  "description": "Sanity plugin for Cursor with MCP server, agent skills, agent rules, and commands.",
+  "author": {
+    "name": "Sanity",
+    "email": "support@sanity.io"
+  },
+  "homepage": "https://github.com/sanity-io/agent-toolkit",
+  "repository": "https://github.com/sanity-io/agent-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "sanity",
+    "cms",
+    "content-lake",
+    "groq",
+    "content",
+    "structured-content",
+    "visual-editing"
+  ],
+  "logo": "assets/logo.svg",
+  "mcpServers": "./.mcp.json"
+}

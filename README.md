@@ -5,16 +5,16 @@
   <h1 align="center">Sanity Agent Toolkit</h1>
 </p>
 
-Collection of resources to help AI agents build better with [Sanity](https://www.sanity.io). Supports Cursor, Claude Code, VS Code, Lovable, v0, and any other editor/agent compatible with MCP, [Agent Skills](https://agentskills.io), or `.mdc` rules.
+Collection of resources to help AI agents build better with [Sanity](https://www.sanity.io). Supports Cursor, Claude Code, VS Code, Lovable, v0, and any other editor/agent compatible with MCP or [Agent Skills](https://agentskills.io).
 
 ---
 
 ## Features
 
-- **Agent rules:** 20+ portable `.mdc` files covering schema design, GROQ, Visual Editing, SEO, localization, migrations, and front-end framework integrations.
-- **Agent skills:** Comprehensive best practices skills for Sanity development, content modeling, SEO/AEO, and experimentation.
 - **MCP server:** Direct access to your Sanity projects (content, datasets, releases, schemas) and agent rules.
-- **Claude Code plugin:** Slash commands and MCP integration for Claude Code users.
+- **Agent skills:** Comprehensive best practices skills for Sanity development, content modeling, SEO/AEO, and experimentation. Includes 21 integration/topic guides and 26 focused best-practice rules.
+- **Claude Code plugin:** MCP server, agent skills, and slash commands for [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) users.
+- **Cursor plugin:** MCP server, agent skills, and commands for the [Cursor Marketplace](https://cursor.com/marketplace).
 
 ---
 
@@ -24,8 +24,8 @@ Choose your path based on how you want agents to work with Sanity:
 
 1. **MCP server** — Give your agent always up-to-date rules and full access to your Sanity projects. No local files to maintain. Works with Cursor, VS Code, Claude Code, Lovable, v0, and other MCP-compatible clients.
 2. **Agent skills** — Install best practices skills for Sanity, content modeling, SEO/AEO, and experimentation. Works with Cursor, Claude Code, and any [Agent Skills](https://agentskills.io)-compatible agent.
-3. **Claude Code plugin** — Adds interactive skills and slash commands on top of MCP for guided workflows.
-4. **Manual installation** — Copy rules locally for offline use. You'll need to update them yourself.
+3. **Plugin** — Install the Sanity plugin for Cursor or Claude Code. Bundles MCP server, agent skills, and commands.
+4. **Manual installation** — Copy the skill references locally for offline use. You'll need to update them yourself.
 
 ### Option 1: Install MCP server (recommended)
 
@@ -154,16 +154,13 @@ Install best practices skills that work with any [Agent Skills](https://agentski
 npx skills add sanity-io/agent-toolkit
 ```
 
-**Cursor:**
-1. Open **Cursor Settings** (Cmd+Shift+J / Ctrl+Shift+J)
-2. Navigate to **Rules** → **Add Rule** → **Remote Rule (Github)**
-3. Enter: `sanity-io/agent-toolkit`
+See [Option 3](#option-3-install-plugin) for plugin installation.
 
-See [Option 3](#option-3-install-claude-code-plugin) for Claude Code plugin installation.
+### Option 3: Install plugin
 
-### Option 3: Install Claude Code plugin
+Install the Sanity plugin to get MCP server, agent skills, and commands.
 
-For Claude Code users, install the full plugin with skills and slash commands:
+#### Claude Code
 
 1. Add the Sanity marketplace:
 
@@ -183,17 +180,26 @@ You should see the Sanity skills listed.
 
 4. Start using: Use natural language and skills activate automatically:
 
-> Use the sanity-scaffold skill to create a blog post schema
+> Help me create a blog post schema in Sanity
+
+> Review my GROQ query and Next.js Visual Editing setup
 
 Or run `/sanity` to explore all capabilities.
 
+#### Cursor
+
+In Cursor chat, run:
+
+```
+/add-plugin sanity
+```
+
 ### Option 4: Manual installation
 
-Install the context rules locally to teach your editor Sanity best practices:
+Install the skill references locally to teach your editor Sanity best practices:
 
-1. Create a rules directory: `mkdir -p .cursor/rules`
-2. Copy the contents of the `rules/` folder to your project's `.cursor/rules/` directory.
-3. (Recommended) Copy `AGENTS.md` to your project root to act as a knowledge router.
+1. Copy `skills/sanity-best-practices/` to your project.
+2. (Recommended) Copy `AGENTS.md` to your project root to act as a knowledge router.
 
 ---
 
@@ -203,10 +209,13 @@ Install the context rules locally to teach your editor Sanity best practices:
 
 With MCP connected, your AI can use tools like:
 - `query_documents` — run GROQ queries directly
-- `create_project` — create a new Sanity project
-- `create_documents_from_markdown` — map markdown to Sanity documents
-- `patch_document_from_json` — surgical edits to existing documents
-- `transform_image` — edit images with AI
+- `create_documents_from_json` / `create_documents_from_markdown` — create draft documents
+- `patch_document_from_json` / `patch_document_from_markdown` — surgical edits to existing documents
+- `publish_documents` / `unpublish_documents` — manage document lifecycle
+- `deploy_schema` / `get_schema` — deploy and inspect schemas
+- `create_version` — create version documents for releases
+- `generate_image` / `transform_image` — AI image generation and editing
+- `search_docs` / `read_docs` — search and read Sanity documentation
 - `list_sanity_rules` / `get_sanity_rules` — load agent rules on demand
 
 See the [full list of available tools](https://www.sanity.io/docs/compute-and-ai/mcp-server#k4ae680bb2e88).
@@ -217,7 +226,7 @@ Best practices skills that agents like Claude Code, Cursor, GitHub Copilot, etc.
 
 | Skill | Description |
 | :--- | :--- |
-| **sanity-best-practices** | GROQ performance, schema design, Visual Editing, images, Portable Text, Studio, TypeGen, localization, and migrations |
+| **sanity-best-practices** | GROQ performance, schema design, Visual Editing, images, Portable Text, Studio, TypeGen, localization, migrations, and framework integration guides |
 | **content-modeling-best-practices** | Structured content principles: separation of concerns, references vs embedding, content reuse |
 | **seo-aeo-best-practices** | SEO/AEO with EEAT principles, structured data (JSON-LD), technical SEO patterns |
 | **content-experimentation-best-practices** | A/B testing methodology, statistical foundations, experiment design |
@@ -232,45 +241,6 @@ The onboarding guide follows three phases:
 
 Just say: "Get started with Sanity" to begin.
 
-### Context rules
-
-These files provide passive knowledge to the AI, ensuring generated code follows Sanity standards.
-
-<details>
-<summary><strong>Core fundamentals</strong></summary>
-
-- **`sanity-schema.mdc`**: The "Data > Presentation" philosophy, `defineType` syntax, and shared fields.
-- **`sanity-groq.mdc`**: Performance rules, fragment reuse, and the "Golden Rule" of projections.
-- **`sanity-visual-editing.mdc`**: Implementation of Content Source Maps (Stega) and Presentation Tool.
-- **`sanity-typegen.mdc`**: TypeScript type generation from schema.
-- **`sanity-project-structure.mdc`**: File organization for Studio and monorepos.
-- **`sanity-get-started.mdc`**: Interactive 3-phase onboarding guide.
-- **`sanity-app-sdk.mdc`**: Building custom apps with the Sanity App SDK, React hooks, and real-time patterns.
-</details>
-
-<details>
-<summary><strong>Framework rules</strong></summary>
-
-- **`sanity-nextjs.mdc`**: App Router, `defineLive`, and metadata handling.
-- **`sanity-remix.mdc`**: React Router loaders and data fetching patterns.
-- **`sanity-svelte.mdc`**: SvelteKit hooks and loaders.
-- **`sanity-nuxt.mdc`**: Nuxt modules and `useSanityQuery`.
-- **`sanity-astro.mdc`**: Astro content collections and islands.
-- **`sanity-hydrogen.mdc`**: Shopify Hydrogen and Sanity Connect.
-</details>
-
-<details>
-<summary><strong>Best practices</strong></summary>
-
-- **`sanity-migration.mdc`**: Strategies for importing HTML/Markdown from legacy CMSs.
-- **`sanity-image.mdc`**: Hotspots, LQIP, and the `urlFor` builder.
-- **`sanity-studio-structure.mdc`**: Organizing the Studio sidebar (singletons, groupings).
-- **`sanity-portable-text.mdc`**: Rendering rich text with custom components.
-- **`sanity-page-builder.mdc`**: Page builder patterns and block component rendering.
-- **`sanity-localization.mdc`**: Internationalization patterns.
-- **`sanity-seo.mdc`**: Metadata, sitemaps, and Open Graph.
-</details>
-
 ### Slash commands (Claude Code)
 
 | Command | What it does |
@@ -284,31 +254,42 @@ These files provide passive knowledge to the AI, ensuring generated code follows
 
 ## Repository structure
 
+> **Note:** The reference files in `skills/sanity-best-practices/references/` are the canonical content for the Sanity MCP server's `list_sanity_rules` / `get_sanity_rules` tools. Each file must have valid `name` and `description` frontmatter — rule names are derived from filenames (e.g., `nextjs.md` → `nextjs`).
+
 ```text
 sanity-io/agent-toolkit/
 ├── AGENTS.md                      # Knowledge router & agent behavior
 ├── README.md                      # This file
 ├── .claude-plugin/                # Claude Code plugin configuration
 │   └── marketplace.json           # Plugin metadata and marketplace config
+├── .cursor-plugin/                # Cursor plugin configuration
+│   ├── marketplace.json           # Cursor marketplace metadata
+│   └── plugin.json                # Per-plugin manifest
 ├── .mcp.json                      # MCP server configuration
-├── commands/                      # Slash commands (Claude Code)
+├── assets/                        # Plugin branding
+│   └── logo.svg                   # Sanity logo for marketplace display
+├── commands/                      # Agent commands
 │   ├── sanity.md                  # /sanity help
 │   ├── review.md                  # /review
 │   ├── typegen.md                 # /typegen
 │   └── deploy-schema.md           # /deploy-schema
-├── rules/                         # Context rules (.mdc)
-│   ├── sanity-schema.mdc          # Schema design patterns
-│   ├── sanity-groq.mdc            # GROQ query patterns
-│   ├── sanity-nextjs.mdc          # Next.js integration
-│   └── ...                        # Additional framework rules
+├── scripts/                       # Validation and CI scripts
+│   └── validate-cursor-plugin.mjs # Cursor plugin validator
 └── skills/                        # Agent skills (agentskills.io format)
     ├── sanity-best-practices/     # Comprehensive Sanity skill
-    │   ├── SKILL.md
-    │   └── rules/                 # Individual rule files
-    ├── content-modeling-best-practices/
-    ├── seo-aeo-best-practices/
-    └── content-experimentation-best-practices/
+    │   ├── SKILL.md               # Skill definition and quick reference
+    │   └── references/            # Canonical content (22 guides)
+    │       ├── get-started.md     # Onboarding guide
+    │       ├── nextjs.md          # Next.js integration
+    │       ├── groq.md            # GROQ patterns & performance
+    │       ├── schema.md          # Schema design & validation
+    │       └── ...                # See SKILL.md for full index
+    ├── content-modeling-best-practices/      # Modeling guidance + topic references
+    ├── seo-aeo-best-practices/               # SEO/AEO guidance + topic references
+    └── content-experimentation-best-practices/ # Experiment design + stats references
 ```
+
+All skills use `references/` for detailed content loaded on demand. The `sanity-best-practices` references are also the canonical source for the MCP server's Sanity rules.
 
 ---
 
@@ -320,20 +301,19 @@ sanity-io/agent-toolkit/
 - [Visual Editing guide](https://www.sanity.io/docs/visual-editing)
 - [Sanity TypeGen](https://www.sanity.io/docs/sanity-typegen)
 - [MCP server docs](https://www.sanity.io/docs/compute-and-ai/mcp-server)
-
+- [Blueprints Infrastructure as Code](https://www.sanity.io/docs/compute-and-ai/blueprints)
 
 ---
 
 ## Contributing
 
-Found a better pattern? Missing a framework or best practice?
+Found a better pattern? Missing a framework or best practice? Read the [contributing guide](CONTRIBUTING.md) for how skills work and what makes a good contribution, then:
 
 1. Fork the repo.
-2. Update the relevant file:
-   - **Rules:** Edit `.mdc` files in `rules/`
-   - **Skills:** Edit rule files in `skills/<skill-name>/rules/`
-3. Run `npm run validate` to check skill validity.
-4. Submit a PR.
+2. Install dependencies with `npm install`.
+3. Make your changes in `skills/<skill-name>/`.
+4. Run `npm run validate:all` to check skill and plugin validity.
+5. Submit a PR.
 
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: typegen
 description: Run Sanity TypeGen and troubleshoot type generation issues.
 ---
 
@@ -17,8 +18,9 @@ npx sanity schema extract && npx sanity typegen generate
 ## What I'll Do
 
 1. **Check Configuration**
-   - Verify `sanity-typegen.json` exists and has correct paths
-   - Ensure `typegen` script is in `package.json`
+   - Check for `typegen` config in `sanity.cli.ts` (recommended)
+   - If using deprecated `sanity-typegen.json`, suggest migrating to `sanity.cli.ts`
+   - Ensure `typegen` script is in `package.json` (for manual workflows)
 
 2. **Run TypeGen**
    - Execute the typegen command
@@ -28,24 +30,35 @@ npx sanity schema extract && npx sanity typegen generate
    - Fix incorrect path globs
    - Resolve schema syntax errors
    - Update query imports
+   - Migrate deprecated `sanity-typegen.json` to `sanity.cli.ts`
 
 ## Common Issues I Fix
 
 | Issue | Solution |
 |-------|----------|
-| "No schema found" | Fix `path` glob in `sanity-typegen.json` |
-| "Query not typed" | Wrap in `defineQuery()` |
-| Types outdated | Re-run after schema/query changes |
+| "No schema found" | Fix `path` glob in `sanity.cli.ts` typegen config |
+| "Query not typed" | Wrap in `defineQuery()` or `groq` template |
+| Types outdated | Re-run after schema/query changes, or enable automatic generation |
 | Import errors | Check `sanity.types.ts` output path |
+| Using `sanity-typegen.json` | Migrate config to `sanity.cli.ts` (deprecated) |
 
-## Configuration Template
+## Configuration
 
-```json
-{
-  "path": "./src/**/*.{ts,tsx}",
-  "schema": "./schema.json",
-  "generates": "./src/sanity/sanity.types.ts"
-}
+Configure TypeGen in `sanity.cli.ts`:
+
+```typescript
+// sanity.cli.ts
+import { defineCliConfig } from 'sanity/cli'
+
+export default defineCliConfig({
+  typegen: {
+    enabled: true, // Auto-generate during sanity dev/build
+    path: "./src/**/*.{ts,tsx,js,jsx,astro,svelte,vue}",
+    schema: "schema.json",
+    generates: "./sanity.types.ts",
+    overloadClientMethods: true,
+  },
+})
 ```
 
 ## Usage
@@ -53,4 +66,4 @@ npx sanity schema extract && npx sanity typegen generate
 > "Run typegen"
 > "Fix my TypeGen configuration"
 > "Why are my types not updating?"
-
+> "Enable automatic type generation"

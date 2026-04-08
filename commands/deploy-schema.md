@@ -1,4 +1,5 @@
 ---
+name: deploy-schema
 description: Deploy Sanity schema to the Content Lake with verification.
 ---
 
