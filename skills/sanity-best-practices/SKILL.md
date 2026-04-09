@@ -22,7 +22,7 @@ Reference these guidelines when:
 - Migrating content from other systems
 - Building custom apps with the Sanity App SDK
 - Managing infrastructure with Blueprints
-- Automating content workflows with Sanity Functions 
+- Automating content workflows with Sanity Functions
 
 ## Quick Reference
 
@@ -39,7 +39,7 @@ Reference these guidelines when:
 - `project-structure` - Monorepo and embedded Studio patterns
 - `app-sdk` - Custom applications with Sanity App SDK
 - `blueprints` - Infrastructure as Code with Sanity Blueprints
-- `functions` - Serverless content workflows with Sanity Functions 
+- `functions` - Automating content workflows with Sanity Functions
 
 ### Topic Guides
 
