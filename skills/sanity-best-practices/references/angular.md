@@ -555,8 +555,8 @@ Common errors when integrating Angular with Sanity:
 
 | Error | Cause | Solution |
 |---|---|---|
-| `401 Unauthorized` | Invalid or missing API token | Verify token in Sanity management console. Ensure it has correct permissions. |
-| `403 Forbidden` | CORS origin not allowed | Add your Angular dev/production URL to CORS origins in `sanity.io/manage`. |
+| `401 Unauthorized` | Invalid or missing API token | Verify token in [Sanity Manage](https://www.sanity.io/manage). Ensure it has correct permissions. |
+| `403 Forbidden` | CORS origin not allowed | Add your Angular dev/production URL to CORS origins in [Sanity Manage](https://www.sanity.io/manage). |
 | `422 Invalid query` | GROQ syntax error | Test queries in Vision plugin or Sanity's GROQ playground. See `groq.md`. |
 | Hydration mismatch | Conditional rendering based on platform | Use `@defer` or `afterNextRender()` instead of `isPlatformBrowser()` checks. |
 | Empty response | Missing dataset or wrong `apiVersion` | Verify environment config. Use a date-based `apiVersion` (e.g., `'2025-05-01'`). |
