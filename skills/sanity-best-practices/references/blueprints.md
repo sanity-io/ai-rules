@@ -5,11 +5,7 @@ description: Rules for Sanity Blueprints, the Infrastructure as Code solution fo
 
 # Sanity Blueprints
 
-## What is Blueprints?
-
-Blueprints is Sanity's **Infrastructure as Code (IaC)** solution. It lets you define Sanity infrastructure declaratively in code, track it in version control, and deploy it programmatically.
-
-Configure Sanity resources in a Blueprint file and deploy with a single command.
+Sanity's Infrastructure as Code (IaC) solution. Define resources declaratively in `sanity.blueprint.ts`, track in version control, deploy with a single command.
 
 ## Mental Model
 
@@ -32,14 +28,6 @@ Blueprint (code) → Stack (deployed state) → Resources (real infrastructure)
 4. The Stack persists — future deploys update it based on Blueprint changes
 
 **Key insight:** The Blueprint is your *intent*. The Stack is *reality*. Blueprints reconciles the two.
-
-## Why use Blueprints?
-
-- **Reproducibility** — Same Blueprint = same infrastructure, every time
-- **Version control** — Track infrastructure changes alongside code
-- **Automation** — No manual clicking through dashboards
-- **Multi-environment** — Spin up dev/staging/prod with consistent configuration
-- **Collaboration** — Review infrastructure changes in PRs
 
 ## Available Resources
 

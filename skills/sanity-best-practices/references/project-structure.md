@@ -80,7 +80,7 @@ your-project/
 ```
 
 **Setup:**
-1. Add web app URL to CORS origins in Sanity project settings
+1. Add web app URL to CORS origins in [Sanity Manage](https://www.sanity.io/manage)
 2. Configure `typegen` in `sanity.cli.ts` to read schema from `apps/studio` and output types to `apps/web`
 
 ## File Naming Conventions

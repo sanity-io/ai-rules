@@ -38,7 +38,7 @@ apps/
 └── web/        # Next.js frontend
 ```
 
-- **Config:** Add your Next.js app URL to **CORS Origins** in Sanity project settings.
+- **Config:** Add your Next.js app URL to **CORS Origins** in [Sanity Manage](https://www.sanity.io/manage).
 - See `project-structure.md` rule for detailed structure.
 
 ## 2. Data Fetching (Live Content API)

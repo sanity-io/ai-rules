@@ -239,7 +239,7 @@ pnpm add hydrogen-sanity @sanity/client @portabletext/react
 cd studio && pnpm dev    # Studio at localhost:3333
 cd web && pnpm dev       # Hydrogen at localhost:3000
 
-# Sanity Manage (CORS, tokens)
+# Sanity Manage (CORS, tokens): https://www.sanity.io/manage
 pnpm dlx sanity manage
 ```
 
@@ -249,7 +249,7 @@ pnpm dlx sanity manage
   - Query Shopify for commerce data (price, inventory, variants)
   - Query Sanity for editorial content (rich text, custom fields)
   - Use `hydrogen-sanity` package for Visual Editing
-  - Add Hydrogen URL to CORS origins in Sanity Manage
+  - Add Hydrogen URL to CORS origins in [Sanity Manage](https://www.sanity.io/manage)
 
 - Ask First:
   - Before modifying Sanity Connect sync settings

@@ -1,6 +1,6 @@
 ---
 name: sanity-best-practices
-description: Sanity development best practices for schema design, GROQ queries, TypeGen, Visual Editing, images, Portable Text, Studio structure, localization, migrations, and framework integrations such as Next.js, Nuxt, Astro, Remix, SvelteKit, Angular, Hydrogen, and the App SDK. Use this skill whenever working with Sanity schemas, defineType or defineField, GROQ or defineQuery, content modeling, Presentation or preview setups, Sanity-powered frontend integrations, or when reviewing and fixing a Sanity codebase.
+description: Sanity development best practices for schema design, GROQ queries, TypeGen, Visual Editing, images, Portable Text, Studio structure, localization, migrations, Sanity Functions, Blueprints, and framework integrations such as Next.js, Nuxt, Astro, Remix, SvelteKit, Angular, Hydrogen, and the App SDK. Use this skill whenever working with Sanity schemas, defineType or defineField, GROQ or defineQuery, content modeling, Presentation or preview setups, Sanity-powered frontend integrations, Sanity Functions, documentEventHandler, defineDocumentFunction, defineMediaLibraryAssetFunction, @sanity/functions, @sanity/blueprints, sanity.blueprint.ts, event-driven content automation, or when reviewing and fixing a Sanity codebase.
 ---
 
 # Sanity Best Practices
@@ -22,6 +22,7 @@ Reference these guidelines when:
 - Migrating content from other systems
 - Building custom apps with the Sanity App SDK
 - Managing infrastructure with Blueprints
+- Automating content workflows with Sanity Functions
 
 ## Quick Reference
 
@@ -38,6 +39,7 @@ Reference these guidelines when:
 - `project-structure` - Monorepo and embedded Studio patterns
 - `app-sdk` - Custom applications with Sanity App SDK
 - `blueprints` - Infrastructure as Code with Sanity Blueprints
+- `functions` - Automating content workflows with Sanity Functions
 
 ### Topic Guides
 
