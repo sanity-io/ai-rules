@@ -4,11 +4,13 @@
   "description": "AI agent resources for Sanity development",
   "private": true,
   "scripts": {
-    "validate": "skills-ref validate ./skills/sanity-best-practices && skills-ref validate ./skills/content-modeling-best-practices && skills-ref validate ./skills/seo-aeo-best-practices && skills-ref validate ./skills/content-experimentation-best-practices",
+    "validate": "skills-ref validate ./skills/sanity-best-practices && skills-ref validate ./skills/content-modeling-best-practices && skills-ref validate ./skills/seo-aeo-best-practices && skills-ref validate ./skills/content-experimentation-best-practices && skills-ref validate ./skills/portable-text-serialization && skills-ref validate ./skills/portable-text-conversion",
     "validate:sanity": "skills-ref validate ./skills/sanity-best-practices",
     "validate:content-modeling": "skills-ref validate ./skills/content-modeling-best-practices",
     "validate:seo": "skills-ref validate ./skills/seo-aeo-best-practices",
     "validate:experimentation": "skills-ref validate ./skills/content-experimentation-best-practices",
+    "validate:pt-serialization": "skills-ref validate ./skills/portable-text-serialization",
+    "validate:pt-conversion": "skills-ref validate ./skills/portable-text-conversion",
     "validate:cursor-plugin": "node scripts/validate-cursor-plugin.mjs",
     "validate:all": "npm run validate && npm run validate:cursor-plugin"
   },
