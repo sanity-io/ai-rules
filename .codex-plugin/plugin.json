@@ -24,7 +24,7 @@
   "interface": {
     "displayName": "Sanity",
     "shortDescription": "Create, query, and manage structured content in Sanity",
-    "longDescription": "Create, query, and manage your structured content in Sanity directly from Codex. Run content audits, update documents, coordinate releases, and find anything across your projects. Or set up entirely new projects \u2014 schemas, content, and configuration \u2014 just by chatting with Codex.",
+    "longDescription": "Create, query, and manage your structured content in Sanity directly from Codex. Run content audits, update documents, coordinate releases, and find anything across your projects. Or set up entirely new projects - schemas, content, and configuration - just by chatting with Codex.",
     "developerName": "Sanity",
     "category": "Productivity",
     "capabilities": ["Interactive", "Read", "Write"],
