@@ -36,7 +36,7 @@
       "Show me the 10 most recently published articles with author info",
       "Create a Sanity schema for recipes with ingredients, instructions, and prep time"
     ],
-    "brandColor": "#F03E2F",
+    "brandColor": "#FF5500",
     "logo": "./assets/logo.svg"
   }
 }
