@@ -1,0 +1,20 @@
+{
+  "name": "sanity-agent-toolkit",
+  "interface": {
+    "displayName": "Sanity Agent Toolkit"
+  },
+  "plugins": [
+    {
+      "name": "sanity",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

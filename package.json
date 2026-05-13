@@ -23,7 +23,8 @@
     "agent",
     "skills",
     "claude",
-    "cursor"
+    "cursor",
+    "codex"
   ],
   "license": "MIT"
 }
