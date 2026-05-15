@@ -5,7 +5,7 @@
   <h1 align="center">Sanity Agent Toolkit</h1>
 </p>
 
-Collection of resources to help AI agents build better with [Sanity](https://www.sanity.io). Supports Cursor, Claude Code, VS Code, Lovable, v0, and any other editor/agent compatible with MCP or [Agent Skills](https://agentskills.io).
+Collection of resources to help AI agents build better with [Sanity](https://www.sanity.io). Supports Cursor, Claude Code, Codex, VS Code, Lovable, v0, and any other editor/agent compatible with MCP or [Agent Skills](https://agentskills.io).
 
 ---
 
@@ -15,6 +15,7 @@ Collection of resources to help AI agents build better with [Sanity](https://www
 - **Agent skills:** Comprehensive best practices skills for Sanity development, content modeling, SEO/AEO, and experimentation. Includes 21 integration/topic guides and 26 focused best-practice rules.
 - **Claude Code plugin:** MCP server, agent skills, and slash commands for [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) users.
 - **Cursor plugin:** MCP server, agent skills, and commands for the [Cursor Marketplace](https://cursor.com/marketplace).
+- **Codex plugin:** MCP server and agent skills for [OpenAI Codex](https://developers.openai.com/codex) users.
 
 ---
 
@@ -68,6 +69,21 @@ Or manually: Open **Command Palette** (`Cmd+Shift+P` / `Ctrl+Shift+P`) → **Vie
 Run in terminal. Authenticate with OAuth on next launch:
 ```bash
 claude mcp add Sanity -t http https://mcp.sanity.io --scope user
+```
+</details>
+
+<details>
+<summary><strong>Codex</strong></summary>
+
+Run in terminal. Authenticate with OAuth on next launch:
+```bash
+codex mcp add Sanity --url https://mcp.sanity.io
+```
+
+Or manually add to `~/.codex/config.toml`:
+```toml
+[mcp_servers.Sanity]
+url = "https://mcp.sanity.io"
 ```
 </details>
 
@@ -194,6 +210,18 @@ In Cursor chat, run:
 /add-plugin sanity
 ```
 
+#### Codex
+
+1. Add the Sanity marketplace:
+
+```bash
+codex plugin marketplace add sanity-io/agent-toolkit
+```
+
+2. Install the plugin from Codex's plugin directory (select the **Sanity Agent Toolkit** marketplace, then install **Sanity**).
+
+3. Restart Codex. Verify by asking: "which skills do you have access to?" — you should see the Sanity skills listed.
+
 ### Option 4: Manual installation
 
 Install the skill references locally to teach your editor Sanity best practices:
@@ -260,8 +288,12 @@ Just say: "Get started with Sanity" to begin.
 sanity-io/agent-toolkit/
 ├── AGENTS.md                      # Knowledge router & agent behavior
 ├── README.md                      # This file
+├── .agents/plugins/               # Codex marketplace
+│   └── marketplace.json           # Codex marketplace metadata
 ├── .claude-plugin/                # Claude Code plugin configuration
 │   └── marketplace.json           # Plugin metadata and marketplace config
+├── .codex-plugin/                 # Codex plugin configuration
+│   └── plugin.json                # Codex plugin manifest
 ├── .cursor-plugin/                # Cursor plugin configuration
 │   ├── marketplace.json           # Cursor marketplace metadata
 │   └── plugin.json                # Per-plugin manifest

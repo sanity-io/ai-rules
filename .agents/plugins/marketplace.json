@@ -1,0 +1,20 @@
+{
+  "name": "sanity",
+  "interface": {
+    "displayName": "Sanity Agent Toolkit"
+  },
+  "plugins": [
+    {
+      "name": "sanity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/sanity-io/agent-toolkit.git"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
