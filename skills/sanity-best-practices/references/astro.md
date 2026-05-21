@@ -7,6 +7,17 @@ description: Integration guide for Astro, including @sanity/astro, visual editin
 
 ## 1. Setup & Configuration
 
+### Installation
+
+Add the `@sanity/astro` integration and the renderer/helper packages used by the examples below.
+
+```bash
+npx astro add @sanity/astro
+npm install astro-portabletext @sanity/image-url groq
+```
+
+`@sanity/astro` provides the `sanity:client` virtual module. `astro-portabletext` renders Portable Text. `@sanity/image-url` builds image URLs. `groq` exports `defineQuery` for typed queries.
+
 ### Configuration (`astro.config.mjs`)
 Use the official `@sanity/astro` integration.
 
