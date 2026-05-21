@@ -1,25 +1,21 @@
 ---
 title: React Router (Remix) & Sanity Integration Rules
-description: Integration guide for React Router (formerly Remix) with Sanity, including Loaders and Visual Editing.
+description: Integration guide for React Router v7 (and Remix v2) with Sanity, including loaders and visual editing.
 ---
 
 # React Router (Remix) & Sanity Integration Rules
 
 ## Version Note
 
-This guide covers both:
-- **Remix v2** (`@remix-run/*` packages)
-- **React Router v7** (the successor to Remix, `react-router` package)
+The primary examples below use **React Router v7** (the current shape — Remix v2 was renamed to React Router v7 starting with the v7 release). Import paths and the route-types file (`./+types/<route>`) come from the `react-router` package and the framework's typegen.
 
-The Sanity integration pattern is the same for both. Import paths differ slightly:
+If you are on the older **Remix v2** stack, the integration shape is identical; only the import paths differ:
 
-| Remix v2 | React Router v7 |
-|----------|-----------------|
-| `@remix-run/node` | `react-router` |
-| `@remix-run/react` | `react-router` |
-| `remix.config.js` | `react-router.config.ts` |
-
-The examples below use Remix v2 imports. Adjust if using React Router v7.
+| React Router v7 | Remix v2 |
+|-----------------|----------|
+| `react-router` | `@remix-run/node` / `@remix-run/react` |
+| `import type { Route } from "./+types/<route>"` | `import type { LoaderFunctionArgs } from "@remix-run/node"` + `useLoaderData<typeof loader>()` |
+| `react-router.config.ts` | `remix.config.js` |
 
 ## 1. Setup & Client Pattern
 
@@ -64,26 +60,68 @@ export { loadQuery }
 
 ## 2. Data Fetching (Loaders)
 
-Use `loadQuery` from your **server** file in route loaders.
+Use `loadQuery` from your **server** file in route loaders. Import the generated `Route` type from `./+types/<route>` — React Router writes one type module per route file.
 
 ```typescript
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+// app/routes/home.tsx
+import type { Route } from "./+types/home";
 import { loadQuery } from "~/sanity/loader.server";
 import { POSTS_QUERY } from "~/sanity/queries";
 
-export async function loader({ params }: LoaderFunctionArgs) {
-  const initial = await loadQuery(POSTS_QUERY, params);
-  return { initial, query: POSTS_QUERY, params };
+export async function loader() {
+  const initial = await loadQuery(POSTS_QUERY, {});
+  return { initial, query: POSTS_QUERY, params: {} };
 }
 
-export default function Index() {
-  const { initial, query, params } = useLoaderData<typeof loader>();
-  // ... pass to component
+export default function Home({ loaderData }: Route.ComponentProps) {
+  const { initial } = loaderData;
+  // …pass to component
 }
 ```
 
-## 3. Real-time Preview & Visual Editing
+For Remix v2: replace `Route.ComponentProps` / `Route.LoaderArgs` with `useLoaderData<typeof loader>()` and `LoaderFunctionArgs` from `@remix-run/node`.
+
+## 3. Dynamic Routes (`:slug`)
+
+Register the dynamic route in `app/routes.ts`:
+
+```typescript
+import { type RouteConfig, index, route } from "@react-router/dev/routes";
+
+export default [
+  index("routes/home.tsx"),
+  route(":slug", "routes/post.tsx"),
+] satisfies RouteConfig;
+```
+
+Then in `app/routes/post.tsx`:
+
+```typescript
+import type { Route } from "./+types/post";
+import { PortableText } from "@portabletext/react";
+import { loadQuery } from "~/sanity/loader.server";
+import { useQuery } from "~/sanity/loader";
+import { POST_QUERY } from "~/sanity/queries";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  const initial = await loadQuery(POST_QUERY, { slug: params.slug });
+  return { initial, query: POST_QUERY, params: { slug: params.slug } };
+}
+
+export default function Post({ loaderData }: Route.ComponentProps) {
+  const { initial, query, params } = loaderData;
+  const { data: post } = useQuery(query, params, { initial });
+
+  return (
+    <article>
+      <h1>{post?.title}</h1>
+      {post?.body && <PortableText value={post.body} />}
+    </article>
+  );
+}
+```
+
+## 4. Real-time Preview & Visual Editing
 
 ### A. Use `useQuery` in Components
 Import `useQuery` from your **shared** loader file.
@@ -91,15 +129,13 @@ Import `useQuery` from your **shared** loader file.
 ```typescript
 import { useQuery } from "~/sanity/loader";
 
-export default function Page() {
-  const { initial, query, params } = useLoaderData<typeof loader>();
+export default function Page({ loaderData }: Route.ComponentProps) {
+  const { initial, query, params } = loaderData;
 
-  const { data, encodeDataAttribute } = useQuery(query, params, {
-    initial
-  });
+  const { data, encodeDataAttribute } = useQuery(query, params, { initial });
 
   return (
-    <h1 data-sanity={encodeDataAttribute('title')}>
+    <h1 data-sanity={encodeDataAttribute("title")}>
       {data?.title}
     </h1>
   );
@@ -124,7 +160,7 @@ export default function VisualEditing() {
 
 Render this component in `root.tsx` only when valid (e.g., check env vars or user session).
 
-## 4. Stega Cleaning
+## 5. Stega Cleaning
 When using data for logic (routing, classNames), use `stegaClean`.
 
 ```typescript
