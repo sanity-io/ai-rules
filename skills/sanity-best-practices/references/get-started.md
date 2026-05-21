@@ -226,12 +226,11 @@ export const client = createClient({
 
 **Fetch content in a Server Component:**
 ```typescript
-// app/posts/page.tsx
+// src/app/page.tsx
 import { client } from "@/sanity/client";
-
 import { defineQuery } from "groq";
 
-const POSTS_QUERY = defineQuery(`*[_type == "post"]{ _id, title, slug }`);
+const POSTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)]{ _id, title, slug }`);
 
 export default async function PostsPage() {
   const posts = await client.fetch(POSTS_QUERY);
@@ -240,10 +239,40 @@ export default async function PostsPage() {
     <ul>
       {posts.map((post) => (
         <li key={post._id}>
-          <a href={`/posts/${post.slug.current}`}>{post.title}</a>
+          <a href={`/${post.slug?.current}`}>{post.title}</a>
         </li>
       ))}
     </ul>
+  );
+}
+```
+
+**Render an individual post (`src/app/[slug]/page.tsx`):**
+```typescript
+import { PortableText } from "@portabletext/react";
+import { defineQuery } from "groq";
+import { notFound } from "next/navigation";
+import { client } from "@/sanity/client";
+
+const POST_QUERY = defineQuery(
+  `*[_type == "post" && slug.current == $slug][0]{ _id, title, body }`
+);
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await client.fetch(POST_QUERY, { slug });
+
+  if (!post) return notFound();
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      {post.body && <PortableText value={post.body} />}
+    </article>
   );
 }
 ```
