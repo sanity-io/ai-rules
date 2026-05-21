@@ -209,17 +209,28 @@ cd my-app
 
 **Install dependencies:**
 ```bash
-npm install @sanity/client @sanity/image-url @portabletext/react groq
+npm install next-sanity @sanity/image-url
 ```
+
+`next-sanity` is the official Sanity toolkit for Next.js. It bundles `@sanity/client`, `groq` (with `defineQuery`), and `@portabletext/react`, plus dedicated subpath exports for Next.js-specific features:
+- `next-sanity` — `createClient`, `defineQuery`, `PortableText`, `SanityDocument`, `stegaClean`
+- `next-sanity/live` — `defineLive` for live content with Next.js cache integration
+- `next-sanity/draft-mode` — Draft Mode endpoint helpers
+- `next-sanity/visual-editing` — `<VisualEditing />` component for click-to-edit overlays
+- `next-sanity/image` — Sanity-aware `<Image />` wrapping `next/image`
+- `next-sanity/studio` — embed the Sanity Studio at a route
+- `next-sanity/webhook` — webhook signature verification
+
+Don't also install `@sanity/client`, `@portabletext/react`, or `groq` directly — import them from `next-sanity`. `@sanity/image-url` is not bundled (yet), so add it separately.
 
 **Create the client (`src/sanity/client.ts`):**
 ```typescript
-import { createClient } from "@sanity/client";
+import { createClient } from "next-sanity";
 
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: "2026-02-01", // Use current date for new projects
+  apiVersion: "2026-05-15", // Use current date for new projects
   useCdn: false, // Use API directly for server-side rendering; set true for client-side reads
 });
 ```
@@ -228,18 +239,22 @@ export const client = createClient({
 ```typescript
 // src/app/page.tsx
 import { client } from "@/sanity/client";
-import { defineQuery } from "groq";
+import { defineQuery, type SanityDocument } from "next-sanity";
 
-const POSTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)]{ _id, title, slug }`);
+const POSTS_QUERY = defineQuery(
+  `*[_type == "post" && defined(slug.current)] | order(_createdAt desc){ _id, title, slug }`
+);
+
+const options = { next: { revalidate: 30 } };
 
 export default async function PostsPage() {
-  const posts = await client.fetch(POSTS_QUERY);
+  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   return (
     <ul>
       {posts.map((post) => (
         <li key={post._id}>
-          <a href={`/${post.slug?.current}`}>{post.title}</a>
+          <a href={`/${(post.slug as { current?: string })?.current}`}>{post.title as string}</a>
         </li>
       ))}
     </ul>
@@ -247,10 +262,11 @@ export default async function PostsPage() {
 }
 ```
 
+`{ next: { revalidate: 30 } }` opts the fetch into Next.js' ISR cache with a 30-second revalidation window. Tune to taste; omit `options` to use defaults.
+
 **Render an individual post (`src/app/[slug]/page.tsx`):**
 ```typescript
-import { PortableText } from "@portabletext/react";
-import { defineQuery } from "groq";
+import { PortableText, defineQuery, type SanityDocument } from "next-sanity";
 import { notFound } from "next/navigation";
 import { client } from "@/sanity/client";
 
@@ -258,20 +274,22 @@ const POST_QUERY = defineQuery(
   `*[_type == "post" && slug.current == $slug][0]{ _id, title, body }`
 );
 
+const options = { next: { revalidate: 30 } };
+
 export default async function PostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await client.fetch(POST_QUERY, { slug });
+  const post = await client.fetch<SanityDocument | null>(POST_QUERY, { slug }, options);
 
   if (!post) return notFound();
 
   return (
     <article>
-      <h1>{post.title}</h1>
-      {post.body && <PortableText value={post.body} />}
+      <h1>{post.title as string}</h1>
+      {Array.isArray(post.body) && <PortableText value={post.body} />}
     </article>
   );
 }
@@ -283,7 +301,7 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-For advanced patterns (TypeGen, Visual Editing, `defineLive`), see `nextjs.md`.
+For advanced patterns (TypeGen, Visual Editing with `next-sanity/visual-editing`, live content with `defineLive` from `next-sanity/live`, embedded Studio via `next-sanity/studio`), see `nextjs.md`.
 
 ### Step 3: Other Frameworks
 
