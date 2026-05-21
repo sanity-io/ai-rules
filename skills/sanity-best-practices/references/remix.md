@@ -58,8 +58,12 @@ const client = createClient({
   useCdn: true,
   apiVersion: '2026-02-01',
   stega: {
-    enabled: true,
-    studioUrl: 'https://my-studio-url.com',
+    // Stega encodes invisible markers into string fields for click-to-edit
+    // overlays in the Presentation tool. Those markers can leak into copy/paste,
+    // screen readers, and some downstream renderers, so only enable when actually
+    // previewing — gate on an env var that's only set in preview environments.
+    enabled: Boolean(process.env.SANITY_STUDIO_URL),
+    studioUrl: process.env.SANITY_STUDIO_URL,
   },
 })
 
