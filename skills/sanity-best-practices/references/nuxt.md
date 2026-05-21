@@ -16,6 +16,15 @@ cd my-app
 
 `-t ui` selects the Nuxt UI starter. `-M ""` skips the interactive module-selection prompt (empty string = no extra modules). `--packageManager npm` and `--no-gitInit` suppress the other two prompts so the scaffold runs end-to-end without input.
 
+### Installation
+
+```bash
+npx nuxi@latest module add sanity
+npm install @sanity/image-url groq
+```
+
+`nuxi module add sanity` resolves to the official `@nuxtjs/sanity` module and registers it in `nuxt.config.ts` automatically. `@sanity/image-url` builds image URLs. `groq` provides the `groq` template tag used by the examples below.
+
 ### Configuration (`nuxt.config.ts`)
 Use the official `@nuxtjs/sanity` module.
 
