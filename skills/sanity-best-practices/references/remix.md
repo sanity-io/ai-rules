@@ -68,6 +68,25 @@ setServerClient(client)
 export { loadQuery }
 ```
 
+### C. Queries (`app/sanity/queries.ts`)
+Keep query definitions in one place so route loaders, components, and TypeGen all read the same source.
+
+```typescript
+import { defineQuery } from "groq";
+
+export const POSTS_QUERY = defineQuery(
+  `*[_type == "post" && defined(slug.current)] | order(_createdAt desc){
+    _id, title, slug
+  }`
+);
+
+export const POST_QUERY = defineQuery(
+  `*[_type == "post" && slug.current == $slug][0]{
+    _id, title, body, image
+  }`
+);
+```
+
 ## 2. Data Fetching (Loaders)
 
 Use `loadQuery` from your **server** file in route loaders. Import the generated `Route` type from `./+types/<route>` — React Router writes one type module per route file.
