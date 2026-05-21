@@ -203,7 +203,7 @@ If Next.js is detected, follow these essential steps:
 
 **Install dependencies:**
 ```bash
-npm install @sanity/client @sanity/image-url @portabletext/react
+npm install @sanity/client @sanity/image-url @portabletext/react groq
 ```
 
 **Create the client (`src/sanity/client.ts`):**
