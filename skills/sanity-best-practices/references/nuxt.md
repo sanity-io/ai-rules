@@ -54,15 +54,41 @@ export default defineNuxtConfig({
 Use the composable provided by the module for reactive fetching. It automatically handles preview state when configured.
 
 ```vue
+<!-- app/pages/posts.vue -->
 <script setup lang="ts">
-const query = groq`*[_type == "post"]{title, slug}`;
-const { data: posts } = await useSanityQuery(query);
+const query = groq`*[_type == "post" && defined(slug.current)]{ _id, title, slug }`
+const { data: posts } = await useSanityQuery<Array<{ _id: string; title?: string; slug?: { current?: string } }>>(query)
 </script>
 
 <template>
   <ul>
-    <li v-for="post in posts" :key="post._id">{{ post.title }}</li>
+    <li v-for="post in posts || []" :key="post._id">
+      <NuxtLink :to="`/${post.slug?.current}`">{{ post.title }}</NuxtLink>
+    </li>
   </ul>
+</template>
+```
+
+### Dynamic Routes (`[slug].vue`)
+
+Pull the slug off `useRoute()` and pass it as a query parameter. The `<SanityContent>` component (provided by `@nuxtjs/sanity`) renders Portable Text — note the prop is `value`, not `blocks` (renamed in v2).
+
+```vue
+<!-- app/pages/[slug].vue -->
+<script setup lang="ts">
+const route = useRoute()
+const query = groq`*[_type == "post" && slug.current == $slug][0]{ _id, title, body }`
+const { data: post } = await useSanityQuery<{ _id: string; title?: string; body?: unknown[] }>(
+  query,
+  { slug: route.params.slug }
+)
+</script>
+
+<template>
+  <article v-if="post">
+    <h1>{{ post.title }}</h1>
+    <SanityContent v-if="post.body" :value="post.body" />
+  </article>
 </template>
 ```
 
