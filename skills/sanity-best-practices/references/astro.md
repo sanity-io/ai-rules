@@ -69,6 +69,36 @@ export async function getPosts() {
 }
 ```
 
+### Dynamic Routes (`[slug].astro`)
+
+Astro hoists `getStaticPaths()` into a separate module context. Module-scope `const` declarations in the frontmatter are NOT accessible inside it — referencing them throws `ReferenceError: <NAME> is not defined` at request time. Define queries used by `getStaticPaths` inside the function, or import them from a utility module.
+
+```astro
+---
+import { sanityClient } from "sanity:client";
+import { defineQuery } from "groq";
+import { PortableText } from "astro-portabletext";
+
+// Module-scope queries are fine for module-scope code…
+const POST_QUERY = defineQuery(`*[_type == "post" && slug.current == $slug][0]{ title, body }`);
+
+// …but anything used inside getStaticPaths must live inside it.
+export async function getStaticPaths() {
+  const SLUGS_QUERY = defineQuery(
+    `*[_type == "post" && defined(slug.current)]{ "params": { "slug": slug.current } }`
+  );
+  return await sanityClient.fetch(SLUGS_QUERY);
+}
+
+const { slug } = Astro.params;
+const post = await sanityClient.fetch(POST_QUERY, { slug });
+---
+<article>
+  <h1>{post?.title}</h1>
+  {post?.body && <PortableText value={post.body} />}
+</article>
+```
+
 ## 3. Portable Text
 Use `astro-portabletext` for rendering rich text.
 
