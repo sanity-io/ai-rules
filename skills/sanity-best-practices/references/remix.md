@@ -19,6 +19,16 @@ If you are on the older **Remix v2** stack, the integration shape is identical; 
 
 ## 1. Setup & Client Pattern
 
+### Scaffold a new React Router v7 app
+
+```bash
+npx create-react-router@latest my-app -y
+cd my-app
+npm install @sanity/client @sanity/react-loader @sanity/visual-editing @portabletext/react groq
+```
+
+`-y` accepts defaults. The Sanity packages cover server loaders (`@sanity/react-loader`, `@sanity/client`), live preview (`@sanity/visual-editing`), Portable Text rendering (`@portabletext/react`), and typed queries (`groq`).
+
 To support both server-side fetching and client-side live previews, use the **Split Loader Pattern**.
 
 ### A. Shared Loader (`app/sanity/loader.ts`)

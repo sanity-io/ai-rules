@@ -201,6 +201,12 @@ claude mcp add Sanity -t http https://mcp.sanity.io --scope user
 
 If Next.js is detected, follow these essential steps:
 
+**Scaffold a new app (if you don't have one yet):**
+```bash
+npx create-next-app@latest my-app --tailwind --ts --app --src-dir --eslint --import-alias "@/*" --turbopack
+cd my-app
+```
+
 **Install dependencies:**
 ```bash
 npm install @sanity/client @sanity/image-url @portabletext/react groq

@@ -7,6 +7,15 @@ description: Integration guide for Astro, including @sanity/astro, visual editin
 
 ## 1. Setup & Configuration
 
+### Scaffold a new Astro app
+
+```bash
+npm create astro@latest my-app -- --template with-tailwindcss --install --git --yes
+cd my-app
+```
+
+`--yes` accepts defaults non-interactively. `--install` runs `npm install` for you, `--git` initializes a repo.
+
 ### Installation
 
 Add the `@sanity/astro` integration and the renderer/helper packages used by the examples below.

@@ -7,6 +7,15 @@ description: Integration guide for Nuxt, including @nuxtjs/sanity, visual editin
 
 ## 1. Setup & Configuration
 
+### Scaffold a new Nuxt app
+
+```bash
+npm create nuxt@latest my-app -- -t ui -M "" --packageManager npm --no-gitInit
+cd my-app
+```
+
+`-t ui` selects the Nuxt UI starter. `-M ""` skips the interactive module-selection prompt (empty string = no extra modules). `--packageManager npm` and `--no-gitInit` suppress the other two prompts so the scaffold runs end-to-end without input.
+
 ### Configuration (`nuxt.config.ts`)
 Use the official `@nuxtjs/sanity` module.
 
