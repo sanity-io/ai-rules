@@ -28,23 +28,33 @@ npm install astro-portabletext @sanity/image-url groq
 `@sanity/astro` provides the `sanity:client` virtual module. `astro-portabletext` renders Portable Text. `@sanity/image-url` builds image URLs. `groq` exports `defineQuery` for typed queries.
 
 ### Configuration (`astro.config.mjs`)
-Use the official `@sanity/astro` integration.
+
+Use the official `@sanity/astro` integration. `astro.config.mjs` runs at config time before Astro's env loading, so `import.meta.env.PUBLIC_*` is not available there — use Vite's `loadEnv` to read the same `PUBLIC_` variables your pages will use.
 
 ```javascript
 import { defineConfig } from "astro/config";
+import { loadEnv } from "vite";
 import sanity from "@sanity/astro";
+
+const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
+  process.env.NODE_ENV ?? "development",
+  process.cwd(),
+  ""
+);
 
 export default defineConfig({
   integrations: [
     sanity({
-      projectId: "YOUR_PROJECT_ID",
-      dataset: "production",
+      projectId: PUBLIC_SANITY_PROJECT_ID,
+      dataset: PUBLIC_SANITY_DATASET,
       useCdn: false, // False for static builds
-      studioBasePath: "/admin", // If embedding Studio
+      studioBasePath: "/admin", // Optional — only if embedding the Studio
     }),
   ],
 });
 ```
+
+Inside `.astro` files and components you can keep using `import.meta.env.PUBLIC_SANITY_*` directly; the `loadEnv` shim above is config-only.
 
 ### Client Type Safety
 Enable types in `tsconfig.json`.
