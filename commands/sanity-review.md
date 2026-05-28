@@ -1,5 +1,5 @@
 ---
-name: review
+name: sanity-review
 description: Review code for Sanity best practices and common issues.
 ---
 
@@ -51,4 +51,3 @@ Just ask me to review specific files or your whole Sanity setup:
 > "Review my post schema"
 > "Check my GROQ queries for issues"
 > "Review my Sanity frontend integration"
-
