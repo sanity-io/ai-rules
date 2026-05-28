@@ -1,6 +1,6 @@
 # Sanity Project
 
-This is a Sanity-powered project. Use the Knowledge Router below to find Sanity guidance for your task. Available as a [Claude Code and Cursor plugin](https://github.com/sanity-io/agent-toolkit#option-3-install-plugin).
+This is a Sanity-powered project. Use the Knowledge Router below to find Sanity guidance for your task. Available as a [Claude Code plugin](https://claude.com/plugins/sanity) and [Cursor plugin](https://cursor.com/marketplace/sanity).
 
 ## Commands
 

@@ -11,7 +11,7 @@
   },
   "plugins": [
     {
-      "name": "sanity-plugin",
+      "name": "sanity",
       "source": "./",
       "description": "Sanity plugin for Claude Code with MCP server, agent skills, agent rules, and slash commands.",
       "version": "1.0.0",
