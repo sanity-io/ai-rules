@@ -181,6 +181,21 @@ claude mcp add Sanity -t http https://mcp.sanity.io --scope user
 
 ## Phase 3: Frontend Integration
 
+### Client Bundle Warning (Vite-based frameworks)
+
+React Router, SvelteKit, Astro, and Nuxt all run on Vite. **Any module imported by a client component will be bundled to the browser.** `process.env` doesn't exist there.
+
+For publishable values (`projectId`, `dataset`, `apiVersion`, public studio URL), use the framework's client-safe env mechanism:
+
+- React Router / Remix: `import.meta.env.VITE_*`
+- SvelteKit: `$env/static/public`
+- Astro: `import.meta.env.PUBLIC_*`
+- Nuxt: `useRuntimeConfig().public`
+
+For secrets (read tokens, webhook secrets), read `process.env.*` (or the server equivalent) **only from server-only modules** — `.server.ts`, route handlers, API endpoints. Don't centralize them in a shared `env.ts` that anything else imports.
+
+This trap is invisible at SSR — the page renders fine on first load. It surfaces on client-side route transitions, when a lazy-loaded route chunk pulls a shared client/image module into the browser.
+
 ### Step 1: Detect Framework
 
 **Check `package.json` dependencies:**
@@ -314,6 +329,18 @@ For non-Next.js frameworks, read the corresponding rule file and follow its inte
 
 Each rule file contains framework-specific patterns for data fetching, Portable Text rendering, and Visual Editing.
 
+### Step 4: Smoke Test
+
+Before declaring integration done, exercise both render paths:
+
+1. `npm run dev`
+2. Load the home page (lists posts).
+3. **Click through to a detail page** via an in-app `<Link>` / `<a>` — do not paste the URL.
+4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
+5. For good measure, reload the detail page directly (URL bar) — that exercises SSR.
+
+Server-side rendering passing isn't enough. Client-side route transitions pull lazy chunks that exercise different code paths, and that's where env/bundling traps surface.
+
 ---
 
 ## What's Next
@@ -339,10 +366,12 @@ Just ask about any of these!"
 | Framework | Client-Side Prefix | Example |
 |-----------|-------------------|---------|
 | Next.js | `NEXT_PUBLIC_` | `NEXT_PUBLIC_SANITY_PROJECT_ID` |
-| React Router / Remix | None (use loader) | `SANITY_PROJECT_ID` |
+| React Router / Remix | `VITE_` | `VITE_SANITY_PROJECT_ID` |
 | SvelteKit | `PUBLIC_` | `PUBLIC_SANITY_PROJECT_ID` |
 | Nuxt | `NUXT_PUBLIC_` | `NUXT_PUBLIC_SANITY_PROJECT_ID` |
 | Astro | `PUBLIC_` | `PUBLIC_SANITY_PROJECT_ID` |
+
+**Secrets** (read tokens, webhook secrets) stay **unprefixed** and are read via `process.env` (or the framework's server-only equivalent) from server-only modules — `*.server.ts`, route handlers, API routes. Never re-export a secret from a module that a route component can import.
 
 ---
 

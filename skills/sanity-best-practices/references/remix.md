@@ -31,7 +31,35 @@ npm install @sanity/client @sanity/react-loader @sanity/visual-editing @portable
 
 To support both server-side fetching and client-side live previews, use the **Split Loader Pattern**.
 
-### A. Shared Loader (`app/sanity/loader.ts`)
+### A. Environment Variables
+
+React Router runs on Vite. **Any module reachable from a route component gets bundled into the client** — `process.env` doesn't exist there and will throw `ReferenceError: process is not defined` on client-side route transitions (SSR will still work, which makes this trap easy to miss).
+
+Split publishable values from secrets:
+
+- **Publishable** (`projectId`, `dataset`, `apiVersion`, `studioUrl`): prefix with `VITE_` and read via `import.meta.env`. Safe to import from anywhere.
+- **Secrets** (read tokens, webhook secrets): keep unprefixed and read via `process.env` **only inside `*.server.ts` files**. Never re-export them from a shared module.
+
+`.env`:
+
+```
+VITE_SANITY_PROJECT_ID=your-project-id
+VITE_SANITY_DATASET=production
+VITE_SANITY_API_VERSION=2026-02-01
+VITE_SANITY_STUDIO_URL=http://localhost:3333
+SANITY_API_READ_TOKEN=your-read-token
+```
+
+`app/sanity/env.ts` — browser-safe, publishable values only:
+
+```typescript
+export const projectId = import.meta.env.VITE_SANITY_PROJECT_ID!
+export const dataset = import.meta.env.VITE_SANITY_DATASET!
+export const apiVersion = import.meta.env.VITE_SANITY_API_VERSION ?? '2026-02-01'
+export const studioUrl = import.meta.env.VITE_SANITY_STUDIO_URL
+```
+
+### B. Shared Loader (`app/sanity/loader.ts`)
 Defines the store config (SSR enabled, client deferred).
 
 ```typescript
@@ -45,25 +73,27 @@ export const {
 } = createQueryStore({ client: false, ssr: true })
 ```
 
-### B. Server Loader (`app/sanity/loader.server.ts`)
-Initializes the server client.
+### C. Server Loader (`app/sanity/loader.server.ts`)
+Initializes the server client. Read the token directly from `process.env` here — do **not** import it from `env.ts`, or it will leak into the client bundle the moment any client-reachable module touches `env.ts`.
 
 ```typescript
 import { createClient } from '@sanity/client'
 import { loadQuery, setServerClient } from './loader'
+import { projectId, dataset, apiVersion, studioUrl } from './env'
 
 const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET,
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: true,
-  apiVersion: '2026-02-01',
+  token: process.env.SANITY_API_READ_TOKEN,
   stega: {
     // Stega encodes invisible markers into string fields for click-to-edit
     // overlays in the Presentation tool. Those markers can leak into copy/paste,
     // screen readers, and some downstream renderers, so only enable when actually
     // previewing — gate on an env var that's only set in preview environments.
-    enabled: Boolean(process.env.SANITY_STUDIO_URL),
-    studioUrl: process.env.SANITY_STUDIO_URL,
+    enabled: Boolean(studioUrl),
+    studioUrl,
   },
 })
 
@@ -72,7 +102,39 @@ setServerClient(client)
 export { loadQuery }
 ```
 
-### C. Queries (`app/sanity/queries.ts`)
+### D. Browser-safe Client + Image URL Builder (`app/sanity/client.ts`, `app/sanity/image.ts`)
+
+Anything used by a route component runs in the browser too. Build a separate publishable-only client for things like the image URL builder:
+
+```typescript
+// app/sanity/client.ts
+import { createClient } from '@sanity/client'
+import { projectId, dataset, apiVersion } from './env'
+
+export const client = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: true,
+})
+```
+
+```typescript
+// app/sanity/image.ts
+import imageUrlBuilder from '@sanity/image-url'
+import { client } from './client'
+
+const builder = imageUrlBuilder(client)
+export const urlFor = (source: Parameters<typeof builder.image>[0]) => builder.image(source)
+```
+
+Install `@sanity/image-url` if you'll render images:
+
+```bash
+npm install @sanity/image-url
+```
+
+### E. Queries (`app/sanity/queries.ts`)
 Keep query definitions in one place so route loaders, components, and TypeGen all read the same source.
 
 ```typescript
@@ -134,6 +196,7 @@ import type { Route } from "./+types/post";
 import { PortableText } from "@portabletext/react";
 import { loadQuery } from "~/sanity/loader.server";
 import { useQuery } from "~/sanity/loader";
+import { urlFor } from "~/sanity/image";
 import { POST_QUERY } from "~/sanity/queries";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -148,11 +211,16 @@ export default function Post({ loaderData }: Route.ComponentProps) {
   return (
     <article>
       <h1>{post?.title}</h1>
+      {post?.image && (
+        <img src={urlFor(post.image).width(1200).url()} alt={post.title ?? ""} />
+      )}
       {post?.body && <PortableText value={post.body} />}
     </article>
   );
 }
 ```
+
+This route is the canonical shape that exposes the env trap: `urlFor` → `client.ts` → `env.ts`. If `env.ts` reads `process.env`, the route works under SSR (curl returns HTML) but the client-side `<Link>` navigation will throw `ReferenceError: process is not defined` in the browser console and React Router will hard-reload back to `/`.
 
 ## 4. Real-time Preview & Visual Editing
 
