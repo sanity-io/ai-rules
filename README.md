@@ -274,7 +274,7 @@ Just say: "Get started with Sanity" to begin.
 | Command | What it does |
 | :--- | :--- |
 | `/sanity` | List available skills and help topics |
-| `/review` | Review code for Sanity best practices |
+| `/sanity-review` | Review code for Sanity best practices |
 | `/typegen` | Run TypeGen and troubleshoot issues |
 | `/deploy-schema` | Deploy schema with verification |
 
@@ -302,7 +302,7 @@ sanity-io/agent-toolkit/
 │   └── logo.svg                   # Sanity logo for marketplace display
 ├── commands/                      # Agent commands
 │   ├── sanity.md                  # /sanity help
-│   ├── review.md                  # /review
+│   ├── sanity-review.md           # /sanity-review
 │   ├── typegen.md                 # /typegen
 │   └── deploy-schema.md           # /deploy-schema
 ├── scripts/                       # Validation and CI scripts
