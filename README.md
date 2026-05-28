@@ -13,8 +13,8 @@ Collection of resources to help AI agents build better with [Sanity](https://www
 
 - **MCP server:** Direct access to your Sanity projects (content, datasets, releases, schemas) and agent rules.
 - **Agent skills:** Comprehensive best practices skills for Sanity development, content modeling, SEO/AEO, and experimentation. Includes 21 integration/topic guides and 26 focused best-practice rules.
-- **Claude Code plugin:** MCP server, agent skills, and slash commands for [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) users.
-- **Cursor plugin:** MCP server, agent skills, and commands for the [Cursor Marketplace](https://cursor.com/marketplace).
+- **Claude Code plugin:** MCP server, agent skills, and slash commands for Claude Code users. Available on the [official Anthropic plugin marketplace](https://claude.com/plugins/sanity).
+- **Cursor plugin:** MCP server, agent skills, and commands on the [Cursor Marketplace](https://cursor.com/marketplace/sanity).
 
 ---
 
@@ -90,7 +90,15 @@ Open **Command Palette** (`Cmd+Shift+P` / `Ctrl+Shift+P`) → **MCP: Open User C
 <details>
 <summary><strong>Lovable</strong></summary>
 
-**Settings** → **Connectors** → **Personal connectors** → **New MCP server** → Enter `Sanity` as name and `https://mcp.sanity.io` as Server URL → **Add & authorize** → Authenticate with OAuth.
+Sanity is available as a prebuilt chat connector in Lovable:
+
+1. Open **Connectors** → **Chat connectors**
+2. Select **Sanity**
+3. Click **Connect** and sign in to authorize your Sanity account
+
+In your next prompt, reference your Sanity project or ask the agent to read your schema.
+
+See the [Lovable MCP documentation](https://docs.lovable.dev/integrations/mcp-servers) or [Sanity + Lovable guide](https://lovable.dev/connect/sanity) for more details.
 </details>
 
 <details>
@@ -158,27 +166,42 @@ See [Option 3](#option-3-install-plugin) for plugin installation.
 
 ### Option 3: Install plugin
 
-Install the Sanity plugin to get MCP server, agent skills, and commands.
+Install the Sanity plugin to get MCP server, agent skills, and commands. Available on the [Claude Code marketplace](https://claude.com/plugins/sanity) and [Cursor Marketplace](https://cursor.com/marketplace/sanity).
 
 #### Claude Code
 
-1. Add the Sanity marketplace:
+The Sanity plugin is listed on the [official Anthropic plugin marketplace](https://claude.com/plugins/sanity). The official marketplace (`claude-plugins-official`) is pre-registered when you start Claude Code — you do not need to add a custom marketplace.
+
+Install from Claude Code:
 
 ```
-/plugin marketplace add sanity-io/agent-toolkit
+/plugin install sanity@claude-plugins-official
 ```
 
-2. Install the plugin:
+If the plugin is not found, refresh the marketplace catalog and retry:
 
 ```
-/plugin install sanity-plugin@sanity-agent-toolkit
+/plugin marketplace update claude-plugins-official
 ```
 
-3. Verify installation: Ask Claude Code: "which skills do you have access to?"
+Then run `/reload-plugins` to activate without restarting.
+
+**Alternative: interactive install**
+
+1. Run `/plugin` and open the **Discover** tab
+2. Search for **Sanity**
+3. Review what the plugin will install — commands, skills, hooks, and MCP servers — before confirming ([Anthropic recommends reviewing plugin permissions and source before installing](https://code.claude.com/docs/en/discover-plugins#install-plugins))
+4. Choose an installation scope:
+   - **User** (default): all projects on this machine
+   - **Project**: shared with collaborators via `.claude/settings.json`
+   - **Local**: this repository only
+5. Run `/reload-plugins` to activate without restarting
+
+**Verify installation:** Ask Claude Code: "which skills do you have access to?"
 
 You should see the Sanity skills listed.
 
-4. Start using: Use natural language and skills activate automatically:
+**Start using:** Use natural language and skills activate automatically:
 
 > Help me create a blog post schema in Sanity
 
@@ -188,11 +211,21 @@ Or run `/sanity` to explore all capabilities.
 
 #### Cursor
 
-In Cursor chat, run:
+Install from the [Cursor Marketplace](https://cursor.com/marketplace/sanity) by running this in Cursor chat:
 
 ```
 /add-plugin sanity
 ```
+
+**Verify installation:** Ask Cursor: "which skills do you have access to?"
+
+You should see the Sanity skills listed.
+
+**Start using:** Use natural language and skills activate automatically:
+
+> Help me create a blog post schema in Sanity
+
+> Review my GROQ query and Next.js Visual Editing setup
 
 ### Option 4: Manual installation
 
@@ -260,9 +293,10 @@ Just say: "Get started with Sanity" to begin.
 sanity-io/agent-toolkit/
 ├── AGENTS.md                      # Knowledge router & agent behavior
 ├── README.md                      # This file
-├── .claude-plugin/                # Claude Code plugin configuration
-│   └── marketplace.json           # Plugin metadata and marketplace config
-├── .cursor-plugin/                # Cursor plugin configuration
+├── .claude-plugin/                # Claude Code plugin configuration (distributed via claude-plugins-official)
+│   ├── plugin.json                # Plugin manifest (name: sanity)
+│   └── marketplace.json           # Marketplace manifest for repo-based discovery
+├── .cursor-plugin/                # Cursor plugin configuration (distributed via cursor.com/marketplace)
 │   ├── marketplace.json           # Cursor marketplace metadata
 │   └── plugin.json                # Per-plugin manifest
 ├── .mcp.json                      # MCP server configuration
