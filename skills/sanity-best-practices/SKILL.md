@@ -24,6 +24,12 @@ Reference these guidelines when:
 - Managing infrastructure with Blueprints
 - Automating content workflows with Sanity Functions
 
+## Global Rules
+
+- Let Sanity generate `_id` values for ordinary documents. Do not create deterministic UUIDs, slug-derived IDs, or legacy-system IDs when creating documents.
+- Model relationships with `reference` fields, then resolve related documents with GROQ lookups, source-key fields, or returned `_id` values from created documents.
+- Use explicit document IDs mainly for singleton documents controlled by Studio Structure, including localized singletons such as `homePage-en`.
+
 ## Quick Reference
 
 ### Integration Guides
@@ -71,4 +77,3 @@ Each reference file contains:
 - Incorrect and correct code examples
 - Decision matrices and workflow guidance
 - Framework-specific patterns where applicable
-

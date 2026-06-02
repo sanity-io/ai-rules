@@ -14,6 +14,7 @@ Use this contents list to jump to the schema design decision you are making.
 - Shared fields pattern
 - Field patterns
 - References vs nested objects
+- Document creation and IDs
 - Safe schema updates
 - Validation patterns
 
@@ -221,7 +222,46 @@ defineField({
 *[_type == "post"]{ seo { title, description } }
 ```
 
-## 6. Safe Schema Updates (The Deprecation Pattern)
+## 6. Document Creation and IDs
+
+Sanity document `_id` values are implementation identifiers, not a content modeling tool.
+
+- **Prefer generated IDs:** Let Sanity assign `_id` values for ordinary content documents. Avoid deterministic UUIDs, slug-derived IDs, and IDs copied from legacy systems.
+- **Use relationships, not ID conventions:** Connect documents with `reference` fields and set `_ref` from an actual lookup or from the `_id` returned after creating the related document.
+- **Store source identity as content:** For imports, put legacy IDs, external IDs, or stable slugs in explicit fields such as `legacyId`, `externalId`, or `slug`, then query by those fields when you need to find or upsert content.
+- **Keep explicit IDs rare:** Directly setting `_id` is mainly useful for singleton documents managed through Studio Structure, such as `settings` or localized singletons like `homePage-en`.
+
+```typescript
+// ✅ Correct - relationship comes from a lookup
+import {defineQuery} from 'groq'
+
+const AUTHOR_BY_EXTERNAL_ID_QUERY = defineQuery(`
+  *[_type == "author" && externalId == $externalId][0]{_id}
+`)
+
+const author = await client.fetch(AUTHOR_BY_EXTERNAL_ID_QUERY, {
+  externalId: post.authorId,
+})
+
+if (!author?._id) throw new Error(`Missing author for ${post.authorId}`)
+
+await client.create({
+  _type: 'post',
+  title: post.title,
+  slug: {_type: 'slug', current: post.slug},
+  legacyId: post.id,
+  author: {_type: 'reference', _ref: author._id},
+})
+
+// ❌ Wrong - IDs encode relationships and source data
+await client.createOrReplace({
+  _id: `post-${post.id}`,
+  _type: 'post',
+  author: {_type: 'reference', _ref: `author-${post.authorId}`},
+})
+```
+
+## 7. Safe Schema Updates (The Deprecation Pattern)
 
 **NEVER** delete a field that contains production data. It will cause data loss or Studio crashes. Instead, follow the **ReadOnly -> Hidden -> Deprecated** lifecycle.
 
@@ -281,7 +321,7 @@ sanity migration run rename-oldTitle-to-newTitle --no-dry-run
 
 **Phase 3: Remove** — Once `oldTitle` is undefined for all documents, delete the field definition.
 
-## 7. Validation Patterns
+## 8. Validation Patterns
 
 Beyond `rule.required()`, Sanity offers powerful validation options.
 

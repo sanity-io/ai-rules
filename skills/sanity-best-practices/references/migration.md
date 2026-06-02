@@ -5,6 +5,15 @@ description: Best practices for migrating content (HTML, Markdown) into Sanity P
 
 # Sanity Content Migration Rules
 
+## Document Identity During Import (Critical)
+
+Let Sanity generate `_id` values for imported documents unless you are intentionally creating a singleton. Do not derive deterministic UUIDs or document IDs from slugs, file paths, legacy IDs, or related document IDs.
+
+- Store legacy identifiers in fields such as `legacyId`, `externalId`, or `slug`.
+- Make imports idempotent by looking up existing documents with GROQ before creating or patching them.
+- Create relationships by querying the target document and using its real `_id` in a `reference`; do not predict `_ref` values from naming conventions.
+- Reserve explicit `_id` values for singleton documents such as `settings`, `homePage`, or localized singleton IDs like `homePage-en`.
+
 ## 1. HTML Import (Legacy CMS)
 Use `@portabletext/block-tools` with `JSDOM` to convert HTML to Portable Text. This covers setup, custom deserializers, pre-processing, image uploads, and wrapping in `defineMigration`.
 

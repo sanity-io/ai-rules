@@ -441,8 +441,7 @@ export const handler = documentEventHandler(async ({ context, event }) => {
     documentId: event.data._id,
     languageFieldPath: 'language',
     targetDocument: {
-      operation: 'createOrReplace',
-      _id: `${event.data._id}-el-GR`,
+      operation: 'create',
     },
     fromLanguage: { id: 'en-US', title: 'English' },
     toLanguage: { id: 'el-GR', title: 'Greek' },
@@ -451,6 +450,8 @@ export const handler = documentEventHandler(async ({ context, event }) => {
 ```
 
 The GROQ filter ensures only English documents trigger the function. The translated document gets a different `language` value, preventing recursive triggers.
+
+Let Sanity assign the translated document's `_id` for ordinary localized content. To find or update translations later, query by language, slug, or translation metadata instead of deriving IDs from the source document. Reserve explicit `targetDocument._id` values for singleton-style targets.
 
 ### Auto-tag with Agent Actions
 
