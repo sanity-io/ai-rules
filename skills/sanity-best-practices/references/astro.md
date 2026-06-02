@@ -7,24 +7,54 @@ description: Integration guide for Astro, including @sanity/astro, visual editin
 
 ## 1. Setup & Configuration
 
+### Scaffold a new Astro app
+
+```bash
+npm create astro@latest my-app -- --template with-tailwindcss --install --git --yes
+cd my-app
+```
+
+`--yes` accepts defaults non-interactively. `--install` runs `npm install` for you, `--git` initializes a repo.
+
+### Installation
+
+Add the `@sanity/astro` integration and the renderer/helper packages used by the examples below.
+
+```bash
+npx astro add @sanity/astro
+npm install astro-portabletext @sanity/image-url groq
+```
+
+`@sanity/astro` provides the `sanity:client` virtual module. `astro-portabletext` renders Portable Text. `@sanity/image-url` builds image URLs. `groq` exports `defineQuery` for typed queries.
+
 ### Configuration (`astro.config.mjs`)
-Use the official `@sanity/astro` integration.
+
+Use the official `@sanity/astro` integration. `astro.config.mjs` runs at config time before Astro's env loading, so `import.meta.env.PUBLIC_*` is not available there — use Vite's `loadEnv` to read the same `PUBLIC_` variables your pages will use.
 
 ```javascript
 import { defineConfig } from "astro/config";
+import { loadEnv } from "vite";
 import sanity from "@sanity/astro";
+
+const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
+  process.env.NODE_ENV ?? "development",
+  process.cwd(),
+  ""
+);
 
 export default defineConfig({
   integrations: [
     sanity({
-      projectId: "YOUR_PROJECT_ID",
-      dataset: "production",
+      projectId: PUBLIC_SANITY_PROJECT_ID,
+      dataset: PUBLIC_SANITY_DATASET,
       useCdn: false, // False for static builds
-      studioBasePath: "/admin", // If embedding Studio
+      studioBasePath: "/admin", // Optional — only if embedding the Studio
     }),
   ],
 });
 ```
+
+Inside `.astro` files and components you can keep using `import.meta.env.PUBLIC_SANITY_*` directly; the `loadEnv` shim above is config-only.
 
 ### Client Type Safety
 Enable types in `tsconfig.json`.
@@ -67,6 +97,36 @@ const POSTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)]`);
 export async function getPosts() {
   return await sanityClient.fetch(POSTS_QUERY);
 }
+```
+
+### Dynamic Routes (`[slug].astro`)
+
+Astro hoists `getStaticPaths()` into a separate module context. Module-scope `const` declarations in the frontmatter are NOT accessible inside it — referencing them throws `ReferenceError: <NAME> is not defined` at request time. Define queries used by `getStaticPaths` inside the function, or import them from a utility module.
+
+```astro
+---
+import { sanityClient } from "sanity:client";
+import { defineQuery } from "groq";
+import { PortableText } from "astro-portabletext";
+
+// Module-scope queries are fine for module-scope code…
+const POST_QUERY = defineQuery(`*[_type == "post" && slug.current == $slug][0]{ title, body }`);
+
+// …but anything used inside getStaticPaths must live inside it.
+export async function getStaticPaths() {
+  const SLUGS_QUERY = defineQuery(
+    `*[_type == "post" && defined(slug.current)]{ "params": { "slug": slug.current } }`
+  );
+  return await sanityClient.fetch(SLUGS_QUERY);
+}
+
+const { slug } = Astro.params;
+const post = await sanityClient.fetch(POST_QUERY, { slug });
+---
+<article>
+  <h1>{post?.title}</h1>
+  {post?.body && <PortableText value={post.body} />}
+</article>
 ```
 
 ## 3. Portable Text

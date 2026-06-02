@@ -181,6 +181,21 @@ claude mcp add Sanity -t http https://mcp.sanity.io --scope user
 
 ## Phase 3: Frontend Integration
 
+### Client Bundle Warning (Vite-based frameworks)
+
+React Router, SvelteKit, Astro, and Nuxt all run on Vite. **Any module imported by a client component will be bundled to the browser.** `process.env` doesn't exist there.
+
+For publishable values (`projectId`, `dataset`, `apiVersion`, public studio URL), use the framework's client-safe env mechanism:
+
+- React Router / Remix: `import.meta.env.VITE_*`
+- SvelteKit: `$env/static/public`
+- Astro: `import.meta.env.PUBLIC_*`
+- Nuxt: `useRuntimeConfig().public`
+
+For secrets (read tokens, webhook secrets), read `process.env.*` (or the server equivalent) **only from server-only modules** — `.server.ts`, route handlers, API endpoints. Don't centralize them in a shared `env.ts` that anything else imports.
+
+This trap is invisible at SSR — the page renders fine on first load. It surfaces on client-side route transitions, when a lazy-loaded route chunk pulls a shared client/image module into the browser.
+
 ### Step 1: Detect Framework
 
 **Check `package.json` dependencies:**
@@ -201,43 +216,96 @@ claude mcp add Sanity -t http https://mcp.sanity.io --scope user
 
 If Next.js is detected, follow these essential steps:
 
+**Scaffold a new app (if you don't have one yet):**
+```bash
+npx create-next-app@latest my-app --tailwind --ts --app --src-dir --eslint --import-alias "@/*" --turbopack
+cd my-app
+```
+
 **Install dependencies:**
 ```bash
-npm install @sanity/client @sanity/image-url @portabletext/react
+npm install next-sanity @sanity/image-url
 ```
+
+`next-sanity` is the official Sanity toolkit for Next.js. It bundles `@sanity/client`, `groq` (with `defineQuery`), and `@portabletext/react`, plus dedicated subpath exports for Next.js-specific features:
+- `next-sanity` — `createClient`, `defineQuery`, `PortableText`, `SanityDocument`, `stegaClean`
+- `next-sanity/live` — `defineLive` for live content with Next.js cache integration
+- `next-sanity/draft-mode` — Draft Mode endpoint helpers
+- `next-sanity/visual-editing` — `<VisualEditing />` component for click-to-edit overlays
+- `next-sanity/image` — Sanity-aware `<Image />` wrapping `next/image`
+- `next-sanity/studio` — embed the Sanity Studio at a route
+- `next-sanity/webhook` — webhook signature verification
+
+Don't also install `@sanity/client`, `@portabletext/react`, or `groq` directly — import them from `next-sanity`. `@sanity/image-url` is not bundled (yet), so add it separately.
 
 **Create the client (`src/sanity/client.ts`):**
 ```typescript
-import { createClient } from "@sanity/client";
+import { createClient } from "next-sanity";
 
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: "2026-02-01", // Use current date for new projects
+  apiVersion: "2026-05-15", // Use current date for new projects
   useCdn: false, // Use API directly for server-side rendering; set true for client-side reads
 });
 ```
 
 **Fetch content in a Server Component:**
 ```typescript
-// app/posts/page.tsx
+// src/app/page.tsx
 import { client } from "@/sanity/client";
+import { defineQuery, type SanityDocument } from "next-sanity";
 
-import { defineQuery } from "groq";
+const POSTS_QUERY = defineQuery(
+  `*[_type == "post" && defined(slug.current)] | order(_createdAt desc){ _id, title, slug }`
+);
 
-const POSTS_QUERY = defineQuery(`*[_type == "post"]{ _id, title, slug }`);
+const options = { next: { revalidate: 30 } };
 
 export default async function PostsPage() {
-  const posts = await client.fetch(POSTS_QUERY);
+  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   return (
     <ul>
       {posts.map((post) => (
         <li key={post._id}>
-          <a href={`/posts/${post.slug.current}`}>{post.title}</a>
+          <a href={`/${(post.slug as { current?: string })?.current}`}>{post.title as string}</a>
         </li>
       ))}
     </ul>
+  );
+}
+```
+
+`{ next: { revalidate: 30 } }` opts the fetch into Next.js' ISR cache with a 30-second revalidation window. Tune to taste; omit `options` to use defaults.
+
+**Render an individual post (`src/app/[slug]/page.tsx`):**
+```typescript
+import { PortableText, defineQuery, type SanityDocument } from "next-sanity";
+import { notFound } from "next/navigation";
+import { client } from "@/sanity/client";
+
+const POST_QUERY = defineQuery(
+  `*[_type == "post" && slug.current == $slug][0]{ _id, title, body }`
+);
+
+const options = { next: { revalidate: 30 } };
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await client.fetch<SanityDocument | null>(POST_QUERY, { slug }, options);
+
+  if (!post) return notFound();
+
+  return (
+    <article>
+      <h1>{post.title as string}</h1>
+      {Array.isArray(post.body) && <PortableText value={post.body} />}
+    </article>
   );
 }
 ```
@@ -248,7 +316,7 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-For advanced patterns (TypeGen, Visual Editing, `defineLive`), see `nextjs.md`.
+For advanced patterns (TypeGen, Visual Editing with `next-sanity/visual-editing`, live content with `defineLive` from `next-sanity/live`, embedded Studio via `next-sanity/studio`), see `nextjs.md`.
 
 ### Step 3: Other Frameworks
 
@@ -260,6 +328,18 @@ For non-Next.js frameworks, read the corresponding rule file and follow its inte
 - **Astro:** `astro.md`
 
 Each rule file contains framework-specific patterns for data fetching, Portable Text rendering, and Visual Editing.
+
+### Step 4: Smoke Test
+
+Before declaring integration done, exercise both render paths:
+
+1. `npm run dev`
+2. Load the home page (lists posts).
+3. **Click through to a detail page** via an in-app `<Link>` / `<a>` — do not paste the URL.
+4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
+5. For good measure, reload the detail page directly (URL bar) — that exercises SSR.
+
+Server-side rendering passing isn't enough. Client-side route transitions pull lazy chunks that exercise different code paths, and that's where env/bundling traps surface.
 
 ---
 
@@ -286,10 +366,12 @@ Just ask about any of these!"
 | Framework | Client-Side Prefix | Example |
 |-----------|-------------------|---------|
 | Next.js | `NEXT_PUBLIC_` | `NEXT_PUBLIC_SANITY_PROJECT_ID` |
-| React Router / Remix | None (use loader) | `SANITY_PROJECT_ID` |
+| React Router / Remix | `VITE_` | `VITE_SANITY_PROJECT_ID` |
 | SvelteKit | `PUBLIC_` | `PUBLIC_SANITY_PROJECT_ID` |
 | Nuxt | `NUXT_PUBLIC_` | `NUXT_PUBLIC_SANITY_PROJECT_ID` |
 | Astro | `PUBLIC_` | `PUBLIC_SANITY_PROJECT_ID` |
+
+**Secrets** (read tokens, webhook secrets) stay **unprefixed** and are read via `process.env` (or the framework's server-only equivalent) from server-only modules — `*.server.ts`, route handlers, API routes. Never re-export a secret from a module that a route component can import.
 
 ---
 
