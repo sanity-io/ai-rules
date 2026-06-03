@@ -35,7 +35,9 @@ If the Sanity MCP server (`https://mcp.sanity.io`) is available, use `list_sanit
 | **Project Structure** | `structure`, `monorepo`, `embedded studio`, `file naming` | `skills/sanity-best-practices/references/project-structure.md` |
 | **Schema** | `schema`, `model`, `document`, `field`, `defineType` | `skills/sanity-best-practices/references/schema.md` |
 | **Deprecation** | `deprecate`, `remove field`, `legacy`, `migration` | `skills/sanity-best-practices/references/schema.md` |
-| **Import/Migration** | `import`, `wordpress`, `html`, `markdown`, `migrate` | `skills/sanity-best-practices/references/migration.md` |
+| **Migration / Replatforming** | `migrate`, `migration`, `replatform`, `AEM`, `Contentful`, `Strapi`, `Webflow`, `WordPress`, `Payload`, `Drupal`, `WXR`, `CMS export`, `database dump` | `skills/sanity-migration/SKILL.md` |
+| **Markdown Import** | `markdown`, `mdx`, `frontmatter`, `static content`, `README import`, `markdown files` | `skills/sanity-migration/references/markdown.md` |
+| **HTML / Portable Text Import** | `html`, `portable text import`, `block-tools`, `htmlToBlocks` | `skills/sanity-best-practices/references/migration.md` |
 | **Next.js** | `next.js`, `app router`, `server component`, `fetch` | `skills/sanity-best-practices/references/nextjs.md` |
 | **Nuxt** | `nuxt`, `vue`, `nuxt.js` | `skills/sanity-best-practices/references/nuxt.md` |
 | **Angular** | `angular`, `signals`, `resource api` | `skills/sanity-best-practices/references/angular.md` |
