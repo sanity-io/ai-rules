@@ -105,11 +105,11 @@ async function uploadImage(client, imageUrl) {
 
 ### Using in a Migration
 
-Wrap this in `defineMigration` for reproducible imports:
+Wrap this in `defineMigration` for controlled imports:
 
 ```typescript
 // migrations/import-wordpress-posts/index.ts
-import {defineMigration, createOrReplace} from 'sanity/migrate'
+import {defineMigration, create} from 'sanity/migrate'
 import {htmlToBlocks} from '@portabletext/block-tools'
 
 export default defineMigration({
@@ -122,16 +122,19 @@ export default defineMigration({
         parseHtml: html => new JSDOM(html).window.document,
       })
       
-      yield createOrReplace({
-        _id: `post-${post.slug}`,
+      yield create({
         _type: 'post',
         title: post.title,
+        slug: {_type: 'slug', current: post.slug},
+        legacyId: String(post.id),
         body: blocks,
       })
     }
   }
 })
 ```
+
+Let Sanity generate document IDs for ordinary imported content. Add schema fields for legacy identifiers or slugs, then use GROQ lookups against those fields when you need to rerun an import, patch existing documents, or create references between imported records. Set `_id` directly only for singleton documents.
 
 Run with: `sanity migration run import-wordpress-posts --no-dry-run`
 

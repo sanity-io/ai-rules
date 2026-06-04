@@ -45,6 +45,8 @@ export const structure: StructureResolver = (S) =>
 
 **Singletons are enforced via Structure, NOT schema options.** There is no `singleton: true` schema option.
 
+This is the main case where explicit document IDs are appropriate. For ordinary content documents, let Sanity generate `_id` values and use references or GROQ lookups to connect records.
+
 ### How Singletons Work
 1. Use `S.document().documentId('fixed-id')` to lock the document to a specific ID.
 2. Filter the type from generic lists to prevent duplicate entries.

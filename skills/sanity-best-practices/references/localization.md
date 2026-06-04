@@ -300,7 +300,7 @@ export const structure: StructureResolver = (S) =>
 
 ### Key Points
 
-- **Fixed IDs:** Use `${typeName}-${locale}` pattern for predictable document IDs
+- **Fixed IDs:** Use `${typeName}-${locale}` only for localized singletons; let Sanity generate IDs for ordinary localized content
 - **Initial Value Templates:** Essential for the "New document" menu to work correctly
 - **Structure:** Group all locale versions under one list item for cleaner navigation
 - **See also:** `studio-structure.md` for more singleton patterns
