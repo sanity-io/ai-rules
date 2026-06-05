@@ -9,7 +9,7 @@ Use a two-phase approach when risk or timeline is high:
 1. **Stabilize:** migrate into a close, understandable model with stable IDs, complete assets, and working frontend queries.
 2. **Improve:** remodel page-shaped content into semantic documents, references, page builder sections, or reusable entities after fidelity is proven.
 
-For large migrations, AI should help write deterministic migration scripts, review mappings, and identify edge cases. The actual migration should be repeatable and idempotent.
+For large migrations, write deterministic migration scripts, review mappings carefully, and identify edge cases before import. The migration must be repeatable and idempotent.
 
 ## Discovery Questions
 

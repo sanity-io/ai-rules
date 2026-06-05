@@ -20,7 +20,7 @@ Use this skill for CMS-to-Sanity migration work. Treat migration as a content st
    - Drupal: `references/drupal.md`
    - Markdown / MDX / frontmatter files: `references/markdown.md`
 3. Before writing code, produce a short migration plan covering source access, content scope, schema decisions, extraction, transformation, import, validation, redirects, and cutover.
-4. Prefer deterministic, repeatable scripts for real migrations. Use AI to help write and review scripts; do not rely on one-off agent actions for large content volumes.
+4. Prefer deterministic, repeatable scripts for real migrations. Write and review migration scripts, mappings, and validation checks; do not rely on one-off content operations for large content volumes.
 
 ## Deliverables to Produce
 
