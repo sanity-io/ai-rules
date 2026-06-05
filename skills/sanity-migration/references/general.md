@@ -34,6 +34,18 @@ Before writing code, establish:
 6. **Validate:** compare counts, references, Portable Text shape, asset availability, required fields, frontend rendering, redirects, and editor usability.
 7. **Cut over:** rerun against the latest source content, apply redirects, monitor broken links, and keep legacy source IDs for debugging.
 
+## Agent Workflow
+
+For agent-assisted migrations, require one human checkpoint before anything writes to Sanity:
+
+1. Read the source export/API shape and the target Sanity project.
+2. Print a migration plan: content types, fields, relationships, assets, locales, draft/status handling, and proposed Sanity types.
+3. Flag judgment calls for review, such as page-shaped content, free-text taxonomies, rich text blocks, and localization strategy.
+4. After approval, generate schemas, transform scripts, import scripts, config, and validation scripts.
+5. Stop before running destructive or high-volume writes. The user should review the generated files and choose when to run them.
+
+The useful AI pattern is "analyze, plan, generate, then let the user run," not "silently migrate everything."
+
 ## Recommended Project Layout
 
 For implementation work, keep migration artifacts out of the application root unless the repo already has a convention:
@@ -112,6 +124,15 @@ Write order:
 2. Shared reference documents: authors, people, companies, categories, tags, products.
 3. Primary content documents.
 4. Translation metadata, redirect documents, and post-import relationship fixes.
+
+For relationship-heavy migrations, use a Sanity-safe multi-pass import:
+
+1. Upload assets and build source asset ID -> Sanity asset ID maps.
+2. Promote reusable string lists, tags, categories, authors, products, or other shared values into reference documents.
+3. Create primary documents with deterministic IDs and scalar fields.
+4. Link references after every target document ID is known, either by emitting deterministic refs in NDJSON or by running a patch pass.
+
+This pattern applies to Sanity because references are just document IDs. It is especially useful when the source stores relationships as nested objects, links, string arrays, or IDs that need lookup tables before they can become Sanity references.
 
 ## NDJSON and Asset Directives
 

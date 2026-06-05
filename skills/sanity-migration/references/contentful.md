@@ -113,6 +113,8 @@ Map Contentful concepts deliberately:
 
 Use the migration to reduce over-generic content types and remove fields that exist only because of Contentful app or layout constraints.
 
+If a Contentful field is an array of strings but behaves like a taxonomy, promote it to reference documents instead of preserving it as strings. Good candidates include product tags, article tags, topics, industries, audiences, and filters used by navigation/search. Create the taxonomy documents first, then reference them from migrated entries.
+
 ## Transformation Notes
 
 - Preserve original Contentful entry IDs in deterministic Sanity IDs or migration metadata.
@@ -128,6 +130,7 @@ Use the migration to reduce over-generic content types and remove fields that ex
 - Contentful locale fallbacks can hide missing translations. Decide whether to preserve missingness or fill with fallback content.
 - Rich Text embedded entries often carry presentation-specific modules. They need custom Portable Text or page builder object mappings.
 - Asset fields may store title/description but not enough accessibility metadata. Flag missing alt text for editorial review.
+- Contentful asset exports can be incomplete or corrupt. Check downloaded asset files for zero-byte size, missing files, unexpected content type, and failed URLs before building `_sanityAsset` references.
 - Some generated schemas from automated tools are a starting point, not a final content model.
 - Contentful field validations and required flags do not guarantee every historical entry is clean.
 - If only code is available, inspect `contentfulClient.getEntries({content_type: ...})`, GraphQL queries, Contentful TypeScript interfaces, component props, and `contentful/migrations/` files to reconstruct the content model.
@@ -138,6 +141,8 @@ Use the migration to reduce over-generic content types and remove fields that ex
 - Confirm every Contentful content type is mapped, skipped, or intentionally consolidated.
 - Confirm all reference fields resolve to existing Sanity document IDs.
 - Spot-check Rich Text entries with embedded assets, embedded entries, tables, lists, and links.
+- Verify promoted string taxonomies have one canonical document per unique value and all source entries reference those documents.
+- Verify every exported asset path exists and has a non-zero file size before import.
 - Verify locale fallback behavior with real translated and untranslated entries.
 - Verify draft, published, and changed entries produce the expected Sanity draft/published documents.
 - Verify translation metadata documents link all language variants for each entry.
