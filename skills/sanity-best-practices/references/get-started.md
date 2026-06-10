@@ -47,7 +47,7 @@ Resume from where they left off.
 
 ### Step 1: Check for Existing Studio
 
-**Look for `sanity.config.ts` or `sanity.cli.ts`:**
+**Look for `sanity.config.ts` or `sanity.cli.ts` across the workspace** — in the recommended side-by-side layout the Studio lives in its own folder (`studio/`, or `studio-*` when created by the Sanity onboarding flow) next to the app folder:
 
 **If NO Studio found:**
 - Ask: "Want to create a new Sanity Studio?"
@@ -197,9 +197,11 @@ For secrets (read tokens, webhook secrets), read `process.env.*` (or the server 
 
 This trap is invisible at SSR — the page renders fine on first load. It surfaces on client-side route transitions, when a lazy-loaded route chunk pulls a shared client/image module into the browser.
 
-### Step 1: Detect Framework
+### Step 1: Find the App and Detect Framework
 
-**Check `package.json` dependencies:**
+The working directory is often a parent folder with the Studio and the app side by side. Identify the app folder first: a sibling of the Studio folder with its own `package.json` (commonly `web/`). If several candidates exist, ask the user which app to integrate — never assume.
+
+**Check the app's `package.json` dependencies:**
 
 | Dependency | Framework | Rule File |
 |------------|-----------|-----------|
@@ -337,7 +339,7 @@ Each rule file contains framework-specific patterns for data fetching, Portable 
 
 Before declaring integration done, exercise both render paths:
 
-1. `npm run dev`
+1. `npm run dev` (in the app folder)
 2. Load the home page (lists posts).
 3. **Click through to a detail page** via an in-app `<Link>` / `<a>` — do not paste the URL.
 4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
