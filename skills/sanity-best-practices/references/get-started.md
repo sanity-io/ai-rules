@@ -125,19 +125,18 @@ This uploads your schema to the Content Lake so MCP tools can work with it.
 ### Step 2a: Import Existing Content
 
 If migrating from another CMS or files:
-- See `migration.md`
-- Use MCP `migrate_content` tool for guidance
+- See `migration.md` and the `sanity-migration` skill for guidance
+- Use MCP content tools such as `create_documents` and `edit_document` after converting content to structured Sanity documents
 
 ### Step 2b: Generate Sample Content (MCP)
 
-Use the Sanity MCP Server:
+Ask the agent to draft structured sample content, then create it with the Sanity MCP Server:
 ```
-Tool: create_document
-Type: post
-Content: Create a sample blog post about getting started with Sanity
+Tool: create_documents
+Documents: [{ type: "post", content: { title: "Getting started with Sanity", body: [] } }]
 ```
 
-**If MCP fails:** Remind them to run `npx sanity schema deploy` first.
+**If MCP content tools cannot see new types or fields:** Remind them to run `npx sanity schema deploy` first.
 
 ### MCP Setup (If Not Configured)
 
@@ -380,7 +379,7 @@ Just ask about any of these!"
 ```bash
 npx sanity@latest mcp configure  # Configure MCP for your editor
 npx sanity dev                   # Start Studio locally
-npx sanity schema deploy         # Deploy schema (required for MCP!)
+npx sanity schema deploy         # Deploy schema for MCP/editor access
 npx sanity deploy                # Deploy Studio to Sanity hosting
 npx sanity manage                # Open project settings
 npm run typegen                  # Generate TypeScript types
@@ -393,5 +392,5 @@ npm run typegen                  # Generate TypeScript types
 - **Be succinct** — Guide step-by-step without over-explaining
 - **Check context first** — Read existing files before suggesting changes
 - **Don't give up** — If something fails, give the user a way to complete manually
-- **Deploy schema early** — MCP tools won't work without it
+- **Deploy schema early** — MCP content tools need deployed schemas to see new types and fields
 - **One phase at a time** — Complete each phase before moving to the next

@@ -5,7 +5,7 @@
   <h1 align="center">Sanity Agent Toolkit</h1>
 </p>
 
-Collection of resources to help AI agents build better with [Sanity](https://www.sanity.io). Supports Cursor, Claude Code, Codex, VS Code, Lovable, v0, and any other editor/agent compatible with MCP or [Agent Skills](https://agentskills.io).
+Collection of resources to help AI agents build better with [Sanity](https://www.sanity.io). Supports Cursor, Claude Code, Codex, VS Code, Lovable, v0, Replit, OpenCode, and any other editor/agent compatible with MCP or [Agent Skills](https://agentskills.io).
 
 ---
 
@@ -23,7 +23,7 @@ Collection of resources to help AI agents build better with [Sanity](https://www
 
 Choose your path based on how you want agents to work with Sanity:
 
-1. **MCP server** — Give your agent always up-to-date rules and full access to your Sanity projects. No local files to maintain. Works with Cursor, VS Code, Claude Code, Lovable, v0, and other MCP-compatible clients.
+1. **MCP server** — Give your agent always up-to-date rules and full access to your Sanity projects. No local files to maintain. Works with Cursor, VS Code, Claude Code, Lovable, v0, Replit, OpenCode, and other MCP-compatible clients.
 2. **Agent skills** — Install best practices skills for Sanity, content modeling, SEO/AEO, and experimentation. Works with Cursor, Claude Code, and any [Agent Skills](https://agentskills.io)-compatible agent.
 3. **Plugin** — Install the Sanity plugin for Cursor or Claude Code. Bundles MCP server, agent skills, and commands.
 4. **Manual installation** — Copy the skill references locally for offline use. You'll need to update them yourself.
@@ -168,7 +168,11 @@ If your client doesn't support remote MCP servers, use a proxy like `mcp-remote`
 
 <br />
 
-See the [Sanity MCP docs](https://www.sanity.io/docs/compute-and-ai/mcp-server) for authorization options and troubleshooting.
+#### Authorization and troubleshooting
+
+Manual MCP configuration uses OAuth by default. You can use token auth instead by setting an `Authorization: Bearer <token>` header in the MCP config. If authentication fails after CLI setup, rerun `npx sanity@latest mcp configure` and restart your MCP client. For OAuth reset issues, Cursor provides **Cursor: Clear All MCP Tokens** and VS Code provides **Authentication: Remove Dynamic Authentication Providers**.
+
+See the [Sanity MCP docs](https://www.sanity.io/docs/ai/mcp-server) for authorization options and troubleshooting.
 
 ### Option 2: Install Agent Skills
 
@@ -270,16 +274,23 @@ Install the skill references locally to teach your editor Sanity best practices:
 
 With MCP connected, your AI can use tools like:
 - `query_documents` — run GROQ queries directly
-- `create_documents_from_json` / `create_documents_from_markdown` — create draft documents
-- `patch_document_from_json` / `patch_document_from_markdown` — surgical edits to existing documents
+- `create_documents` — create draft documents from structured content, or version documents when a release ID is provided
+- `edit_document` — surgical edits to existing documents; published documents are edited by creating or updating drafts
 - `publish_documents` / `unpublish_documents` — manage document lifecycle
-- `deploy_schema` / `get_schema` — deploy and inspect schemas
+- `deploy_schema` / `get_schema` — deploy MCP-managed schemas and inspect deployed schemas
+- `deploy_studio` — deploy a hosted Studio bound to an MCP-managed schema
+- `create_release` / `list_releases` — create and inspect Content Releases
 - `create_version` — create version documents for releases
 - `generate_image` / `transform_image` — AI image generation and editing
+- `whoami` — verify the authenticated Sanity user
+- `get_project_studios` — list Studio applications linked to a project
 - `search_docs` / `read_docs` — search and read Sanity documentation
 - `list_sanity_rules` / `get_sanity_rules` — load agent rules on demand
+- `give_feedback` — report MCP tool errors, missing capabilities, confusing output, or documentation issues
 
-See the [full list of available tools](https://www.sanity.io/docs/compute-and-ai/mcp-server#k4ae680bb2e88).
+MCP-managed schemas are resolved before Studio-deployed and legacy schemas. If you deploy schema changes with `deploy_schema`, redeploy any matching MCP-managed Studio with `deploy_studio` so it picks up the latest schema. `generate_image`, `transform_image`, and `create_version` with an `instruction` consume Sanity AI credits.
+
+See the [full list of available tools](https://www.sanity.io/docs/ai/mcp-server#available-tools).
 
 ### Agent skills
 
@@ -366,7 +377,7 @@ All skills use `references/` for detailed content loaded on demand. The `sanity-
 - [GROQ language reference](https://www.sanity.io/docs/groq)
 - [Visual Editing guide](https://www.sanity.io/docs/visual-editing)
 - [Sanity TypeGen](https://www.sanity.io/docs/sanity-typegen)
-- [MCP server docs](https://www.sanity.io/docs/compute-and-ai/mcp-server)
+- [MCP server docs](https://www.sanity.io/docs/ai/mcp-server)
 - [Blueprints Infrastructure as Code](https://www.sanity.io/docs/compute-and-ai/blueprints)
 
 ---

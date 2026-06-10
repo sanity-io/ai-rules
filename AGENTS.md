@@ -9,7 +9,7 @@ This is a Sanity-powered project. Use the Knowledge Router below to find Sanity 
 npx sanity@latest mcp configure  # Configure MCP for your AI editor
 
 # Schema & Types
-npx sanity schema deploy     # Deploy schema to Content Lake (REQUIRED before MCP!)
+npx sanity schema deploy     # Deploy schema to Content Lake for MCP/editor access
 npx sanity schema extract    # Extract schema for TypeGen
 npx sanity typegen generate  # Generate TypeScript types
 
@@ -84,10 +84,8 @@ Example: If asked to "create a blog post schema", read `skills/sanity-best-pract
 |------|---------|
 | `query_documents` | Run GROQ queries |
 | `get_document` | Fetch a single document by exact ID |
-| `create_documents_from_json` | Create draft documents from JSON |
-| `create_documents_from_markdown` | Create draft documents from markdown |
-| `patch_document_from_json` | Apply precise modifications to document fields |
-| `patch_document_from_markdown` | Patch a field using markdown content |
+| `create_documents` | Create draft documents from structured content, or version documents when a release ID is provided |
+| `edit_document` | Apply precise modifications to document fields; published documents are edited by creating/updating a draft |
 | `publish_documents` | Publish one or more drafts |
 | `unpublish_documents` | Unpublish documents (move back to drafts) |
 | `discard_drafts` | Discard drafts while keeping published documents |
@@ -96,12 +94,13 @@ Example: If asked to "create a blog post schema", read `skills/sanity-best-pract
 
 | Tool | Use For |
 |------|---------|
-| `get_schema` | Get full schema of the current workspace |
+| `get_schema` | Get full schema of the current workspace (MCP-managed first, then Studio-deployed, then legacy schema) |
 | `list_workspace_schemas` | List all available workspace schema names |
-| `deploy_schema` | Deploy schema types to the cloud |
+| `deploy_schema` | Deploy MCP-managed schema types to the cloud |
+| `deploy_studio` | Deploy a hosted Studio bound to an MCP-managed schema |
 | `search_docs` / `read_docs` | Search and read Sanity documentation |
 | `list_sanity_rules` / `get_sanity_rules` | Load best-practice development rules |
-| `migration_guide` | Get guides for migrating from other CMSs |
+| `give_feedback` | Report MCP tool errors, missing capabilities, confusing output, or documentation issues |
 
 **Media & AI:**
 
@@ -114,6 +113,8 @@ Example: If asked to "create a blog post schema", read `skills/sanity-best-pract
 
 | Tool | Use For |
 |------|---------|
+| `create_release` | Create a release for coordinated content changes |
+| `list_releases` | List active, scheduled, published, or archived releases |
 | `create_version` | Create a version document for a release |
 | `version_replace_document` | Replace version contents from another document |
 | `version_discard` | Discard document versions from a release |
@@ -123,19 +124,21 @@ Example: If asked to "create a blog post schema", read `skills/sanity-best-pract
 
 | Tool | Use For |
 |------|---------|
+| `whoami` | Verify the authenticated Sanity user |
 | `list_projects` / `list_organizations` | List projects and organizations |
+| `get_project_studios` | List Studio applications linked to a project |
 | `create_project` | Create a new Sanity project |
 | `list_datasets` / `create_dataset` / `update_dataset` | Manage datasets |
 | `add_cors_origin` | Add CORS origins for client-side requests |
 | `list_embeddings_indices` / `semantic_search` | Semantic search on embeddings |
 
-**Critical:** After schema changes, deploy with `deploy_schema` before using content tools.
+**Critical:** After schema changes, deploy with `deploy_schema` so content tools see the latest schema. If using an MCP-managed Studio, redeploy it with `deploy_studio` after schema changes.
 
 ## Boundaries
 - **Always:**
   - Use `defineQuery` for all GROQ queries.
   - Prefer MCP tools for content operations (query, create, update, patch). For bulk migrations or when MCP is unavailable, NDJSON scripts are a valid alternative. Never use NDJSON scripts when MCP tools can accomplish the same task more simply.
-  - Run `deploy_schema` after schema changes — required before using content tools. If a local Studio exists, update schema files first to keep them in sync with the deployed schema.
+  - Run `deploy_schema` after schema changes so MCP content tools use the latest schema. If a local Studio exists, update schema files first to keep them in sync with the deployed schema. If using an MCP-managed Studio, run `deploy_studio` after `deploy_schema`.
   - Follow the "Deprecation Pattern" when removing fields (ReadOnly -> Hidden -> Deprecated).
   - Run `npm run typegen` after schema or query changes (or enable automatic generation with `typegen.enabled: true` in `sanity.cli.ts`).
 - **Ask First:**

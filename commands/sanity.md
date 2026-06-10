@@ -21,7 +21,7 @@ I can help you build with Sanity. Here are the core skills and help areas availa
 - Plan content models and experimentation workflows
 
 **Content operations**
-- I can also access the **Sanity MCP Server** directly to query data, create documents, patch content, inspect schemas, and manage datasets.
+- I can also access the **Sanity MCP Server** directly to query data, create and edit documents, inspect schemas, and manage datasets.
 
 **How to start?**
 Just ask me naturally! For example:

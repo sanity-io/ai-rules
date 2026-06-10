@@ -10,7 +10,7 @@ I'll help you deploy your schema to the Sanity Content Lake.
 ## Why Deploy Schema?
 
 Schema deployment is **required** for:
-- ⚠️ **MCP Server operations** (create_document, patch_document)
+- ⚠️ **MCP Server content operations** (`create_documents`, `edit_document`) to use the latest schema
 - Embedded Studios
 - Scheduled Publishing
 - Cloud Functions with schema validation
@@ -43,14 +43,14 @@ npx sanity schema deploy
 | Added new document type | ✅ Yes |
 | Added/modified fields | ✅ Yes |
 | Changed validation rules | ✅ Yes |
-| Using MCP tools | ✅ Yes (always) |
+| Using MCP content tools after schema changes | ✅ Yes |
 | Local dev only (no MCP) | Optional |
 
 ## Important Notes
 
 - **Schema deployment is fast** (~2 seconds)
 - **Does NOT deploy the Studio app** (use `npx sanity deploy` for that)
-- **Always deploy before MCP operations** after schema changes
+- **Always deploy before MCP content operations** after schema changes
 
 ## Usage
 
