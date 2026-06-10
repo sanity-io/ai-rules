@@ -275,7 +275,7 @@ Install the skill references locally to teach your editor Sanity best practices:
 With MCP connected, your AI can use tools like:
 - `query_documents` — run GROQ queries directly
 - `create_documents` — create draft documents from structured content, or version documents when a release ID is provided
-- `edit_document` — surgical edits to existing documents; published documents are edited by creating or updating drafts
+- `patch_documents` — surgical edits to existing documents; published documents are edited by creating or updating drafts
 - `publish_documents` / `unpublish_documents` — manage document lifecycle
 - `deploy_schema` / `get_schema` — deploy MCP-managed schemas and inspect deployed schemas
 - `deploy_studio` — deploy a hosted Studio bound to an MCP-managed schema

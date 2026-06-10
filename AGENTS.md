@@ -85,7 +85,7 @@ Example: If asked to "create a blog post schema", read `skills/sanity-best-pract
 | `query_documents` | Run GROQ queries |
 | `get_document` | Fetch a single document by exact ID |
 | `create_documents` | Create draft documents from structured content, or version documents when a release ID is provided |
-| `edit_document` | Apply precise modifications to document fields; published documents are edited by creating/updating a draft |
+| `patch_documents` | Apply precise modifications to document fields; published documents are edited by creating/updating a draft |
 | `publish_documents` | Publish one or more drafts |
 | `unpublish_documents` | Unpublish documents (move back to drafts) |
 | `discard_drafts` | Discard drafts while keeping published documents |
