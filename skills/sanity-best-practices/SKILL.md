@@ -35,14 +35,14 @@ Reference these guidelines when:
 ### Integration Guides
 
 - `get-started` - Interactive onboarding for new Sanity projects
-- `nextjs` - Next.js App Router, Live Content API, embedded Studio
+- `nextjs` - Next.js App Router, Live Content API, standalone Studio
 - `nuxt` - Nuxt integration with @nuxtjs/sanity
 - `angular` - Angular integration with @sanity/client, signals, resource API
 - `astro` - Astro integration with @sanity/astro
 - `remix` - React Router / Remix integration
 - `svelte` - SvelteKit integration with @sanity/svelte-loader
 - `hydrogen` - Shopify Hydrogen with Sanity
-- `project-structure` - Monorepo and embedded Studio patterns
+- `project-structure` - Standalone Studio and monorepo patterns
 - `app-sdk` - Custom applications with Sanity App SDK
 - `blueprints` - Infrastructure as Code with Sanity Blueprints
 - `functions` - Automating content workflows with Sanity Functions

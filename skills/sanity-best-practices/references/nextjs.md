@@ -1,6 +1,6 @@
 ---
 title: Next.js & Sanity Integration Rules
-description: Integration guide for Next.js App Router, Live Content API, and Sanity Studio (Embedded or Standalone).
+description: Integration guide for Next.js App Router, Live Content API, and a standalone Sanity Studio.
 ---
 
 # Next.js & Sanity Integration Rules
@@ -13,7 +13,7 @@ Jump to the section that matches the task instead of reading this guide end-to-e
 - Data fetching (Live Content API)
 - Caching and revalidation
 - Visual Editing and clean data
-- Embedded Studio setup
+- Studio setup (standalone)
 - Draft Mode setup
 - Error handling
 - Presentation queries
@@ -21,25 +21,31 @@ Jump to the section that matches the task instead of reading this guide end-to-e
 
 ## 1. Architecture Patterns
 
-### Option A: Embedded Studio (Recommended)
-**Best for:** Most Next.js projects. Unified deployment, simpler setup.
+### Option A: Standalone Studio (Recommended)
+**Best for:** All new Next.js projects.
 
-The Studio lives inside your Next.js app at `/app/studio/[[...tool]]/page.tsx`.
-- **Config:** `sanity.config.ts` lives in the project root.
-- See `project-structure.md` rule for detailed structure.
+The Studio is its own app, living alongside the Next.js app in the same repo:
 
-### Option B: Monorepo (Alternative)
-**Best for:** Separation of concerns, multiple frontends, or strict dependency isolation.
-
-The Studio and Next.js app live in separate folders:
 ```
-apps/
+your-project/
 ├── studio/     # Sanity Studio (standalone)
 └── web/        # Next.js frontend
 ```
 
-- **Config:** Add your Next.js app URL to **CORS Origins** in [Sanity Manage](https://www.sanity.io/manage).
+Why standalone instead of embedding the Studio in the Next.js app:
+
+- **Faster dev and builds:** `sanity dev` and `sanity build` run on Vite and are dramatically faster (10-30x) than compiling the Studio through `next dev` / `next build`.
+- **Auto-updates:** Standalone Studios receive bugfixes and new features automatically, with no dependency bump or redeploy. Embedded Studios can't auto-update (Next.js does not support ESM with import maps), so every update means bump + deploy.
+- **TypeGen watch mode:** With `sanity dev`, TypeGen regenerates types as queries change. Embedded Studios can't hook into `next dev`, so you must re-run `sanity typegen generate` manually after every query edit.
+- **Content model independence:** A separate Studio keeps the content model from becoming website-centric and makes collaboration easier.
+
+**Setup:**
+- Run both apps side by side in separate terminals: `next dev` (localhost:3000) and `sanity dev` (localhost:3333).
+- Add your Next.js app URL to **CORS Origins**: `npx sanity cors add http://localhost:3000 --credentials` (repeat for your production URL), or via [Sanity Manage](https://www.sanity.io/manage).
 - See `project-structure.md` rule for detailed structure.
+
+### Option B: Embedded Studio (Not Recommended)
+The Studio can be mounted inside the Next.js app at `/app/studio/[[...tool]]/page.tsx` via `next-sanity/studio`. Avoid this for new projects: it slows builds, ties every Studio update to an app deploy, and rules out auto-updates and TypeGen watch mode. For maintaining or migrating an existing embedded Studio, see section 5.
 
 ## 2. Data Fetching (Live Content API)
 
@@ -332,23 +338,24 @@ export async function generateStaticParams() {
 }
 ```
 
-## 5. Setup: Embedded Studio
+## 5. Setup: Studio (Standalone)
 
-Mount the Studio on a Next.js route.
+Create the Studio as its own app from the repo root — **not inside the Next.js app folder**, where the CLI would switch to its embedded flow:
 
-**`src/app/studio/[[...tool]]/page.tsx`:**
-
-```typescript
-import { NextStudio } from 'next-sanity/studio'
-import config from '../../../../sanity.config'
-
-export const dynamic = 'force-static'
-export { metadata, viewport } from 'next-sanity/studio'
-
-export default function StudioPage() {
-  return <NextStudio config={config} />
-}
+```bash
+npm create sanity@latest -- --project <projectId> --dataset production --template clean --typescript --output-path studio
 ```
+
+Run it with `npm run dev` inside `studio/` (defaults to http://localhost:3333). For Visual Editing, point the Presentation Tool's `previewUrl.origin` at the Next.js app (see `visual-editing.md`).
+
+### Migrating an Existing Embedded Studio
+
+Embedded Studios (`<NextStudio />` mounted at a route like `/app/studio/[[...tool]]/page.tsx`) keep working, but migrating to a standalone Studio is recommended:
+
+1. Create a standalone Studio folder as above, reusing your existing `projectId` and dataset.
+2. Move `sanity.config.ts`, `sanity.cli.ts`, and your schema types into it.
+3. Delete the `/app/studio/[[...tool]]/` route from the Next.js app. Keep `next-sanity` — the app still needs it for fetching, Live Content, and Visual Editing.
+4. Add the app's URLs to CORS origins and set the Presentation Tool's `previewUrl.origin` to the app's URL.
 
 ## 6. Setup: Draft Mode
 

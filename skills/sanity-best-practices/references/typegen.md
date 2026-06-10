@@ -92,10 +92,7 @@ export default defineCliConfig({
 
 ### Project Structure Examples
 
-**Single Repo / Embedded Studio (most common):**
-Use defaults — no extra config needed.
-
-**Monorepo** (Studio in `apps/studio`, Frontend in `apps/web`):
+**Monorepo (recommended)** (Studio in `studio/`, Frontend in `web/` — same config works under `apps/`):
 ```typescript
 export default defineCliConfig({
   typegen: {
@@ -105,6 +102,9 @@ export default defineCliConfig({
   },
 })
 ```
+
+**Single Repo / Embedded Studio (legacy):**
+Use defaults — no extra config needed.
 
 **Separate Repos:**
 Use `--watch` mode in your frontend: `sanity typegen generate --watch`
