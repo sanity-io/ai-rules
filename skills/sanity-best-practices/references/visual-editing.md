@@ -75,6 +75,8 @@ export default defineConfig({
     presentationTool({
       resolve, // Document locations (see below)
       previewUrl: {
+        // The front-end origin — required when the Studio runs standalone
+        origin: process.env.SANITY_STUDIO_PREVIEW_ORIGIN || 'http://localhost:3000',
         previewMode: {
           enable: '/api/draft-mode/enable',
         },

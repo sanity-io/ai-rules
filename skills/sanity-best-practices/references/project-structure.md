@@ -1,6 +1,6 @@
 ---
 title: Sanity Project Structure
-description: Project structure patterns for Sanity projects including monorepo and embedded Studio setups.
+description: Project structure patterns for Sanity projects including standalone Studio and monorepo setups.
 ---
 
 # Sanity Project Structure
@@ -26,62 +26,42 @@ your-project/
 - Headless CMS with external consumers
 - Prototyping and content design
 
-## Embedded Studio (Recommended for Next.js)
+## Monorepo (Recommended with a frontend)
 
-Best for most Next.js projects. Unified deployment, simpler setup.
-
-```
-your-project/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   └── studio/[[...tool]]/ # Embedded Studio route
-│   └── sanity/
-│       ├── lib/
-│       │   ├── client.ts
-│       │   ├── live.ts         # defineLive setup
-│       │   └── queries.ts
-│       └── schemaTypes/
-│           ├── index.ts
-│           ├── documents/
-│           ├── objects/
-│           └── blocks/
-├── sanity.config.ts
-├── sanity.cli.ts               # CLI + TypeGen configuration
-└── sanity.types.ts             # Generated types (from TypeGen)
-```
-
-## Monorepo
-
-Best when you need separation of concerns, multiple frontends, or strict dependency isolation.
+Best for most projects pairing Sanity with a Next.js (or other framework) app. The Studio stays standalone — Vite-based dev/builds, auto-updates, TypeGen watch mode — while living in the same repo as the frontend.
 
 ```
 your-project/
-├── apps/
-│   ├── studio/                 # Sanity Studio (standalone)
-│   │   ├── src/
-│   │   │   └── schemaTypes/
-│   │   │       ├── index.ts
-│   │   │       ├── documents/
-│   │   │       ├── objects/
-│   │   │       └── blocks/
-│   │   ├── sanity.config.ts
-│   │   ├── sanity.cli.ts
-│   │   └── package.json
-│   └── web/                    # Next.js (or other framework)
-│       ├── src/
-│       │   ├── app/
-│       │   └── sanity/
-│       │       ├── client.ts
-│       │       ├── live.ts
-│       │       └── queries.ts
-│       └── package.json
-├── pnpm-workspace.yaml
-└── package.json
+├── studio/                     # Sanity Studio (standalone)
+│   ├── schemaTypes/
+│   │   ├── index.ts
+│   │   ├── documents/
+│   │   ├── objects/
+│   │   └── blocks/
+│   ├── sanity.config.ts
+│   ├── sanity.cli.ts           # CLI + TypeGen configuration
+│   └── package.json
+└── web/                        # Next.js (or other framework)
+    ├── src/
+    │   ├── app/
+    │   └── sanity/
+    │       ├── client.ts
+    │       ├── live.ts         # defineLive setup
+    │       └── queries.ts
+    ├── sanity.types.ts         # Generated types (from TypeGen)
+    └── package.json
 ```
+
+No workspace tooling is required — each app manages its own dependencies. For larger repos, the same shape works under `apps/` with npm or pnpm workspaces.
 
 **Setup:**
-1. Add web app URL to CORS origins in [Sanity Manage](https://www.sanity.io/manage)
-2. Configure `typegen` in `sanity.cli.ts` to read schema from `apps/studio` and output types to `apps/web`
+1. Add the web app URL to CORS origins: `npx sanity cors add http://localhost:3000 --credentials` (or via [Sanity Manage](https://www.sanity.io/manage))
+2. Configure `typegen` in `studio/sanity.cli.ts` to read queries from `../web` and output types to `../web/sanity.types.ts` (see `typegen.md`)
+3. Optionally add a root `package.json` with scripts that run both dev servers
+
+## Embedded Studio (Legacy — Not Recommended)
+
+Older Next.js projects may mount the Studio inside the app at `src/app/studio/[[...tool]]/page.tsx`, with `sanity.config.ts` in the app root. This still works but is no longer recommended: it slows builds, ties Studio updates to app deploys, and rules out auto-updates and TypeGen watch mode. See `nextjs.md` for the rationale and migration steps.
 
 ## File Naming Conventions
 

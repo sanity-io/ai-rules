@@ -35,7 +35,7 @@ Getting started with Sanity follows three phases:
 **Before starting:** Let the user know they can pause and resume anytime by saying "Continue Sanity setup".
 
 **RESUME TRIGGER:** If the user says "Continue Sanity setup", check what's already configured:
-- Does `sanity.config.ts` exist? → Studio is set up
+- Does `sanity.config.ts` exist (typically in a `studio/` folder)? → Studio is set up
 - Are there files in `schemaTypes/`? → Schema exists
 - Is there a frontend framework in `package.json`? → May need integration
 
@@ -47,14 +47,15 @@ Resume from where they left off.
 
 ### Step 1: Check for Existing Studio
 
-**Look for `sanity.config.ts` or `sanity.cli.ts`:**
+**Look for `sanity.config.ts` or `sanity.cli.ts` across the workspace** — in the recommended side-by-side layout the Studio lives in its own folder (`studio/`, or `studio-*` when created by the Sanity onboarding flow) next to the app folder:
 
 **If NO Studio found:**
 - Ask: "Want to create a new Sanity Studio?"
-- If yes, run:
+- If yes, run from the repo root — **not inside a Next.js app folder**, where the CLI would switch to its embedded flow (not recommended):
   ```bash
-  npm create sanity@latest -- --template clean --typescript
+  npm create sanity@latest -- --template clean --typescript --output-path studio
   ```
+- This creates a standalone Studio in `studio/`, alongside your app folder (see `project-structure.md`)
 
 **If Studio exists:**
 - Read the config to get `projectId` and `dataset`
@@ -195,9 +196,11 @@ For secrets (read tokens, webhook secrets), read `process.env.*` (or the server 
 
 This trap is invisible at SSR — the page renders fine on first load. It surfaces on client-side route transitions, when a lazy-loaded route chunk pulls a shared client/image module into the browser.
 
-### Step 1: Detect Framework
+### Step 1: Find the App and Detect Framework
 
-**Check `package.json` dependencies:**
+The working directory is often a parent folder with the Studio and the app side by side. Identify the app folder first: a sibling of the Studio folder with its own `package.json` (commonly `web/`). If several candidates exist, ask the user which app to integrate — never assume.
+
+**Check the app's `package.json` dependencies:**
 
 | Dependency | Framework | Rule File |
 |------------|-----------|-----------|
@@ -216,9 +219,12 @@ This trap is invisible at SSR — the page renders fine on first load. It surfac
 If Next.js is detected, follow these essential steps:
 
 **Scaffold a new app (if you don't have one yet):**
+
+Run from the repo root so the app sits alongside your `studio/` folder:
+
 ```bash
-npx create-next-app@latest my-app --tailwind --ts --app --src-dir --eslint --import-alias "@/*" --turbopack
-cd my-app
+npx create-next-app@latest web --tailwind --ts --app --src-dir --eslint --import-alias "@/*" --turbopack
+cd web
 ```
 
 **Install dependencies:**
@@ -232,7 +238,7 @@ npm install next-sanity @sanity/image-url
 - `next-sanity/draft-mode` — Draft Mode endpoint helpers
 - `next-sanity/visual-editing` — `<VisualEditing />` component for click-to-edit overlays
 - `next-sanity/image` — Sanity-aware `<Image />` wrapping `next/image`
-- `next-sanity/studio` — embed the Sanity Studio at a route
+- `next-sanity/studio` — embed the Sanity Studio at a route (legacy setups only — keep the Studio standalone, see `nextjs.md`)
 - `next-sanity/webhook` — webhook signature verification
 
 Don't also install `@sanity/client`, `@portabletext/react`, or `groq` directly — import them from `next-sanity`. `@sanity/image-url` is not bundled (yet), so add it separately.
@@ -315,7 +321,7 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-For advanced patterns (TypeGen, Visual Editing with `next-sanity/visual-editing`, live content with `defineLive` from `next-sanity/live`, embedded Studio via `next-sanity/studio`), see `nextjs.md`.
+For advanced patterns (TypeGen, Visual Editing with `next-sanity/visual-editing`, live content with `defineLive` from `next-sanity/live`, standalone Studio architecture), see `nextjs.md`.
 
 ### Step 3: Other Frameworks
 
@@ -332,7 +338,7 @@ Each rule file contains framework-specific patterns for data fetching, Portable 
 
 Before declaring integration done, exercise both render paths:
 
-1. `npm run dev`
+1. `npm run dev` (in the app folder)
 2. Load the home page (lists posts).
 3. **Click through to a detail page** via an in-app `<Link>` / `<a>` — do not paste the URL.
 4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
