@@ -31,14 +31,9 @@ REST URLs:
 
 Authenticated raw content example:
 
-```ts
-const url = new URL(`${baseUrl}/posts`)
-url.searchParams.set('context', 'edit')
-url.searchParams.set('per_page', '100')
-
-const headers = {
-  Authorization: `Basic ${Buffer.from(`${process.env.WP_USER}:${process.env.WP_APP_PASSWORD}`).toString('base64')}`,
-}
+```bash
+curl -u "$WP_USER:$WP_APP_PASSWORD" \
+  "<base>/posts?context=edit&per_page=100"
 ```
 
 If REST is blocked by Cloudflare or security plugins, use one of these before scraping rendered HTML: ask for a WXR export, run WordPress locally with a production database copy, have the customer save JSON from an authenticated browser session, or pass a valid `cf_clearance` cookie only with explicit approval.
@@ -98,7 +93,35 @@ Use page templates and custom post types as signals for content trapped in prese
 
 ## WXR/XML Field Map
 
-When parsing WXR/XML, always unwrap parser output before writing Sanity documents. If using `xml2js`, create an `extractCDATA` helper and run every field through it. Never store raw parser objects.
+When parsing WXR/XML, always unwrap parser output before writing Sanity documents. Prefer `fast-xml-parser` so CDATA is captured consistently:
+
+```ts
+import {XMLParser} from 'fast-xml-parser'
+import {readFile} from 'node:fs/promises'
+
+const parser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  cdataPropName: '_cdata',
+  textNodeName: '_text',
+})
+
+const xml = await readFile('wordpress-export.xml', 'utf8')
+const parsed = parser.parse(xml)
+
+function text(value: unknown): string {
+  if (value == null) return ''
+  if (typeof value === 'string' || typeof value === 'number') return String(value)
+  if (Array.isArray(value)) return text(value[0])
+  if (typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    return text(record._cdata ?? record._text)
+  }
+  return ''
+}
+```
+
+Run every XML field through a helper like `text()` before writing Sanity documents. Never store raw parser objects.
 
 Key WXR fields:
 
@@ -118,8 +141,8 @@ Build a flat postmeta map:
 ```ts
 const meta: Record<string, string> = {}
 for (const item of post['wp:postmeta'] || []) {
-  const key = extractCDATA(item['wp:meta_key'])
-  const value = extractCDATA(item['wp:meta_value'])
+  const key = text(item['wp:meta_key'])
+  const value = text(item['wp:meta_value'])
   if (key) meta[key] = value
 }
 ```

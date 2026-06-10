@@ -56,7 +56,7 @@ For implementation or planning tasks, produce these artifacts or explain why the
 For deeper Sanity implementation guidance, use `sanity-best-practices` if it is already available. If it is not installed, tell the user they can add it with:
 
 ```bash
-npx skills add https://github.com/sanity-io/agent-toolkit --skill sanity-best-practices
+npx skills add sanity-io/agent-toolkit --skill sanity-best-practices
 ```
 
 ## Stop and Ask
