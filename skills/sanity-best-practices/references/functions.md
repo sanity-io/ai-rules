@@ -94,7 +94,10 @@ export default defineBlueprint({
       name: 'my-function',
       event: {
         on: ['create', 'update'],
-        filter: '_type == "post"',
+        // The handler patches the same document, which emits another update
+        // event. Guard with !defined(firstPublished) so the function stops
+        // matching once it has run — see "Recursion control" below.
+        filter: '_type == "post" && !defined(firstPublished)',
       },
     }),
   ],

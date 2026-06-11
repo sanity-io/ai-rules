@@ -158,8 +158,11 @@ function assignVariant(experimentId: string, variants: Variant[]): string | null
       return variant.id
     }
   }
-  // Fall back to the last variant to absorb any floating-point remainder.
-  return variants[variants.length - 1].id
+  // Fall back to the last variant to absorb any floating-point remainder, and
+  // persist it like any other assignment so the visitor stays bucketed.
+  const fallback = variants[variants.length - 1]
+  setCookie(cookieKey, fallback.id, { maxAge: 30 * 24 * 60 * 60 })
+  return fallback.id
 }
 ```
 
