@@ -37,21 +37,27 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
   rules: [
     {
       deserialize(el, next, block) {
-        // Custom link handling
+        // Custom link handling — links are inline annotations, not blocks.
+        // Return an `__annotation` with a `markDef`, and recurse into the
+        // child nodes via `next()` so the link text is preserved.
         if (el.tagName.toLowerCase() === 'a') {
           return {
-            _type: 'link',
-            href: el.getAttribute('href'),
-            blank: el.getAttribute('target') === '_blank'
+            _type: '__annotation',
+            markDef: {
+              _type: 'link',
+              href: el.getAttribute('href'),
+              blank: el.getAttribute('target') === '_blank'
+            },
+            children: next(el.childNodes)
           }
         }
-        // Custom image handling
+        // Custom image handling — block-level types are wrapped with `block()`
         if (el.tagName.toLowerCase() === 'img') {
-          return {
+          return block({
             _type: 'image',
             // Upload image separately, store reference
             _sanityAsset: `image@${el.getAttribute('src')}`
-          }
+          })
         }
         return undefined  // Fall through to default handling
       }
