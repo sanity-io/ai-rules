@@ -116,7 +116,6 @@ Example: If asked to "create a blog post schema", read `skills/sanity-best-pract
 | `create_release` | Create a release for coordinated content changes |
 | `list_releases` | List active, scheduled, published, or archived releases |
 | `create_version` | Create a version document for a release |
-| `version_replace_document` | Replace version contents from another document |
 | `version_discard` | Discard document versions from a release |
 | `version_unpublish_document` | Mark document to be unpublished when release runs |
 
