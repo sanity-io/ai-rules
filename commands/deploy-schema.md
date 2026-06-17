@@ -10,7 +10,7 @@ I'll help you deploy your schema to the Sanity Content Lake.
 ## Why Deploy Schema?
 
 Schema deployment is **required** for:
-- ⚠️ **MCP Server content operations** (`create_documents`, `edit_document`) to use the latest schema
+- ⚠️ **MCP Server content operations** (`create_documents`, `patch_documents`) to use the latest schema
 - Embedded Studios
 - Scheduled Publishing
 - Cloud Functions with schema validation
@@ -57,4 +57,3 @@ npx sanity schema deploy
 > "Deploy my schema"
 > "Check if my schema is deployed"
 > "Why can't MCP see my new field?"
-

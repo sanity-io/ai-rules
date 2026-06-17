@@ -127,7 +127,7 @@ This uploads your schema to the Content Lake so MCP tools can work with it.
 
 If migrating from another CMS or files:
 - See `migration.md` and the `sanity-migration` skill for guidance
-- Use MCP content tools such as `create_documents` and `edit_document` after converting content to structured Sanity documents
+- Use MCP content tools such as `create_documents` and `patch_documents` after converting content to structured Sanity documents
 
 ### Step 2b: Generate Sample Content (MCP)
 
