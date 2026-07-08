@@ -18,6 +18,13 @@ npx sanity dev               # Start Studio dev server
 npx sanity build             # Build Studio for production
 npx sanity deploy            # Deploy Studio to Sanity hosting
 
+# Blueprints (infrastructure as code)
+npx sanity blueprints init    # Initialize a Blueprint and create a Stack
+npx sanity blueprints plan    # Preview infrastructure changes (read-only)
+npx sanity blueprints deploy  # Apply the Blueprint to the Stack
+npx sanity blueprints info    # Verify Stack status and deployed resources
+npx sanity blueprints logs    # View Stack deployment logs
+
 # Help
 npx sanity docs search "query"  # Search Sanity documentation
 npx sanity --help               # List all CLI commands
@@ -55,7 +62,7 @@ If the Sanity MCP server (`https://mcp.sanity.io`) is available, use `list_sanit
 | **GROQ** | `groq`, `query`, `defineQuery`, `projection`, `filter`, `order` | `skills/sanity-best-practices/references/groq.md` |
 | **TypeGen** | `typegen`, `typescript`, `types`, `infer`, `satisfies`, `type generation` | `skills/sanity-best-practices/references/typegen.md` |
 | **App SDK** | `app sdk`, `custom app`, `useDocuments`, `useDocument`, `DocumentHandle`, `SanityApp`, `sdk-react` | `skills/sanity-best-practices/references/app-sdk.md` |
-| **Blueprints** | `blueprints`, `IaC`, `infrastructure`, `stack`, `defineBlueprint` | `skills/sanity-best-practices/references/blueprints.md` |
+| **Blueprints** | `blueprints`, `IaC`, `infrastructure`, `stack`, `defineBlueprint`, `sanity.blueprint.ts`, `blueprints deploy` | `skills/sanity-best-practices/references/blueprints.md` |
 | **Sanity Functions** | `functions`, `serverless`, `event handler`, `documentEventHandler`, `defineDocumentFunction`, `sanity.blueprint.ts` | `skills/sanity-best-practices/references/functions.md` |
 
 ### Using the Knowledge Router
