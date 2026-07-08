@@ -173,7 +173,7 @@ npx sanity@latest blueprints <command>
 | `doctor` | Diagnose local/remote configuration issues (`--fix` to resolve interactively) |
 | `mint-deploy-token` | Mint a long-lived robot token for CI deploys (`--print` for shell pipelines) |
 
-Running `npx sanity@latest blueprints help` will show the latest available commands.  
+Running `npx sanity@latest blueprints --help` will show the latest available commands.  
 Use `npx sanity@latest blueprints <command> --help` to see options and examples for a specific command.
 
 Function scaffolding, local testing, secrets, and function logs live under `npx sanity@latest functions <command>` (`add`, `dev`, `test`, `env add|list|remove`, `logs`). See the `functions` reference.
