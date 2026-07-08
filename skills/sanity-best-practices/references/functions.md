@@ -7,7 +7,7 @@ description: Rules for Sanity Functions — serverless event handlers that react
 
 Serverless event handlers hosted on Sanity's infrastructure, configured via **Blueprints** and triggered by document lifecycle events.
 
-> **Experimental feature**: APIs may change. Always use `npx sanity@latest`.
+> Always use `npx sanity@latest` so CLI and runtime versions stay current.
 
 ## When to use
 
@@ -69,18 +69,18 @@ npx sanity@latest blueprints init . \
   --project-id <your-project-id>
 ```
 
-This creates `sanity.blueprint.ts` and `.sanity/blueprint.config.json` (add the latter to `.gitignore`).
+This creates `sanity.blueprint.ts` and `.sanity/blueprint.config.json` (gitignored automatically; it links your Blueprint to a Stack and is not secret).
 
 ### 2. Scaffold a Function
 
 ```bash
-npx sanity@latest blueprints add function \
+npx sanity@latest functions add \
   --name my-function \
-  --fn-type document-publish \
+  --type document-create --type document-update \
   --installer npm
 ```
 
-`--fn-type` options: `document-create`, `document-update`, `document-publish` (deprecated), `document-delete`.
+`--type` options: `document-create`, `document-update`, `document-delete`, `media-library-asset-create`, `media-library-asset-update`, `media-library-asset-delete`, `scheduled-function`, `sync-tag-invalidate`.
 
 ### 3. Configure the Blueprint
 
@@ -209,7 +209,7 @@ When testing locally, `context.clientOptions` only has `projectId` and `apiHost`
 | `src` | `string` | `functions/<name>` | Path to function source directory |
 | `memory` | `number` | `1` | Memory in GB (max 10) |
 | `timeout` | `number` | `10` | Timeout in seconds (max 900) |
-| `runtime` | `string` | `'nodejs22.x'` | `'node'`, `'nodejs22.x'`, or `'nodejs24.x'` |
+| `runtime` | `string` | `'nodejs24.x'` | `'node'`, `'nodejs22.x'`, or `'nodejs24.x'` |
 | `project` | `string` | — | Project ID. Required if blueprint is org-scoped. |
 | `robotToken` | `string` | — | Custom robot token name for the function |
 | `event` | `object` | required | Event configuration (see below) |
@@ -219,7 +219,7 @@ When testing locally, `context.clientOptions` only has `projectId` and `apiHost`
 
 | Option | Type | Default | Description |
 |:---|:---|:---|:---|
-| `on` | `string[]` | required | `'create'`, `'update'`, `'delete'`. Legacy `'publish'` is deprecated. |
+| `on` | `string[]` | required | `'create'`, `'update'`, `'delete'` |
 | `filter` | `string` | — | GROQ filter body (no `*[...]` wrapper) |
 | `projection` | `string` | — | GROQ projection to shape `event.data`. Wrap in `{}`. |
 | `includeDrafts` | `boolean` | `false` | Trigger on draft changes |
@@ -260,7 +260,6 @@ export default defineBlueprint({
 | `create` | New document created |
 | `update` | Existing document modified (for published docs, fires when a draft/version is published) |
 | `delete` | Document deleted |
-| `publish` | **Deprecated.** Equivalent to `['create', 'update']`. Migrate to explicit events. |
 
 Often best to use `['create', 'update']` together for published document triggers.
 
@@ -290,7 +289,7 @@ Often best to use `['create', 'update']` together for published document trigger
 Three ways to set them:
 
 1. Blueprint config: `env: { MY_VAR: 'value' }`
-2. CLI: `npx sanity functions env add my-function MY_VAR my-value`
+2. CLI: `npx sanity@latest functions env add my-function MY_VAR my-value`
 3. Local testing: `MY_VAR=value npx sanity functions test my-function`
 
 Access in handler code via `process.env.MY_VAR`.
@@ -400,7 +399,7 @@ export const handler = documentEventHandler(async ({ context, event }) => {
 })
 ```
 
-Set the env var: `npx sanity functions env add deploy-hook DEPLOY_HOOK_URL https://...`
+Set the env var: `npx sanity@latest functions env add deploy-hook DEPLOY_HOOK_URL https://...`
 
 ### Set a timestamp on first publish
 
@@ -632,4 +631,4 @@ Use the [Blueprints GitHub Action](https://github.com/sanity-io/blueprints-actio
     sanity-token: ${{ secrets.SANITY_DEPLOY_TOKEN }}
 ```
 
-Only personal auth tokens are supported for deployment (not robot tokens).
+Mint a long-lived deploy token with `npx sanity@latest blueprints mint-deploy-token` (creates a robot token with the role required to plan, deploy, and destroy) and store it as a CI secret. Recommended workflow: `blueprints plan` on pull requests, `blueprints deploy` on merge to main. See the `blueprints` reference for CI environment variables and exit codes.

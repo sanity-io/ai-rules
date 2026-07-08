@@ -44,7 +44,7 @@ Reference these guidelines when:
 - `hydrogen` - Shopify Hydrogen with Sanity
 - `project-structure` - Standalone Studio and monorepo patterns
 - `app-sdk` - Custom applications with Sanity App SDK
-- `blueprints` - Infrastructure as Code with Sanity Blueprints
+- `blueprints` - Infrastructure as Code: blueprint files, stacks, plan/deploy workflow, error recovery, CI deploys
 - `functions` - Automating content workflows with Sanity Functions
 
 ### Topic Guides
