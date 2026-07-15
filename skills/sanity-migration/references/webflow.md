@@ -1,5 +1,19 @@
 # Webflow to Sanity
 
+## Start Here: The Sanity Learn Migration Guide
+
+The published Webflow → Sanity course is the playbook for this migration. Fetch it as markdown and use it as the persistent reference for the whole project:
+
+`https://www.sanity.io/learn/course/migrating-content-from-webflow-to-sanity.md`
+
+The `.md` suffix returns the entire course as markdown. Drive the migration from it:
+
+1. Read the course markdown above for full context on how a Webflow → Sanity migration can look.
+2. Identify the decisions to make — content model, target framework, asset handling, redirects — following Sanity best practices. Ask the user until you and they share a common understanding of the migration before writing code.
+3. Write the plan into `MIGRATION.md` and keep tracking progress and the decisions made there, so any later session can restore context and resume.
+
+The rest of this reference is the detailed platform knowledge behind that guide.
+
 ## What to Determine First
 
 Before writing migration code, determine:
