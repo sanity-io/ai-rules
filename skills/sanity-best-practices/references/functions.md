@@ -573,7 +573,7 @@ If not using `@sanity/client`, implement lineage tracking manually:
 export const handler = documentEventHandler(async ({ context, event }) => {
   const lineage = process.env.X_SANITY_LINEAGE
 
-  await fetch(`https://${context.clientOptions.projectId}.api.sanity.io/v2025-05-08/data/mutate/production`, {
+  await fetch(`https://${context.clientOptions.projectId}.api.sanity.io/v2025-05-08/data/mutate/${context.clientOptions.dataset}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
