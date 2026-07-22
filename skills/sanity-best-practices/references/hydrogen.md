@@ -59,6 +59,8 @@ import {createSanityContext, type SanityContext} from 'hydrogen-sanity'
 import {PreviewSession} from 'hydrogen-sanity/preview/session'
 import {isPreviewEnabled} from 'hydrogen-sanity/preview'
 
+const previewSession = await PreviewSession.init(request, [env.SESSION_SECRET])
+
 const sanity = await createSanityContext({
   request,
   cache,
@@ -124,7 +126,7 @@ const PRODUCT_QUERY = defineQuery(`*[_type == "product" && store.slug.current ==
 
 // Loader
 export async function loader({params, context: {sanity}}: LoaderFunctionArgs) {
-  const initial = await context.sanity.query(PRODUCT_QUERY, params)
+  const initial = await sanity.query(PRODUCT_QUERY, params)
   return {initial}
 }
 
