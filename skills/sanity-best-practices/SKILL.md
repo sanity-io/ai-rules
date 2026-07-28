@@ -30,6 +30,13 @@ Reference these guidelines when:
 - Model relationships with `reference` fields, then resolve related documents with GROQ lookups, source-key fields, or returned `_id` values from created documents.
 - Use explicit document IDs mainly for singleton documents controlled by Studio Structure, including localized singletons such as `homePage-en`.
 
+## Video
+
+- Do not store or serve video from Sanity `file` assets for production playback. File assets are delivered as raw downloads with no transcoding or adaptive streaming, and video traffic drives very high bandwidth usage and unexpectedly large bills.
+- On Enterprise plans with the video add-on, use Sanity Media Library for video: uploads are transcoded and streamed adaptively via Mux. Model video fields with `defineVideoField()` from `sanity/media-library` and play them with `@mux/mux-player-react` using the asset's playback ID.
+- On other plans, use a dedicated video service: install `sanity-plugin-mux-input` to upload and manage videos in your Mux account from the Studio, or host video on a platform such as YouTube or Vimeo and store only the embed URL in Sanity.
+- Small clips and short previews in a `file` field are acceptable, but any user-facing video at scale must go through Media Library or a streaming service.
+
 ## Quick Reference
 
 ### Integration Guides
