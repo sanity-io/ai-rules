@@ -502,20 +502,24 @@ export const PTE_IMAGE_PRESENTATION_QUERY = defineQuery(`
 
 For listing pages with many entries, use offset-based pagination with a count query.
 
+GROQ slice bounds (`[start...end]`) must be constant numbers, not `$params`. Validate the page bounds in application code and interpolate them directly into the query string.
+
 ### Queries
 ```typescript
-// Paginated listing
-export const ARTICLES_QUERY = defineQuery(`
-  *[_type == "article" && defined(slug.current)]
-  | order(date desc) [$start...$end] {
-    _id, title, "slug": slug.current, date
-  }
-`);
-
 // Total count for pagination UI
 export const ARTICLES_COUNT_QUERY = defineQuery(`
   count(*[_type == "article" && defined(slug.current)])
 `);
+
+// Paginated listing — validated integers interpolated into the slice
+function articlesQuery(start: number, end: number) {
+  return defineQuery(`
+    *[_type == "article" && defined(slug.current)]
+    | order(date desc) [${start}...${end}] {
+      _id, title, "slug": slug.current, date
+    }
+  `);
+}
 ```
 
 ### Listing Page
@@ -528,12 +532,12 @@ export default async function BlogPage({
   searchParams: Promise<{ page?: string }>
 }) {
   const { page: pageParam } = await searchParams;
-  const page = parseInt(pageParam || "1");
+  const page = Math.max(1, parseInt(pageParam || "1") || 1);
   const start = (page - 1) * ENTRIES_PER_PAGE;
   const end = start + ENTRIES_PER_PAGE;
 
   const [{ data: articles }, { data: total }] = await Promise.all([
-    sanityFetch({ query: ARTICLES_QUERY, params: { start, end } }),
+    sanityFetch({ query: articlesQuery(start, end) }),
     sanityFetch({ query: ARTICLES_COUNT_QUERY })
   ]);
 

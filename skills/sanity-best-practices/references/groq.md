@@ -122,7 +122,15 @@ When you add a new field or component to the Schema:
 ```groq
 *[_type == "post"][0]       // Single document (object, not array)
 *[_type == "post"][0...5]   // First 5 (exclusive) ← Most common
-*[_type == "post"][$start...$end]  // Pagination with params
+```
+
+Slice bounds must be constant numbers — `$params` aren't allowed. For dynamic pagination, validate the numbers in application code and interpolate them directly into the query string:
+
+```typescript
+const start = Number.isInteger(page) && page >= 0 ? page * pageSize : 0
+const end = start + pageSize
+
+const query = `*[_type == "post"] | order(publishedAt desc)[${start}...${end}]`
 ```
 
 ### Default Values with `coalesce()`
@@ -329,7 +337,7 @@ Computed attributes can't use indexes:
 |------|-----|
 | Always project `{ fields }` | Reduces data returned |
 | Use `defined()` checks | Filters use indexes |
-| Use `$params` not interpolation | Prevents query manipulation + enables caching |
+| Use `$params` not interpolation | Prevents query manipulation + enables caching (exception: slice bounds — see Slice Notation) |
 | Order BEFORE slice | `order()[0...N]` not `[0...N] order()` |
 | Use `_ref` not `->field` in filters | Avoids expensive joins |
 | Merge repeated `->` calls | Single subquery vs many |
