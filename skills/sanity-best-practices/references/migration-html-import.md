@@ -40,7 +40,7 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
         // Custom link handling — links are inline annotations, not blocks.
         // Return an `__annotation` with a `markDef`, and recurse into the
         // child nodes via `next()` so the link text is preserved.
-        if (el.tagName.toLowerCase() === 'a') {
+        if (el.tagName?.toLowerCase() === 'a') {
           return {
             _type: '__annotation',
             markDef: {
@@ -52,7 +52,7 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
           }
         }
         // Custom image handling — block-level types are wrapped with `block()`
-        if (el.tagName.toLowerCase() === 'img') {
+        if (el.tagName?.toLowerCase() === 'img') {
           return block({
             _type: 'image',
             // Upload image separately, store reference

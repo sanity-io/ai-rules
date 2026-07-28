@@ -458,7 +458,9 @@ export class SanityService {
   private platformId = inject(PLATFORM_ID)
 
   async fetch<Query extends string>(query: Query, params?: QueryParams): Promise<ClientReturn<Query>> {
-    const key = makeStateKey<ClientReturn<Query>>(await hashQuery(query, params))
+    // The key type includes `null` so `get(key, null)` type-checks against
+    // Angular's `get<T>(key: StateKey<T>, defaultValue: T): T` signature.
+    const key = makeStateKey<ClientReturn<Query> | null>(await hashQuery(query, params))
 
     if (isPlatformBrowser(this.platformId)) {
       const cached = this.transferState.get(key, null)
