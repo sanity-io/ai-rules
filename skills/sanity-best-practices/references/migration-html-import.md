@@ -41,11 +41,15 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
         // Return an `__annotation` with a `markDef`, and recurse into the
         // child nodes via `next()` so the link text is preserved.
         if (el.tagName?.toLowerCase() === 'a') {
+          const href = el.getAttribute('href')
+          // An anchor with no `href` (named anchors, JS-driven links) isn't a
+          // link. Fall through so the text survives without a dangling markDef.
+          if (!href) return undefined
           return {
             _type: '__annotation',
             markDef: {
               _type: 'link',
-              href: el.getAttribute('href'),
+              href,
               blank: el.getAttribute('target') === '_blank'
             },
             children: next(el.childNodes)
@@ -53,10 +57,14 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
         }
         // Custom image handling — block-level types are wrapped with `block()`
         if (el.tagName?.toLowerCase() === 'img') {
+          const src = el.getAttribute('src')
+          // Skip sourceless images rather than emitting `image@null`, which
+          // fails later at asset-upload time with no pointer to the bad node.
+          if (!src) return undefined
           return block({
             _type: 'image',
             // Upload image separately, store reference
-            _sanityAsset: `image@${el.getAttribute('src')}`
+            _sanityAsset: `image@${src}`
           })
         }
         return undefined  // Fall through to default handling

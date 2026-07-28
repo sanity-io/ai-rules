@@ -114,6 +114,9 @@ const blocks = htmlToBlocks(html, blockContentType, {
       deserialize(el, next, block) {
         if (el.tagName?.toLowerCase() !== 'img') return undefined
 
+        const src = el.getAttribute('src')
+        if (!src) return undefined // skip sourceless images, not `image@null`
+
         return block({
           _type: 'image',
           asset: {
@@ -121,7 +124,7 @@ const blocks = htmlToBlocks(html, blockContentType, {
             _ref: '', // Upload image separately, set ref after
           },
           alt: el.getAttribute('alt') || '',
-          _sanityAsset: `image@${el.getAttribute('src')}`, // for migration tooling
+          _sanityAsset: `image@${src}`, // for migration tooling
         })
       },
     },
