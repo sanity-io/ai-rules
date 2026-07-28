@@ -59,11 +59,11 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
         if (el.tagName?.toLowerCase() === 'img') {
           const src = el.getAttribute('src')
           // Skip sourceless images rather than emitting `image@null`, which
-          // fails later at asset-upload time with no pointer to the bad node.
+          // the importer reports as a failed asset with no pointer to the node.
           if (!src) return undefined
           return block({
             _type: 'image',
-            // Upload image separately, store reference
+            // NDJSON + `sanity dataset import` only — see the note below.
             _sanityAsset: `image@${src}`
           })
         }
@@ -73,6 +73,14 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
   ]
 })
 ```
+
+> **`_sanityAsset` is only resolved by `sanity dataset import`.** The NDJSON
+> importer fetches each `image@<url>` and swaps in a real asset reference. The
+> mutation API does not interpret the directive, so the same blocks written
+> through `@sanity/client`, `sanity exec`, or `defineMigration` are stored
+> verbatim — leaving an image field with a stray `_sanityAsset` string and no
+> `asset` reference. On those paths, upload the image first and emit an asset
+> reference instead, as in [Image Upload](#image-upload) below.
 
 ### Pre-Processing HTML
 
@@ -119,7 +127,9 @@ async function uploadImage(client, imageUrl) {
 
 ### Using in a Migration
 
-Wrap this in `defineMigration` for controlled imports:
+Wrap this in `defineMigration` for controlled imports. This path writes through
+the mutation API, so any custom rules used here must emit uploaded asset
+references rather than `_sanityAsset` directives:
 
 ```typescript
 // migrations/import-wordpress-posts/index.ts
