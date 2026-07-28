@@ -33,8 +33,9 @@ Reference these guidelines when:
 ## Video
 
 - Do not store or serve video from Sanity `file` assets for production playback. File assets are delivered as raw downloads with no transcoding or adaptive streaming, and video traffic drives very high bandwidth usage and unexpectedly large bills.
-- Use a dedicated video service instead: install `sanity-plugin-mux-input` to upload and stream video directly from the Studio, or host video on a platform such as Mux, YouTube, or Vimeo and store only the playback ID or embed URL in Sanity.
-- Small clips and short previews in a `file` field are acceptable, but any user-facing video at scale must go through a streaming service.
+- On Enterprise plans with the video add-on, use Sanity Media Library for video: uploads are transcoded and streamed adaptively via Mux. Model video fields with `defineVideoField()` from `sanity/media-library` and play them with `@mux/mux-player-react` using the asset's playback ID.
+- On other plans, use a dedicated video service: install `sanity-plugin-mux-input` to upload and manage videos in your Mux account from the Studio, or host video on a platform such as YouTube or Vimeo and store only the embed URL in Sanity.
+- Small clips and short previews in a `file` field are acceptable, but any user-facing video at scale must go through Media Library or a streaming service.
 
 ## Quick Reference
 
