@@ -29,7 +29,7 @@ Run the extract + generate cycle whenever schema or queries change:
 2.  **Generate:** Scans your codebase for GROQ queries and generates TypeScript types.
 
 ```bash
-npx sanity schema extract && npx sanity typegen generate
+npx sanity schemas extract && npx sanity typegen generate
 ```
 
 ### Watch Mode (for separate frontends)
@@ -45,7 +45,7 @@ For manual workflows, implement a single script:
 **package.json:**
 ```json
 "scripts": {
-  "typegen": "sanity schema extract && sanity typegen generate"
+  "typegen": "sanity schemas extract && sanity typegen generate"
 }
 ```
 
@@ -147,7 +147,7 @@ export default function Author({ data }: { data: AUTHOR_QUERYResult }) {
 Use `--enforce-required-fields` during extraction to translate `validation: rule => rule.required()` into non-optional types:
 
 ```bash
-npx sanity schema extract --enforce-required-fields
+npx sanity schemas extract --enforce-required-fields
 npx sanity typegen generate
 ```
 

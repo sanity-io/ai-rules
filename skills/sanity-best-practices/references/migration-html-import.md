@@ -63,7 +63,7 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
           if (!src) return undefined
           return block({
             _type: 'image',
-            // NDJSON + `sanity dataset import` only — see the note below.
+            // NDJSON + `sanity datasets import` only — see the note below.
             _sanityAsset: `image@${src}`
           })
         }
@@ -74,7 +74,7 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
 })
 ```
 
-> **`_sanityAsset` is only resolved by `sanity dataset import`.** The NDJSON
+> **`_sanityAsset` is only resolved by `sanity datasets import`.** The NDJSON
 > importer fetches each `image@<url>` and swaps in a real asset reference. The
 > mutation API does not interpret the directive, so the same blocks written
 > through `@sanity/client`, `sanity exec`, or `defineMigration` are stored
@@ -160,6 +160,6 @@ export default defineMigration({
 
 Let Sanity generate document IDs for ordinary imported content. Add schema fields for legacy identifiers or slugs, then use GROQ lookups against those fields when you need to rerun an import, patch existing documents, or create references between imported records. Set `_id` directly only for singleton documents.
 
-Run with: `sanity migration run import-wordpress-posts --no-dry-run`
+Run with: `sanity migrations run import-wordpress-posts --no-dry-run`
 
 Reference: [Schema and Content Migrations](https://www.sanity.io/docs/content-lake/schema-and-content-migrations)

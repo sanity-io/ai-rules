@@ -112,7 +112,7 @@ For bulk imports, prefer NDJSON:
 Then import with:
 
 ```bash
-npx sanity dataset import import.ndjson <dataset> --replace
+npx sanity datasets import import.ndjson <dataset> --replace
 ```
 
 Use client `createOrReplace` for smaller imports or incremental syncs.

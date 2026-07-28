@@ -124,7 +124,7 @@ const blocks = htmlToBlocks(html, blockContentType, {
             _ref: '', // Upload image separately, set ref after
           },
           alt: el.getAttribute('alt') || '',
-          // Resolved by `sanity dataset import` only. On client/mutation-API
+          // Resolved by `sanity datasets import` only. On client/mutation-API
           // write paths, upload the asset first and set `asset._ref` instead.
           _sanityAsset: `image@${src}`,
         })
@@ -238,7 +238,7 @@ export default defineMigration({
 })
 ```
 
-Run with: `sanity migration run import-wordpress-posts --no-dry-run`
+Run with: `sanity migrations run import-wordpress-posts --no-dry-run`
 
 ## Reference
 

@@ -18,7 +18,7 @@ Schema deployment is **required** for:
 ## Deployment Command
 
 ```bash
-npx sanity schema deploy
+npx sanity schemas deploy
 ```
 
 ## What I'll Do
@@ -29,7 +29,7 @@ npx sanity schema deploy
    - Warn about removed fields with data
 
 2. **Deploy**
-   - Run `npx sanity schema deploy`
+   - Run `npx sanity schemas deploy`
    - Confirm success
 
 3. **Post-Deploy Verification**
