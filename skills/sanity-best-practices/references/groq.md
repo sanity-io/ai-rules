@@ -124,17 +124,9 @@ When you add a new field or component to the Schema:
 *[_type == "post"][0...5]   // First 5 (exclusive) ← Most common
 ```
 
-**Slice bounds must be constant numbers.** GROQ does not allow `$params` (or any other expression) inside slice syntax:
-
-```groq
-// ❌ Fails: "Invalid GROQ query: slicing must use constant numbers"
-*[_type == "post"][$start...$end]
-```
-
-For dynamic/paginated bounds, validate the numbers in application code and interpolate them directly into the query string instead of passing them as `$params`:
+Slice bounds must be constant numbers — `$params` aren't allowed. For dynamic pagination, validate the numbers in application code and interpolate them directly into the query string:
 
 ```typescript
-// Validate first — never interpolate unsanitized user input into a query
 const start = Number.isInteger(page) && page >= 0 ? page * pageSize : 0
 const end = start + pageSize
 

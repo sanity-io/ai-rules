@@ -502,7 +502,7 @@ export const PTE_IMAGE_PRESENTATION_QUERY = defineQuery(`
 
 For listing pages with many entries, use offset-based pagination with a count query.
 
-**GROQ slice bounds (`[start...end]`) must be constant numbers** — `$params` aren't allowed there, so `[$start...$end]` fails with `Invalid GROQ query: slicing must use constant numbers`. Validate the page bounds in application code and interpolate them directly into the query string instead.
+GROQ slice bounds (`[start...end]`) must be constant numbers, not `$params`. Validate the page bounds in application code and interpolate them directly into the query string.
 
 ### Queries
 ```typescript
@@ -511,8 +511,7 @@ export const ARTICLES_COUNT_QUERY = defineQuery(`
   count(*[_type == "article" && defined(slug.current)])
 `);
 
-// Paginated listing — start/end are validated integers interpolated
-// directly into the query, since slice bounds can't be $params
+// Paginated listing — validated integers interpolated into the slice
 function articlesQuery(start: number, end: number) {
   return defineQuery(`
     *[_type == "article" && defined(slug.current)]
