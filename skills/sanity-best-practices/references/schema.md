@@ -313,10 +313,10 @@ export default defineMigration({
 
 ```bash
 # Dry run first (default)
-sanity migration run rename-oldTitle-to-newTitle
+sanity migrations run rename-oldTitle-to-newTitle
 
 # Execute when ready
-sanity migration run rename-oldTitle-to-newTitle --no-dry-run
+sanity migrations run rename-oldTitle-to-newTitle --no-dry-run
 ```
 
 **Phase 3: Remove** — Once `oldTitle` is undefined for all documents, delete the field definition.

@@ -97,7 +97,7 @@ export const post = defineType({
 **Required before Phase 2:**
 
 ```bash
-npx sanity schema deploy
+npx sanity schemas deploy
 ```
 
 This uploads your schema to the Content Lake so MCP tools can work with it.
@@ -137,7 +137,7 @@ Tool: create_documents
 Documents: [{ type: "post", content: { title: "Getting started with Sanity", body: [] } }]
 ```
 
-**If MCP content tools cannot see new types or fields:** Remind them to run `npx sanity schema deploy` first.
+**If MCP content tools cannot see new types or fields:** Remind them to run `npx sanity schemas deploy` first.
 
 ### MCP Setup (If Not Configured)
 
@@ -385,7 +385,7 @@ Just ask about any of these!"
 ```bash
 npx sanity@latest mcp configure  # Configure MCP for your editor
 npx sanity dev                   # Start Studio locally
-npx sanity schema deploy         # Deploy schema for MCP/editor access
+npx sanity schemas deploy         # Deploy schema for MCP/editor access
 npx sanity deploy                # Deploy Studio to Sanity hosting
 npx sanity manage                # Open project settings
 npm run typegen                  # Generate TypeScript types

@@ -133,33 +133,60 @@ defineField({
 ### 3. Frontend Assignment
 
 ```typescript
-// Middleware or server-side
-function assignVariant(experimentId: string, variants: Variant[]): string {
-  // Check for existing assignment in cookie
+// Middleware or server-side. Returns the assigned variant id, or null when the
+// experiment has no variants to assign.
+function assignVariant(experimentId: string, variants: Variant[]): string | null {
+  if (variants.length === 0) return null
+
+  // Reuse an existing assignment, but only if it's still a valid variant.
+  // After variants are renamed or removed, drop the stale cookie and reassign,
+  // otherwise users stay bucketed to IDs that no longer exist.
   const cookieKey = `exp_${experimentId}`
   const existing = getCookie(cookieKey)
-  if (existing) return existing
-  
-  // Random assignment based on weights
-  const rand = Math.random() * 100
+  if (existing && variants.some(v => v.id === existing)) return existing
+
+  // Random assignment based on weights. Normalize against the total weight so
+  // splits work even when weights don't sum to 100 (otherwise draws above the
+  // sum skew to the fallback).
+  const totalWeight = variants.reduce((sum, v) => sum + v.weight, 0)
+  if (totalWeight <= 0) {
+    const fallback = variants[0]
+    setCookie(cookieKey, fallback.id, { maxAge: 30 * 24 * 60 * 60 })
+    return fallback.id
+  }
+  const rand = Math.random() * totalWeight
   let cumulative = 0
   for (const variant of variants) {
     cumulative += variant.weight
-    if (rand <= cumulative) {
+    if (rand < cumulative) {
       setCookie(cookieKey, variant.id, { maxAge: 30 * 24 * 60 * 60 })
       return variant.id
     }
   }
-  return variants[0].id
+  // Fall back to the last variant to absorb any floating-point remainder, and
+  // persist it like any other assignment so the visitor stays bucketed.
+  const fallback = variants[variants.length - 1]
+  setCookie(cookieKey, fallback.id, { maxAge: 30 * 24 * 60 * 60 })
+  return fallback.id
 }
 ```
 
 ### 4. Query with Variant
 
+Resolve **one** experiment's assignment at a time, passing both its
+`experimentId` and the `variantId` returned by `assignVariant`. Match on both:
+variant IDs like `control` repeat across experiments, so filtering on
+`variantId` alone could pick a different running experiment's row. For a page
+running several experiments, resolve each one separately and merge the results.
+
 ```groq
 *[_type == "page" && slug.current == $slug][0]{
   ...,
-  "experiment": experimentVariants[experimentId->status == "running"][0]{
+  "experiment": experimentVariants[
+    experimentId->_id == $experimentId &&
+    experimentId->status == "running" &&
+    variantId == $variantId
+  ][0]{
     experimentId->{name, _id},
     variantId,
     headline

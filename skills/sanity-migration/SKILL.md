@@ -35,7 +35,7 @@ For implementation or planning tasks, produce these artifacts or explain why the
 ## Defaults
 
 - Use stable document IDs derived from source IDs, slugs, paths, or hashes.
-- Use `createOrReplace`, `createIfNotExists`, or `sanity dataset import --replace` so reruns converge.
+- Use `createOrReplace`, `createIfNotExists`, or `sanity datasets import --replace` so reruns converge.
 - Snapshot extracted source data to disk before transforming it.
 - Import or create referenced documents before documents that reference them.
 - Convert rich text to Portable Text instead of storing raw HTML or Markdown strings.

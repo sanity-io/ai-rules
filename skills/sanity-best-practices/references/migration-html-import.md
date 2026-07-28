@@ -37,21 +37,35 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
   rules: [
     {
       deserialize(el, next, block) {
-        // Custom link handling
-        if (el.tagName.toLowerCase() === 'a') {
+        // Custom link handling — links are inline annotations, not blocks.
+        // Return an `__annotation` with a `markDef`, and recurse into the
+        // child nodes via `next()` so the link text is preserved.
+        if (el.tagName?.toLowerCase() === 'a') {
+          const href = el.getAttribute('href')
+          // An anchor with no `href` (named anchors, JS-driven links) isn't a
+          // link. Fall through so the text survives without a dangling markDef.
+          if (!href) return undefined
           return {
-            _type: 'link',
-            href: el.getAttribute('href'),
-            blank: el.getAttribute('target') === '_blank'
+            _type: '__annotation',
+            markDef: {
+              _type: 'link',
+              href,
+              blank: el.getAttribute('target') === '_blank'
+            },
+            children: next(el.childNodes)
           }
         }
-        // Custom image handling
-        if (el.tagName.toLowerCase() === 'img') {
-          return {
+        // Custom image handling — block-level types are wrapped with `block()`
+        if (el.tagName?.toLowerCase() === 'img') {
+          const src = el.getAttribute('src')
+          // Skip sourceless images rather than emitting `image@null`, which
+          // the importer reports as a failed asset with no pointer to the node.
+          if (!src) return undefined
+          return block({
             _type: 'image',
-            // Upload image separately, store reference
-            _sanityAsset: `image@${el.getAttribute('src')}`
-          }
+            // NDJSON + `sanity datasets import` only — see the note below.
+            _sanityAsset: `image@${src}`
+          })
         }
         return undefined  // Fall through to default handling
       }
@@ -59,6 +73,14 @@ const blocks = htmlToBlocks(htmlString, blockContentType, {
   ]
 })
 ```
+
+> **`_sanityAsset` is only resolved by `sanity datasets import`.** The NDJSON
+> importer fetches each `image@<url>` and swaps in a real asset reference. The
+> mutation API does not interpret the directive, so the same blocks written
+> through `@sanity/client`, `sanity exec`, or `defineMigration` are stored
+> verbatim — leaving an image field with a stray `_sanityAsset` string and no
+> `asset` reference. On those paths, upload the image first and emit an asset
+> reference instead, as in [Image Upload](#image-upload) below.
 
 ### Pre-Processing HTML
 
@@ -105,7 +127,9 @@ async function uploadImage(client, imageUrl) {
 
 ### Using in a Migration
 
-Wrap this in `defineMigration` for controlled imports:
+Wrap this in `defineMigration` for controlled imports. This path writes through
+the mutation API, so any custom rules used here must emit uploaded asset
+references rather than `_sanityAsset` directives:
 
 ```typescript
 // migrations/import-wordpress-posts/index.ts
@@ -136,6 +160,6 @@ export default defineMigration({
 
 Let Sanity generate document IDs for ordinary imported content. Add schema fields for legacy identifiers or slugs, then use GROQ lookups against those fields when you need to rerun an import, patch existing documents, or create references between imported records. Set `_id` directly only for singleton documents.
 
-Run with: `sanity migration run import-wordpress-posts --no-dry-run`
+Run with: `sanity migrations run import-wordpress-posts --no-dry-run`
 
 Reference: [Schema and Content Migrations](https://www.sanity.io/docs/content-lake/schema-and-content-migrations)

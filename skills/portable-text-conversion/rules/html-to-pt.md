@@ -114,6 +114,9 @@ const blocks = htmlToBlocks(html, blockContentType, {
       deserialize(el, next, block) {
         if (el.tagName?.toLowerCase() !== 'img') return undefined
 
+        const src = el.getAttribute('src')
+        if (!src) return undefined // skip sourceless images, not `image@null`
+
         return block({
           _type: 'image',
           asset: {
@@ -121,7 +124,9 @@ const blocks = htmlToBlocks(html, blockContentType, {
             _ref: '', // Upload image separately, set ref after
           },
           alt: el.getAttribute('alt') || '',
-          _sanityAsset: `image@${el.getAttribute('src')}`, // for migration tooling
+          // Resolved by `sanity datasets import` only. On client/mutation-API
+          // write paths, upload the asset first and set `asset._ref` instead.
+          _sanityAsset: `image@${src}`,
         })
       },
     },
@@ -233,7 +238,7 @@ export default defineMigration({
 })
 ```
 
-Run with: `sanity migration run import-wordpress-posts --no-dry-run`
+Run with: `sanity migrations run import-wordpress-posts --no-dry-run`
 
 ## Reference
 

@@ -9,8 +9,8 @@ This is a Sanity-powered project. Use the Knowledge Router below to find Sanity 
 npx sanity@latest mcp configure  # Configure MCP for your AI editor
 
 # Schema & Types
-npx sanity schema deploy     # Deploy schema to Content Lake for MCP/editor access
-npx sanity schema extract    # Extract schema for TypeGen
+npx sanity schemas deploy     # Deploy schema to Content Lake for MCP/editor access
+npx sanity schemas extract    # Extract schema for TypeGen
 npx sanity typegen generate  # Generate TypeScript types
 
 # Development

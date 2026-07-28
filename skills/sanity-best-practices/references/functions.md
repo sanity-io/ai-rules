@@ -94,7 +94,10 @@ export default defineBlueprint({
       name: 'my-function',
       event: {
         on: ['create', 'update'],
-        filter: '_type == "post"',
+        // The handler patches the same document, which emits another update
+        // event. Guard with !defined(firstPublished) so the function stops
+        // matching once it has run — see "Recursion control" below.
+        filter: '_type == "post" && !defined(firstPublished)',
       },
     }),
   ],
@@ -460,7 +463,10 @@ defineDocumentFunction({
   name: 'auto-tag',
   event: {
     on: ['create', 'update'],
-    filter: "_type == 'post'",
+    // Only fire while tags are missing. The handler writes to `tags`, which
+    // emits another `update` event — without this guard the function would
+    // re-trigger itself in a loop. Once tags exist, the filter stops matching.
+    filter: "_type == 'post' && !defined(tags)",
     projection: '{_id, title, body}',
   },
 })

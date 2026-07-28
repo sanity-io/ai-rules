@@ -49,7 +49,7 @@ Typical workflow:
 npm create sanity@latest -- --template clean --create-project "Migrated Contentful" --dataset production --output-path ./migrate
 npx contentful-to-sanity@latest -s <space-id> -t <management-token> -a <delivery-token> ./migrate
 cd ./migrate
-npx sanity dataset import ./dataset.ndjson production
+npx sanity datasets import ./dataset.ndjson production
 ```
 
 If the generated Studio imports schemas from `./schemas`, update it to use the generated schema export from `./schema` as instructed by the package output.

@@ -113,7 +113,7 @@ Rich text is usually the long pole. Pick the converter by source format:
 
 Choose the write path by migration size and repeatability:
 
-- **NDJSON + `sanity dataset import`:** best for large initial loads and export-file migrations. Supports `_sanityAsset` directives and `--replace`.
+- **NDJSON + `sanity datasets import`:** best for large initial loads and export-file migrations. Supports `_sanityAsset` directives and `--replace`.
 - **`sanity migration`:** good for reproducible scripted imports inside a Studio project, dry runs, and batched mutations.
 - **`sanity exec` or custom scripts with `@sanity/client`:** good for custom extraction/import loops, incremental syncs, or complex asset upload flows.
 - **Sanity MCP/content tools:** good for small targeted operations, inspection, and patches. Avoid them for bulk content loads when a script or NDJSON import is more reliable.

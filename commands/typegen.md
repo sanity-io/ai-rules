@@ -12,7 +12,7 @@ I'll help you generate TypeScript types from your Sanity schema.
 ```bash
 npm run typegen
 # or
-npx sanity schema extract && npx sanity typegen generate
+npx sanity schemas extract && npx sanity typegen generate
 ```
 
 ## What I'll Do
