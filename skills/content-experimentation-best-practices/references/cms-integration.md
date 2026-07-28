@@ -149,6 +149,11 @@ function assignVariant(experimentId: string, variants: Variant[]): string | null
   // splits work even when weights don't sum to 100 (otherwise draws above the
   // sum skew to the fallback).
   const totalWeight = variants.reduce((sum, v) => sum + v.weight, 0)
+  if (totalWeight <= 0) {
+    const fallback = variants[0]
+    setCookie(cookieKey, fallback.id, { maxAge: 30 * 24 * 60 * 60 })
+    return fallback.id
+  }
   const rand = Math.random() * totalWeight
   let cumulative = 0
   for (const variant of variants) {
