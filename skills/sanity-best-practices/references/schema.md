@@ -114,13 +114,12 @@ Every item in a Sanity array automatically gets a `_key` property. This is **cri
 ### B. Icons
 Always assign an icon from `@sanity/icons` to documents and objects. This improves the Studio UX significantly. Browse all icons at [icons.sanity.build](https://icons.sanity.build/all).
 
-**Import each icon from its own subpath**, not the package root. As of `@sanity/icons` v5, the root entry no longer exports named icon components — only the `icons` map and `Icon` component remain there. A root import like `import { DocumentTextIcon } from '@sanity/icons'` still type-checks (the root's type declarations keep the old names as deprecated stubs) but crashes Sanity Studio at runtime with an "Importing binding name ... is not found" error.
-
 ```typescript
-// ✅ Correct (v5 subpath import)
+// ✅ Correct — import each icon from its own subpath
 import { DocumentTextIcon } from '@sanity/icons/DocumentText'
 
-// ❌ Wrong — removed from the root entry in v5; compiles but crashes Studio at runtime
+// ❌ Wrong — root named exports were removed in v5.
+// Type-checks clean, then fails at bundle time.
 import { DocumentTextIcon } from '@sanity/icons'
 ```
 
