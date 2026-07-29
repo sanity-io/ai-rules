@@ -43,7 +43,7 @@ Don't create nearly identical copies with slight differences (e.g., US vs Britis
 
 ```typescript
 // schemaTypes/locale.ts
-import { TranslateIcon } from '@sanity/icons'
+import { TranslateIcon } from '@sanity/icons/Translate'
 import { defineField, defineType } from 'sanity'
 
 export const localeType = defineType({
@@ -167,7 +167,7 @@ For singletons like homepages that need a separate document per locale, combine 
 
 ```typescript
 // schemaTypes/homePage.ts
-import { HomeIcon } from '@sanity/icons'
+import { HomeIcon } from '@sanity/icons/Home'
 import { defineType, defineField } from 'sanity'
 
 export const homePageType = defineType({
@@ -237,7 +237,7 @@ Create a helper to show one singleton per locale in the Structure:
 ```typescript
 // src/structure/index.ts
 import { StructureBuilder, StructureResolver } from 'sanity/structure'
-import { HomeIcon } from '@sanity/icons'
+import { HomeIcon } from '@sanity/icons/Home'
 
 const LOCALES = ['en', 'fr', 'de']
 

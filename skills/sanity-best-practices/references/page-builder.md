@@ -74,7 +74,7 @@ Every block should have consistent previews:
 
 ```typescript
 import { defineType } from "sanity";
-import { BlockContentIcon } from "@sanity/icons";
+import { BlockContentIcon } from "@sanity/icons/BlockContent";
 
 export const splitImageType = defineType({
   name: "splitImage",

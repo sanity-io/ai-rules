@@ -36,7 +36,7 @@ Always use the helper functions from `sanity` for type safety and autocompletion
 
 ```typescript
 import { defineType, defineField, defineArrayMember } from 'sanity'
-import { TagIcon } from '@sanity/icons'
+import { TagIcon } from '@sanity/icons/Tag'
 
 export const article = defineType({
   name: 'article',
@@ -114,17 +114,26 @@ Every item in a Sanity array automatically gets a `_key` property. This is **cri
 ### B. Icons
 Always assign an icon from `@sanity/icons` to documents and objects. This improves the Studio UX significantly. Browse all icons at [icons.sanity.build](https://icons.sanity.build/all).
 
-| Content Type | Icon |
-|--------------|------|
-| Article, Post | `DocumentTextIcon` |
-| Author, Person | `UserIcon` |
-| Category, Tag | `TagIcon` |
-| Settings | `CogIcon` |
-| Page | `DocumentIcon` |
-| Image block | `ImageIcon` |
-| Video block | `PlayIcon` |
-| FAQ | `HelpCircleIcon` |
-| Link | `LinkIcon` |
+```typescript
+// ✅ Correct — import each icon from its own subpath
+import { DocumentTextIcon } from '@sanity/icons/DocumentText'
+
+// ❌ Wrong — root named exports were removed in v5.
+// Type-checks clean, then fails at bundle time.
+import { DocumentTextIcon } from '@sanity/icons'
+```
+
+| Content Type | Icon | Import |
+|--------------|------|--------|
+| Article, Post | `DocumentTextIcon` | `@sanity/icons/DocumentText` |
+| Author, Person | `UserIcon` | `@sanity/icons/User` |
+| Category, Tag | `TagIcon` | `@sanity/icons/Tag` |
+| Settings | `CogIcon` | `@sanity/icons/Cog` |
+| Page | `DocumentIcon` | `@sanity/icons/Document` |
+| Image block | `ImageIcon` | `@sanity/icons/Image` |
+| Video block | `PlayIcon` | `@sanity/icons/Play` |
+| FAQ | `HelpCircleIcon` | `@sanity/icons/HelpCircle` |
+| Link | `LinkIcon` | `@sanity/icons/Link` |
 
 ### C. Boolean vs. List
 Avoid boolean fields for binary states that might expand later.
