@@ -12,9 +12,11 @@
     "validate:pt-serialization": "skills-ref validate ./skills/portable-text-serialization",
     "validate:pt-conversion": "skills-ref validate ./skills/portable-text-conversion",
     "validate:cursor-plugin": "node scripts/validate-cursor-plugin.mjs",
-    "validate:all": "npm run validate && npm run validate:cursor-plugin"
+    "validate:all": "npm run validate && npm run validate:cursor-plugin",
+    "build:bundle": "node scripts/build-skills-bundle.mjs"
   },
   "devDependencies": {
+    "gray-matter": "^4.0.3",
     "skills-ref": "0.1.5"
   },
   "keywords": [
