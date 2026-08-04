@@ -36,8 +36,12 @@ Getting started with Sanity follows three phases:
 
 **RESUME TRIGGER:** If the user says "Continue Sanity setup", check what's already configured:
 - Does `sanity.config.ts` exist (typically in a `studio/` folder)? → Studio is set up
-- Are there files in `schemaTypes/`? → Schema exists
+- Are one or more custom schema types registered in the Studio config (often through a non-empty `schemaTypes` export)? → Schema exists
 - Is there a frontend framework in `package.json`? → May need integration
+
+Do not treat files in `schemaTypes/` as proof that a schema exists. The clean
+Studio template includes `schemaTypes/index.ts` with an empty
+`schemaTypes` array.
 
 Resume from where they left off.
 
@@ -63,14 +67,16 @@ Resume from where they left off.
 
 ### Step 2: Check for Existing Schema
 
-**Look in `schemaTypes/`, `schemas/`, or `src/sanity/schemaTypes/`:**
+**Inspect the types registered by `sanity.config.ts`**, usually through
+`schemaTypes/index.ts`, `schemas/index.ts`, or
+`src/sanity/schemaTypes/index.ts`:
 
-**If NO schema found:**
+**If NO custom types are registered:**
 - Ask: "What kind of content are you building? (e.g., Blog, E-commerce, Portfolio)"
 - Create appropriate schema types based on their answer
 - See `schema.md` for patterns
 
-**If schema exists:**
+**If custom types are registered:**
 - Show them what you found
 - Ask: "Want to add more content types or modify existing ones?"
 
