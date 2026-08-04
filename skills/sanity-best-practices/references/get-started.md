@@ -260,6 +260,7 @@ export const client = createClient({
 // src/app/page.tsx
 import { client } from "@/sanity/client";
 import { defineQuery, type SanityDocument } from "next-sanity";
+import Link from "next/link";
 
 const POSTS_QUERY = defineQuery(
   `*[_type == "post" && defined(slug.current)] | order(_createdAt desc){ _id, title, slug }`
@@ -274,7 +275,7 @@ export default async function PostsPage() {
     <ul>
       {posts.map((post) => (
         <li key={post._id}>
-          <a href={`/${(post.slug as { current?: string })?.current}`}>{post.title as string}</a>
+          <Link href={`/${(post.slug as { current?: string })?.current}`}>{post.title as string}</Link>
         </li>
       ))}
     </ul>
@@ -340,7 +341,7 @@ Before declaring integration done, exercise both render paths:
 
 1. `npm run dev` (in the app folder)
 2. Load the home page (lists posts).
-3. **Click through to a detail page** via an in-app `<Link>` / `<a>` — do not paste the URL.
+3. **Click through to a detail page** via the in-app Next.js `<Link>` — do not paste the URL.
 4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
 5. For good measure, reload the detail page directly (URL bar) — that exercises SSR.
 
