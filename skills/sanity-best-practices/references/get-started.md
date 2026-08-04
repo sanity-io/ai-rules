@@ -124,6 +124,18 @@ export const post = defineType({
 })
 ```
 
+Register the type in the schema entry point:
+```typescript
+// schemaTypes/index.ts
+import { post } from './post'
+
+export const schemaTypes = [post]
+```
+
+Creating the file is not enough. Only types included in the array passed to
+`schema.types` are part of the Studio schema and available to schema
+deployment.
+
 ### Step 3: Deploy Schema
 
 **Required before Phase 2:**
