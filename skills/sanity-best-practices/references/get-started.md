@@ -261,7 +261,7 @@ export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: "YYYY-MM-DD", // Replace with today's UTC date and keep it hard-coded
-  useCdn: false, // Use API directly for server-side rendering; set true for client-side reads
+  useCdn: true, // Fast, cached published-content reads
 });
 ```
 
@@ -293,7 +293,9 @@ export default async function PostsPage() {
 }
 ```
 
-`{ next: { revalidate: 30 } }` opts the fetch into Next.js' ISR cache with a 30-second revalidation window. Tune to taste; omit `options` to use defaults.
+`{ next: { revalidate: 30 } }` opts the fetch into Next.js' ISR cache with a
+30-second revalidation window. This is a minimal published-content path for a
+first smoke test. Tune to taste; omit `options` to use defaults.
 
 **Render an individual post (`src/app/[slug]/page.tsx`):**
 ```typescript
@@ -332,7 +334,11 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-For advanced patterns (TypeGen, Visual Editing with `next-sanity/visual-editing`, live content with `defineLive` from `next-sanity/live`, standalone Studio architecture), see `nextjs.md`.
+After the first smoke test, configure TypeGen and replace the broad
+`SanityDocument` casts with generated query results. Run TypeGen after schema
+or query changes. For the recommended production path—live content with
+`defineLive`, Visual Editing, and the standalone Studio architecture—follow
+`nextjs.md`.
 
 ### Step 3: Other Frameworks
 
