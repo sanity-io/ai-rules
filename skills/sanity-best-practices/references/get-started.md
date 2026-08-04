@@ -45,6 +45,21 @@ Studio template includes `schemaTypes/index.ts` with an empty
 
 Resume from where they left off.
 
+### Step 0: Check Sanity MCP
+
+Check whether Sanity MCP tools are already available before creating files.
+
+- If a local Studio exists, keep it as the source of truth. Update its schema
+  files first, then deploy that schema before using MCP content tools.
+- If no local Studio exists and the user wants an MCP-managed setup, first
+  select or create the project and dataset. Ask what content they are building,
+  define the schema with the `schema.md` patterns, run `deploy_schema`, then
+  `deploy_studio`. Skip Phase 1 below and continue with Phase 2.
+- Do not mix a code-managed Studio and an MCP-managed Studio without explaining
+  which schema is authoritative.
+- If MCP is not configured, use the setup instructions below. The current
+  Sanity initializer may also offer to configure MCP and install Sanity skills.
+
 ---
 
 ## Phase 1: Studio & Schema
@@ -165,6 +180,14 @@ Documents: [{ type: "post", content: { title: "Getting started with Sanity", bod
 **Quick start via Sanity CLI:**
 ```bash
 npx sanity@latest mcp configure
+```
+
+This command detects Codex, Cursor, Claude Code, VS Code, and other supported
+editors. Prefer it over editing client configuration by hand.
+
+**Codex (manual fallback):** Register the server globally and authenticate in one command:
+```bash
+codex mcp add sanity --url https://mcp.sanity.io
 ```
 
 **Cursor:** [One-click install →](cursor://anysphere.cursor-deeplink/mcp/install?name=Sanity&config=eyJ1cmwiOiJodHRwczovL21jcC5zYW5pdHkuaW8iLCJ0eXBlIjoiaHR0cCJ9Cg==)
