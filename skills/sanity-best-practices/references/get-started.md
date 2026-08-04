@@ -36,8 +36,12 @@ Getting started with Sanity follows three phases:
 
 **RESUME TRIGGER:** If the user says "Continue Sanity setup", check what's already configured:
 - Does `sanity.config.ts` exist (typically in a `studio/` folder)? → Studio is set up
-- Are there files in `schemaTypes/`? → Schema exists
+- Are one or more custom schema types registered in the Studio config (often through a non-empty `schemaTypes` export)? → Schema exists
 - Is there a frontend framework in `package.json`? → May need integration
+
+Do not treat files in `schemaTypes/` as proof that a schema exists. The clean
+Studio template includes `schemaTypes/index.ts` with an empty
+`schemaTypes` array.
 
 Resume from where they left off.
 
@@ -63,14 +67,16 @@ Resume from where they left off.
 
 ### Step 2: Check for Existing Schema
 
-**Look in `schemaTypes/`, `schemas/`, or `src/sanity/schemaTypes/`:**
+**Inspect the types registered by `sanity.config.ts`**, usually through
+`schemaTypes/index.ts`, `schemas/index.ts`, or
+`src/sanity/schemaTypes/index.ts`:
 
-**If NO schema found:**
+**If NO custom types are registered:**
 - Ask: "What kind of content are you building? (e.g., Blog, E-commerce, Portfolio)"
 - Create appropriate schema types based on their answer
 - See `schema.md` for patterns
 
-**If schema exists:**
+**If custom types are registered:**
 - Show them what you found
 - Ask: "Want to add more content types or modify existing ones?"
 
@@ -96,7 +102,11 @@ export const post = defineType({
 
 **Required before Phase 2:**
 
+Run schema commands with the detected Studio folder as the working directory.
+For the default side-by-side layout:
+
 ```bash
+cd studio
 npx sanity schemas deploy
 ```
 
@@ -250,7 +260,7 @@ import { createClient } from "next-sanity";
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: "2026-05-15", // Use current date for new projects
+  apiVersion: "YYYY-MM-DD", // Replace with today's UTC date and keep it hard-coded
   useCdn: true, // Fast, cached published-content reads
 });
 ```
@@ -260,6 +270,7 @@ export const client = createClient({
 // src/app/page.tsx
 import { client } from "@/sanity/client";
 import { defineQuery, type SanityDocument } from "next-sanity";
+import Link from "next/link";
 
 const POSTS_QUERY = defineQuery(
   `*[_type == "post" && defined(slug.current)] | order(_createdAt desc){ _id, title, slug }`
@@ -274,7 +285,7 @@ export default async function PostsPage() {
     <ul>
       {posts.map((post) => (
         <li key={post._id}>
-          <a href={`/${(post.slug as { current?: string })?.current}`}>{post.title as string}</a>
+          <Link href={`/${(post.slug as { current?: string })?.current}`}>{post.title as string}</Link>
         </li>
       ))}
     </ul>
@@ -346,7 +357,7 @@ Before declaring integration done, exercise both render paths:
 
 1. `npm run dev` (in the app folder)
 2. Load the home page (lists posts).
-3. **Click through to a detail page** via an in-app `<Link>` / `<a>` — do not paste the URL.
+3. **Click through to a detail page** via the in-app Next.js `<Link>` — do not paste the URL.
 4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
 5. For good measure, reload the detail page directly (URL bar) — that exercises SSR.
 
