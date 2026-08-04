@@ -128,7 +128,11 @@ deployment.
 
 **Required before Phase 2:**
 
+Run schema commands with the detected Studio folder as the working directory.
+For the default side-by-side layout:
+
 ```bash
+cd studio
 npx sanity schemas deploy
 ```
 
