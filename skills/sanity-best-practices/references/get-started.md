@@ -170,8 +170,21 @@ If migrating from another CMS or files:
 Ask the agent to draft structured sample content, then create it with the Sanity MCP Server:
 ```
 Tool: create_documents
-Documents: [{ type: "post", content: { title: "Getting started with Sanity", body: [] } }]
+Documents: [{
+  type: "post",
+  content: {
+    title: "Getting started with Sanity",
+    slug: { _type: "slug", current: "getting-started-with-sanity" },
+    body: []
+  }
+}]
 ```
+
+The content tool creates a draft. Show the draft to the user and ask whether to
+publish it so the public frontend can read it. If yes, call
+`publish_documents` with the returned document ID, then use
+`query_documents` to confirm the post is visible from the published
+perspective before starting frontend integration.
 
 **If MCP content tools cannot see new types or fields:** Remind them to run `npx sanity schemas deploy` first.
 
