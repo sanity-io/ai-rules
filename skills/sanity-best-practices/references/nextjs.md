@@ -54,7 +54,7 @@ We use `defineLive` (next-sanity v11+) to enable real-time content updates and V
 ### Setup (`src/sanity/lib/live.ts`)
 
 ```typescript
-import { defineLive } from 'next-sanity'
+import { defineLive } from 'next-sanity/live'
 import { client } from './client'
 
 export const { sanityFetch, SanityLive } = defineLive({
