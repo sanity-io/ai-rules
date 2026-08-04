@@ -55,10 +55,21 @@ Resume from where they left off.
 
 **If NO Studio found:**
 - Ask: "Want to create a new Sanity Studio?"
-- If yes, run from the repo root — **not inside a Next.js app folder**, where the CLI would switch to its embedded flow (not recommended):
+- If yes, first run `node --version`. Current Sanity Studio and CLI releases
+  require Node.js 22.12 or newer.
+- Create or select the project and dataset first. Prefer Sanity MCP project
+  tools when available, and never guess an organization or create a project in
+  the wrong account.
+- Run the initializer unattended with the known values from the repo root —
+  **not inside a Next.js app folder**, where the CLI would switch to its
+  embedded flow (not recommended):
   ```bash
-  npm create sanity@latest -- --template clean --typescript --output-path studio
+  npm create sanity@latest -- --yes --project <projectId> --dataset <dataset> --template clean --typescript --output-path studio
   ```
+- If the CLI reports missing authentication, ask the user to authenticate,
+  then retry the same unattended command. If a project, organization, or
+  dataset choice is still missing, ask the user to provide it. Do not fall back
+  to an interactive initializer flow.
 - This creates a standalone Studio in `studio/`, alongside your app folder (see `project-structure.md`)
 
 **If Studio exists:**
