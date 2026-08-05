@@ -413,11 +413,40 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-After the first smoke test, configure TypeGen and replace the broad
-`SanityDocument` casts with generated query results. Run TypeGen after schema
-or query changes. For the recommended production path—live content with
-`defineLive`, Visual Editing, and the standalone Studio architecture—follow
-`nextjs.md`.
+**Configure TypeGen before calling the Next.js setup complete:**
+
+Merge the TypeGen settings into the existing `studio/sanity.cli.ts`. For the
+side-by-side `studio/` and `web/` layout:
+
+```typescript
+typegen: {
+  enabled: true,
+  path: '../web/src/**/*.{ts,tsx,js,jsx}',
+  schema: 'schema.json',
+  generates: '../web/sanity.types.ts',
+  overloadClientMethods: true,
+},
+```
+
+Add a repeatable script to `studio/package.json`:
+
+```json
+"typegen": "sanity schemas extract --force && sanity typegen generate"
+```
+
+Then run it from the Studio folder:
+
+```bash
+cd studio
+npm run typegen
+```
+
+Confirm TypeGen found the frontend queries, then remove the `SanityDocument`
+import, broad generic arguments, and casts. Run TypeGen after schema or query
+changes. For other layouts, use `typegen.md` to adjust the paths.
+
+For the recommended production path—live content with `defineLive`, Visual
+Editing, and the standalone Studio architecture—follow `nextjs.md`.
 
 ### Step 3: Other Frameworks
 
@@ -484,7 +513,7 @@ npx sanity dev                   # Start Studio locally
 npx sanity schemas deploy         # Deploy schema for MCP/editor access
 npx sanity deploy                # Deploy Studio to Sanity hosting
 npx sanity manage                # Open project settings
-npm run typegen                  # Generate TypeScript types
+npm run typegen                  # Generate types (run in Studio after adding the script above)
 ```
 
 ---
