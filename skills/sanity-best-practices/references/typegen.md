@@ -136,9 +136,9 @@ import { defineQuery } from "groq";
 
 const AUTHOR_QUERY = defineQuery(`*[_type == "author" && slug.current == $slug][0]{ name, bio }`);
 
-import type { AUTHOR_QUERYResult } from "@/sanity.types";
+import type { AUTHOR_QUERY_RESULT } from "@/sanity.types";
 
-export default function Author({ data }: { data: AUTHOR_QUERYResult }) {
+export default function Author({ data }: { data: AUTHOR_QUERY_RESULT }) {
   return <h1>{data.name}</h1>
 }
 ```
