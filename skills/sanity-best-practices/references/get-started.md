@@ -106,6 +106,11 @@ Check whether Sanity MCP tools are already available before creating files.
 - Show them what you found
 - Ask: "Want to add more content types or modify existing ones?"
 
+Before moving to Phase 2, keep track of the primary document type and the
+fields needed to list and render it. Carry that choice through content checks,
+sample content, queries, routes, and components. Never fall back to `post`
+unless the registered primary type is actually `post`.
+
 **If they want a quick example:**
 Create a basic blog schema:
 ```typescript
@@ -158,8 +163,11 @@ This uploads your schema to the Content Lake so MCP tools can work with it.
 
 **Use MCP `query_documents` to check:**
 ```
-*[_type == "post"][0...5]
+*[_type == "<primaryDocumentType>"][0...5]
 ```
+
+Replace `<primaryDocumentType>` with the registered type selected in Phase 1,
+such as `post`, `product`, or `project`.
 
 **If content exists:**
 - Show them a summary
@@ -179,7 +187,10 @@ If migrating from another CMS or files:
 
 ### Step 2b: Generate Sample Content (MCP)
 
-Ask the agent to draft structured sample content, then create it with the Sanity MCP Server:
+Ask the agent to draft structured sample content that matches the selected
+primary document type, then create it with the Sanity MCP Server.
+
+For the quick blog example above:
 ```
 Tool: create_documents
 Documents: [{
@@ -285,6 +296,12 @@ The working directory is often a parent folder with the Studio and the app side 
 ### Step 2: Next.js Integration (Inline)
 
 If Next.js is detected, follow these essential steps:
+
+The inline implementation below continues the quick **Blog** example. If the
+primary document type is not `post`, adapt the type filter, projection, sample
+document, route, component names, and renderer to the fields selected in Phase
+1. Do not create or query `post` as a fallback for E-commerce or Portfolio
+setups.
 
 **Scaffold a new app (if you don't have one yet):**
 
@@ -414,7 +431,7 @@ Each rule file contains framework-specific patterns for data fetching, Portable 
 Before declaring integration done, exercise both render paths:
 
 1. `npm run dev` (in the app folder)
-2. Load the home page (lists posts).
+2. Load the home page (lists the selected content type).
 3. **Click through to a detail page** via the in-app Next.js `<Link>` — do not paste the URL.
 4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
 5. For good measure, reload the detail page directly (URL bar) — that exercises SSR.
