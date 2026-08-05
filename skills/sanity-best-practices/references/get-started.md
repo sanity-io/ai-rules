@@ -106,11 +106,16 @@ Check whether Sanity MCP tools are already available before creating files.
 - Show them what you found
 - Ask: "Want to add more content types or modify existing ones?"
 
+Before moving to Phase 2, keep track of the primary document type and the
+fields needed to list and render it. Carry that choice through content checks,
+sample content, queries, routes, and components. Never fall back to `post`
+unless the registered primary type is actually `post`.
+
 **If they want a quick example:**
 Create a basic blog schema:
 ```typescript
 // schemaTypes/post.ts
-import { defineType, defineField } from 'sanity'
+import { defineArrayMember, defineField, defineType } from 'sanity'
 
 export const post = defineType({
   name: 'post',
@@ -119,7 +124,11 @@ export const post = defineType({
   fields: [
     defineField({ name: 'title', type: 'string' }),
     defineField({ name: 'slug', type: 'slug', options: { source: 'title' } }),
-    defineField({ name: 'body', type: 'array', of: [{ type: 'block' }] }),
+    defineField({
+      name: 'body',
+      type: 'array',
+      of: [defineArrayMember({ type: 'block' })],
+    }),
   ],
 })
 ```
@@ -158,8 +167,11 @@ This uploads your schema to the Content Lake so MCP tools can work with it.
 
 **Use MCP `query_documents` to check:**
 ```
-*[_type == "post"][0...5]
+*[_type == "<primaryDocumentType>"][0...5]
 ```
+
+Replace `<primaryDocumentType>` with the registered type selected in Phase 1,
+such as `post`, `product`, or `project`.
 
 **If content exists:**
 - Show them a summary
@@ -179,7 +191,10 @@ If migrating from another CMS or files:
 
 ### Step 2b: Generate Sample Content (MCP)
 
-Ask the agent to draft structured sample content, then create it with the Sanity MCP Server:
+Ask the agent to draft structured sample content that matches the selected
+primary document type, then create it with the Sanity MCP Server.
+
+For the quick blog example above:
 ```
 Tool: create_documents
 Documents: [{
@@ -285,6 +300,12 @@ The working directory is often a parent folder with the Studio and the app side 
 ### Step 2: Next.js Integration (Inline)
 
 If Next.js is detected, follow these essential steps:
+
+The inline implementation below continues the quick **Blog** example. If the
+primary document type is not `post`, adapt the type filter, projection, sample
+document, route, component names, and renderer to the fields selected in Phase
+1. Do not create or query `post` as a fallback for E-commerce or Portfolio
+setups.
 
 **Scaffold a new app (if you don't have one yet):**
 
@@ -392,11 +413,40 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-After the first smoke test, configure TypeGen and replace the broad
-`SanityDocument` casts with generated query results. Run TypeGen after schema
-or query changes. For the recommended production path—live content with
-`defineLive`, Visual Editing, and the standalone Studio architecture—follow
-`nextjs.md`.
+**Configure TypeGen before calling the Next.js setup complete:**
+
+Merge the TypeGen settings into the existing `studio/sanity.cli.ts`. For the
+side-by-side `studio/` and `web/` layout:
+
+```typescript
+typegen: {
+  enabled: true,
+  path: '../web/src/**/*.{ts,tsx,js,jsx}',
+  schema: 'schema.json',
+  generates: '../web/sanity.types.ts',
+  overloadClientMethods: true,
+},
+```
+
+Add a repeatable script to `studio/package.json`:
+
+```json
+"typegen": "sanity schemas extract --force && sanity typegen generate"
+```
+
+Then run it from the Studio folder:
+
+```bash
+cd studio
+npm run typegen
+```
+
+Confirm TypeGen found the frontend queries, then remove the `SanityDocument`
+import, broad generic arguments, and casts. Run TypeGen after schema or query
+changes. For other layouts, use `typegen.md` to adjust the paths.
+
+For the recommended production path—live content with `defineLive`, Visual
+Editing, and the standalone Studio architecture—follow `nextjs.md`.
 
 ### Step 3: Other Frameworks
 
@@ -414,7 +464,7 @@ Each rule file contains framework-specific patterns for data fetching, Portable 
 Before declaring integration done, exercise both render paths:
 
 1. `npm run dev` (in the app folder)
-2. Load the home page (lists posts).
+2. Load the home page (lists the selected content type).
 3. **Click through to a detail page** via the in-app Next.js `<Link>` — do not paste the URL.
 4. Open the browser console. It should be clean. No `ReferenceError: process is not defined`, no hard reload to `/`.
 5. For good measure, reload the detail page directly (URL bar) — that exercises SSR.
@@ -463,7 +513,7 @@ npx sanity dev                   # Start Studio locally
 npx sanity schemas deploy         # Deploy schema for MCP/editor access
 npx sanity deploy                # Deploy Studio to Sanity hosting
 npx sanity manage                # Open project settings
-npm run typegen                  # Generate TypeScript types
+npm run typegen                  # Generate types (run in Studio after adding the script above)
 ```
 
 ---
