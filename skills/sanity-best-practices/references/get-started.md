@@ -115,7 +115,7 @@ unless the registered primary type is actually `post`.
 Create a basic blog schema:
 ```typescript
 // schemaTypes/post.ts
-import { defineType, defineField } from 'sanity'
+import { defineArrayMember, defineField, defineType } from 'sanity'
 
 export const post = defineType({
   name: 'post',
@@ -124,7 +124,11 @@ export const post = defineType({
   fields: [
     defineField({ name: 'title', type: 'string' }),
     defineField({ name: 'slug', type: 'slug', options: { source: 'title' } }),
-    defineField({ name: 'body', type: 'array', of: [{ type: 'block' }] }),
+    defineField({
+      name: 'body',
+      type: 'array',
+      of: [defineArrayMember({ type: 'block' })],
+    }),
   ],
 })
 ```
