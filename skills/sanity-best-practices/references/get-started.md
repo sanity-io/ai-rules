@@ -60,28 +60,17 @@ Check whether Sanity MCP tools are already available before creating files.
 - If MCP is not configured, use the setup instructions below. The current
   Sanity initializer may also offer to configure MCP and install Sanity skills.
 
-### Check whether the CLI is authenticated
+### Run an authentication preflight
 
-Do not infer whether the user has a Sanity account from their request. From the
-intended workspace root, first run this read-only check:
+From the intended workspace root, run:
 
 ```bash
 npx sanity@latest debug
 ```
 
-Read the `User` result:
-
-- If it identifies a user, the CLI is already authenticated. Prefer the
-  account-owned `sanity init` path in Step 1; do not run `sanity login` again.
-- If it says `Not logged in`, that only proves there is no current CLI session.
-  The CLI cannot determine whether the person has an existing Sanity account.
-  Ask: "Do you want to sign in to an existing Sanity account, or start now
-  without one?" Use `sanity login` and Step 1 if they choose to sign in, or use
-  the `sanity.new` path below if they choose to continue without an account.
-
-Do not use `sanity login` only to check authentication. It starts an interactive
-login flow and can replace an existing session. Use it after the user selects
-the authenticated path and `debug` reports `Not logged in`.
+If the `User` result identifies a logged-in user, prefer the account-owned
+`sanity init` path in Step 1. Otherwise, continue directly with `sanity new`
+below.
 
 ### Start without an account with [`sanity.new`](https://sanity.new)
 
@@ -141,14 +130,10 @@ Keep its output private.
 - Ask: "Want to create a new Sanity Studio?"
 - If yes, first run `node --version`. Current Sanity Studio and CLI releases
   require Node.js 22.12 or newer.
-- If the `sanity.new` flow above fits, follow it and then continue at Step 2
-  with the generated `sanity/` Studio. The remaining bullets are for the
-  account-owned `sanity init` path selected above.
-- If `sanity debug` reported `Not logged in`, sign in before creating or
-  selecting an account-owned project:
-  ```bash
-  npx sanity@latest login
-  ```
+- If the authentication preflight did not identify a logged-in user, follow the
+  `sanity.new` flow above and then continue at Step 2 with the generated
+  `sanity/` Studio. The remaining bullets are for the account-owned
+  `sanity init` path.
 - Use `sanity init` to create or select the project and dataset. If the project,
   organization, or dataset choice is unclear, ask the user rather than guessing.
 - When the values are known, run `sanity init` unattended from the repo root —
@@ -585,7 +570,6 @@ Just ask about any of these!"
 ```bash
 npx sanity@latest new --instructions # Print the current no-write sanity.new guide
 npx sanity@latest debug          # Check the current CLI user without logging in
-npx sanity@latest login          # Sign in to an existing Sanity account
 npx sanity@latest init           # Initialize an account-owned project or Studio
 npx sanity@latest mcp configure  # Configure MCP for your editor
 npx sanity dev                   # Start Studio locally
