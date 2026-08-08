@@ -13,6 +13,7 @@ Collection of resources to help AI agents build better with [Sanity](https://www
 
 - **MCP server:** Direct access to your Sanity projects (content, datasets, releases, schemas) and agent rules.
 - **Agent skills:** Comprehensive best practices skills for Sanity development, content modeling, SEO/AEO, and experimentation. Includes 21 integration/topic guides and 26 focused best-practice rules.
+- **Agent Plugin:** `plugin.json`, `skills/`, and `mcp.json` components for any Agent Plugins-compatible client.
 - **Claude Code plugin:** MCP server, agent skills, and slash commands for Claude Code users. Available on the [official Anthropic plugin marketplace](https://claude.com/plugins/sanity).
 - **Cursor plugin:** MCP server, agent skills, and commands on the [Cursor Marketplace](https://cursor.com/marketplace/sanity).
 - **Codex plugin:** MCP server and agent skills for [OpenAI Codex](https://developers.openai.com/codex) users.
@@ -25,7 +26,7 @@ Choose your path based on how you want agents to work with Sanity:
 
 1. **MCP server** — Give your agent always up-to-date rules and full access to your Sanity projects. No local files to maintain. Works with Cursor, VS Code, Claude Code, Lovable, v0, Replit, OpenCode, and other MCP-compatible clients.
 2. **Agent skills** — Install best practices skills for Sanity, content modeling, SEO/AEO, and experimentation. Works with Cursor, Claude Code, and any [Agent Skills](https://agentskills.io)-compatible agent.
-3. **Plugin** — Install the Sanity plugin for Cursor or Claude Code. Bundles MCP server, agent skills, and commands.
+3. **Plugin** — Install the Sanity plugin for Cursor, Claude Code, or any Agent Plugins-compatible client. Bundles MCP server, agent skills, and commands.
 4. **Manual installation** — Copy the skill references locally for offline use. You'll need to update them yourself.
 
 ### Option 1: Install MCP server (recommended)
@@ -186,7 +187,8 @@ See [Option 3](#option-3-install-plugin) for plugin installation.
 
 ### Option 3: Install plugin
 
-Install the Sanity plugin to get MCP server, agent skills, and commands. Available on the [Claude Code marketplace](https://claude.com/plugins/sanity) and [Cursor Marketplace](https://cursor.com/marketplace/sanity).
+Install the Sanity plugin to get MCP server, agent skills, and commands.
+Available on the [Claude Code marketplace](https://claude.com/plugins/sanity), [Cursor Marketplace](https://cursor.com/marketplace/sanity), or from this repo as an [Agent Plugin](https://agent-plugins.org/).
 
 #### Claude Code
 
@@ -332,6 +334,8 @@ Just say: "Get started with Sanity" to begin.
 sanity-io/agent-toolkit/
 ├── AGENTS.md                      # Knowledge router & agent behavior
 ├── README.md                      # This file
+├── plugin.json                    # Portable Agent Plugins v1 manifest
+├── mcp.json                       # Portable Agent Plugins v1 MCP configuration
 ├── .agents/plugins/               # Codex marketplace
 │   └── marketplace.json           # Codex marketplace metadata
 ├── .claude-plugin/                # Claude Code plugin configuration (distributed via claude-plugins-official)
@@ -342,7 +346,7 @@ sanity-io/agent-toolkit/
 ├── .cursor-plugin/                # Cursor plugin configuration (distributed via cursor.com/marketplace)
 │   ├── marketplace.json           # Cursor marketplace metadata
 │   └── plugin.json                # Per-plugin manifest
-├── .mcp.json                      # MCP server configuration
+├── .mcp.json                      # Legacy client MCP compatibility configuration
 ├── assets/                        # Plugin branding
 │   └── logo.svg                   # Sanity logo for marketplace display
 ├── commands/                      # Agent commands
@@ -351,6 +355,7 @@ sanity-io/agent-toolkit/
 │   ├── typegen.md                 # /typegen
 │   └── deploy-schema.md           # /deploy-schema
 ├── scripts/                       # Validation and CI scripts
+│   ├── validate-agent-plugin.mjs  # Validate manifests against the v1 JSON Schemas
 │   └── validate-cursor-plugin.mjs # Cursor plugin validator
 └── skills/                        # Agent skills (agentskills.io format)
     ├── sanity-best-practices/     # Comprehensive Sanity skill
@@ -378,6 +383,7 @@ All skills use `references/` for detailed content loaded on demand. The `sanity-
 - [Visual Editing guide](https://www.sanity.io/docs/visual-editing)
 - [Sanity TypeGen](https://www.sanity.io/docs/sanity-typegen)
 - [MCP server docs](https://www.sanity.io/docs/ai/mcp-server)
+- [Agent Plugins specification](https://agent-plugins.org/specification)
 - [Blueprints Infrastructure as Code](https://www.sanity.io/docs/compute-and-ai/blueprints)
 
 ---
