@@ -60,31 +60,91 @@ Check whether Sanity MCP tools are already available before creating files.
 - If MCP is not configured, use the setup instructions below. The current
   Sanity initializer may also offer to configure MCP and install Sanity skills.
 
+### Run an authentication preflight
+
+From the intended workspace root, run:
+
+```bash
+npx sanity@latest debug
+```
+
+If the `User` result identifies a logged-in user, prefer the account-owned
+`sanity init` path in Step 1. Otherwise, continue directly with `sanity new`
+below.
+
+### Start without an account with [`sanity.new`](https://sanity.new)
+
+Without an account, `sanity new` creates a working full-stack app with Sanity as
+the content backend in seconds. The project works immediately; claim it within
+72 hours to keep it. First run this from the intended workspace root:
+
+```bash
+npx sanity@latest new --instructions
+```
+
+This prints the current agent guide and creates nothing. Read and follow it
+before creating the project because this flow is rolling out and the CLI guide
+is the source of truth.
+
+From an empty workspace, the batteries-included command is:
+
+```bash
+npx sanity@latest new "<project name>" --yes
+```
+
+Choose the setup that fits:
+
+- **New full-stack app:** Use the command above. It creates a project, a Studio
+  in `sanity/`, and a Next.js app in `web/`, all connected and ready to run.
+- **Existing frontend:** Run the same command from the app root. The CLI detects
+  the app and adds the `sanity/` Studio without replacing the frontend.
+- **Project only:** Add `--no-scaffold` when only the project and credentials are
+  needed, such as for a custom setup or a framework other than Next.js. This
+  creates no Studio or frontend files.
+
+Tell the user the claim link and expiry immediately. Treat the claim link and
+robot token as secrets: never commit them or paste them into issues, PRs, or
+shared channels, and keep the token server-only. Do not run the authenticated
+initializer in Step 1 afterward.
+
+If the robot token, claim link, or other project details are not readily
+available, recover the existing project instead of creating a duplicate:
+
+```bash
+npx sanity@latest projects unclaimed
+npx sanity@latest projects unclaimed --project-id <projectId>
+```
+
+The project-specific command returns full details, including the robot token.
+Keep its output private.
+
 ---
 
 ## Phase 1: Studio & Schema
 
 ### Step 1: Check for Existing Studio
 
-**Look for `sanity.config.ts` or `sanity.cli.ts` across the workspace** — in the recommended side-by-side layout the Studio lives in its own folder (`studio/`, or `studio-*` when created by the Sanity onboarding flow) next to the app folder:
+**Look for `sanity.config.ts` or `sanity.cli.ts` across the workspace** — in the recommended side-by-side layout the Studio lives in its own folder (`studio/`, `sanity/` when created by `sanity new`, or `studio-*` in some onboarding flows) next to the app folder:
 
 **If NO Studio found:**
 - Ask: "Want to create a new Sanity Studio?"
 - If yes, first run `node --version`. Current Sanity Studio and CLI releases
   require Node.js 22.12 or newer.
-- Create or select the project and dataset first. Prefer Sanity MCP project
-  tools when available, and never guess an organization or create a project in
-  the wrong account.
-- Run the initializer unattended with the known values from the repo root —
+- If the authentication preflight did not identify a logged-in user, follow the
+  `sanity.new` flow above and then continue at Step 2 with the generated
+  `sanity/` Studio. The remaining bullets are for the account-owned
+  `sanity init` path.
+- Use `sanity init` to create or select the project and dataset. If the project,
+  organization, or dataset choice is unclear, ask the user rather than guessing.
+- When the values are known, run `sanity init` unattended from the repo root —
   **not inside a Next.js app folder**, where the CLI would switch to its
   embedded flow (not recommended):
   ```bash
-  npm create sanity@latest -- --yes --project <projectId> --dataset <dataset> --template clean --typescript --output-path studio
+  npx sanity@latest init --yes --project <projectId> --dataset <dataset> --template clean --typescript --output-path studio
   ```
-- If the CLI reports missing authentication, ask the user to authenticate,
-  then retry the same unattended command. If a project, organization, or
-  dataset choice is still missing, ask the user to provide it. Do not fall back
-  to an interactive initializer flow.
+- If authentication is incomplete, ask the user to finish `sanity login`, then
+  retry. If a project, organization, or dataset choice is still missing, ask
+  the user to provide it. Do not fall back to an interactive initializer flow.
 - This creates a standalone Studio in `studio/`, alongside your app folder (see `project-structure.md`)
 
 **If Studio exists:**
@@ -508,6 +568,9 @@ Just ask about any of these!"
 ## Common Commands
 
 ```bash
+npx sanity@latest new --instructions # Print the current no-write sanity.new guide
+npx sanity@latest debug          # Check the current CLI user without logging in
+npx sanity@latest init           # Initialize an account-owned project or Studio
 npx sanity@latest mcp configure  # Configure MCP for your editor
 npx sanity dev                   # Start Studio locally
 npx sanity schemas deploy         # Deploy schema for MCP/editor access
