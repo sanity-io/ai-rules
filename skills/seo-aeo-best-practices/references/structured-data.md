@@ -142,6 +142,8 @@ const pageSchema = {
 ## Implementation in Next.js
 
 ```typescript
+import { Thing, WithContext } from 'schema-dts'
+
 // Component to render JSON-LD
 // Ensure data comes from trusted sources (your CMS).
 // If data could contain user-generated content, strip HTML tags
