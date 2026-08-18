@@ -11,16 +11,19 @@
     "validate:experimentation": "skills-ref validate ./skills/content-experimentation-best-practices",
     "validate:pt-serialization": "skills-ref validate ./skills/portable-text-serialization",
     "validate:pt-conversion": "skills-ref validate ./skills/portable-text-conversion",
+    "validate:agent-plugin": "node scripts/validate-agent-plugin.mjs",
     "validate:cursor-plugin": "node scripts/validate-cursor-plugin.mjs",
-    "validate:all": "npm run validate && npm run validate:cursor-plugin"
+    "validate:all": "npm run validate && npm run validate:agent-plugin && npm run validate:cursor-plugin"
   },
   "devDependencies": {
+    "ajv": "8.20.0",
     "skills-ref": "0.1.5"
   },
   "keywords": [
     "sanity",
     "ai",
     "agent",
+    "agent-plugins",
     "skills",
     "claude",
     "cursor",

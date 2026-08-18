@@ -48,7 +48,7 @@ The repo uses npm (not pnpm).
 1. Fork the repo
 2. Install dependencies with `npm ci`
 3. Make your changes in `skills/<skill-name>/`
-4. Run `npm run validate:all` to check skill and plugin validity
+4. Run `npm run validate:all` to check Agent Skills, Agent Plugins, and client plugin validity
 5. Submit a PR
 
 ### Adding to an existing skill
