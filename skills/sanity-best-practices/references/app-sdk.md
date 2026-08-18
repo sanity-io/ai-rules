@@ -55,6 +55,7 @@ my-app/
 - **Never:** Use `useState` for form values that should sync with Content Lake
 - **Never:** Use array index as React `key` for document lists (breaks real-time updates)
 - **Never:** Forget the `fallback` prop on `<SanityApp>` and `<Suspense>` boundaries
+- **Never:** Set `app.visibility: 'disabled'` on an SDK app — it makes the app unreachable (hidden from the sidebar *and* 404 on the direct link). Use `'unlisted'` to hide it while keeping the link openable.
 
 ---
 
@@ -72,6 +73,25 @@ export default defineCliConfig({
   },
 })
 ```
+
+### App Visibility
+
+`app.visibility` controls whether the app appears in the Dashboard sidebar. Applied on deploy; change it and redeploy to update. Requires the `sanity` package v6.6.0+.
+
+```typescript
+export default defineCliConfig({
+  app: {
+    organizationId: 'your-org-id',
+    entry: './src/App.tsx',
+    visibility: 'unlisted', // 'default' | 'unlisted'
+  },
+})
+```
+
+- `default` — listed in the Dashboard sidebar (the default when omitted).
+- `unlisted` — hidden from the sidebar, but still opens via a direct link. **Not private:** anyone with the link can open it.
+
+`sanity.cli.ts` is the source of truth: a redeploy re-applies `app.visibility`, so change it in config and redeploy rather than patching the deployed app out of band.
 
 ### App Root (`src/App.tsx`)
 
