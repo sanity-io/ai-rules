@@ -117,7 +117,7 @@ Pre-set language when creating documents outside the translation UI:
 
 ```typescript
 // sanity.config.ts
-import { template } from 'sanity'
+import { defineConfig, Template } from 'sanity'
 
 export default defineConfig({
   // ...
@@ -131,17 +131,19 @@ export default defineConfig({
       )
     },
   },
-  // Initial value templates for each language
-  templates: (prev) => [
-    ...prev,
-    template.initial({
-      id: 'post-en',
-      title: 'Post (English)',
-      schemaType: 'post',
-      parameters: [{name: 'language', type: 'string'}],
-      value: ({language}) => ({language}),
-    }),
-  ],
+  schema: {
+    // Initial value templates for each language
+    templates: (prev): Template[] => [
+      ...prev,
+      {
+        id: 'post-en',
+        title: 'Post (English)',
+        schemaType: 'post',
+        parameters: [{name: 'language', type: 'string'}],
+        value: ({language}: {language: string}) => ({language}),
+      },
+    ],
+  },
 })
 ```
 
@@ -215,17 +217,19 @@ const LOCALES = [
 
 export default defineConfig({
   // ...
-  templates: (prev) => {
-    // Create a template for each locale
-    const homePageTemplates: Template[] = LOCALES.map((locale) => ({
-      id: `homePage-${locale.id}`,
-      title: `Home Page (${locale.title})`,
-      schemaType: 'homePage',
-      parameters: [{ name: 'language', type: 'string' }],
-      value: { language: locale.id },
-    }))
+  schema: {
+    templates: (prev) => {
+      // Create a template for each locale
+      const homePageTemplates: Template[] = LOCALES.map((locale) => ({
+        id: `homePage-${locale.id}`,
+        title: `Home Page (${locale.title})`,
+        schemaType: 'homePage',
+        parameters: [{ name: 'language', type: 'string' }],
+        value: { language: locale.id },
+      }))
 
-    return [...prev, ...homePageTemplates]
+      return [...prev, ...homePageTemplates]
+    },
   },
 })
 ```
