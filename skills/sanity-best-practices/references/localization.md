@@ -117,7 +117,8 @@ Pre-set language when creating documents outside the translation UI:
 
 ```typescript
 // sanity.config.ts
-import { defineConfig, Template } from 'sanity'
+import { defineConfig } from 'sanity'
+import type { Template } from 'sanity'
 
 const LOCALIZED_TYPES = ['post', 'page']
 const BASE_LANGUAGE = 'en'
@@ -218,7 +219,8 @@ Create templates that pre-set the language for each locale:
 
 ```typescript
 // sanity.config.ts
-import { defineConfig, Template } from 'sanity'
+import { defineConfig } from 'sanity'
+import type { Template } from 'sanity'
 
 // Define your supported locales
 const LOCALES = [
