@@ -119,33 +119,45 @@ Pre-set language when creating documents outside the translation UI:
 // sanity.config.ts
 import { defineConfig, Template } from 'sanity'
 
+const LOCALIZED_TYPES = ['post', 'page']
+const BASE_LANGUAGE = 'en'
+
 export default defineConfig({
   // ...
   document: {
-    newDocumentOptions: (prev, { creationContext }) => {
-      // Filter to only show base language in "New document" menu
-      // The plugin handles creating translations from there
-      return prev.filter((item) =>
-        !['post', 'page'].includes(item.templateId) ||
-        item.parameters?.language === 'en'
-      )
-    },
+    newDocumentOptions: (prev) => [
+      // Drop the auto-generated entries for localized types — they create
+      // documents with no `language` set
+      ...prev.filter((item) => !LOCALIZED_TYPES.includes(item.templateId)),
+      // Offer the base-language templates instead
+      // The plugin handles creating translations from the document itself
+      ...LOCALIZED_TYPES.map((schemaType) => ({
+        templateId: `${schemaType}-${BASE_LANGUAGE}`,
+        parameters: {language: BASE_LANGUAGE},
+      })),
+    ],
   },
   schema: {
-    // Initial value templates for each language
+    // A base-language template per localized type
     templates: (prev): Template[] => [
       ...prev,
-      {
-        id: 'post-en',
-        title: 'Post (English)',
-        schemaType: 'post',
+      ...LOCALIZED_TYPES.map((schemaType) => ({
+        id: `${schemaType}-${BASE_LANGUAGE}`,
+        title: `${schemaType} (${BASE_LANGUAGE})`,
+        schemaType,
         parameters: [{name: 'language', type: 'string'}],
         value: ({language}: {language: string}) => ({language}),
-      },
+      })),
     ],
   },
 })
 ```
+
+A template that declares `parameters` is left out of the auto-generated "New
+document" list, so it only appears if `newDocumentOptions` adds it explicitly,
+with the parameter values supplied on the item. The auto-generated items carry
+no `parameters` of their own, so a filter that tests `item.parameters` matches
+nothing and empties the menu.
 
 ### Querying Translated Documents
 ```groq
