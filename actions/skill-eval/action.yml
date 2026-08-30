@@ -1,0 +1,61 @@
+name: 'Skill Eval'
+description: 'Test agent skills in CI — run eval test cases against an LLM and catch regressions'
+author: 'Sanity'
+
+inputs:
+  provider:
+    description: 'AI provider (anthropic, openai, google)'
+    required: false
+    default: 'anthropic'
+  api-key:
+    description: 'API key for the chosen provider'
+    required: true
+  model:
+    description: 'Model ID for skill testing'
+    required: false
+    default: 'claude-sonnet-4-20250514'
+  grader-model:
+    description: 'Model ID for grading (defaults to same as model)'
+    required: false
+  sanity-token:
+    description: 'Sanity project token for storing results'
+    required: false
+  sanity-project-id:
+    description: 'Sanity project ID for results storage'
+    required: false
+  sanity-dataset:
+    description: 'Sanity dataset name for results'
+    required: false
+    default: 'skill-evals'
+  skills-path:
+    description: 'Path to skills directory'
+    required: false
+    default: './skills'
+  pass-threshold:
+    description: 'Minimum pass rate (0.0-1.0) to pass the check'
+    required: false
+    default: '0.8'
+  fail-on-regression:
+    description: 'Fail if pass rate drops vs baseline'
+    required: false
+    default: 'true'
+  max-evals-per-skill:
+    description: 'Maximum evals to run per skill (cost control)'
+    required: false
+    default: '20'
+  changed-only:
+    description: 'Only eval skills with changes in the PR'
+    required: false
+    default: 'true'
+
+outputs:
+  pass-rate:
+    description: 'Overall pass rate across all skills'
+  results-json:
+    description: 'Full results as JSON string'
+  summary:
+    description: 'Human-readable summary'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

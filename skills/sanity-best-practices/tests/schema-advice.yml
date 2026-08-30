@@ -1,0 +1,10 @@
+prompt: "I need to create a blog post schema with title, author, and body content"
+expectations:
+  - "Uses defineType and defineField from sanity"
+  - "Includes a slug field with source set to title"
+  - "Uses reference type for author relationship"
+  - "Uses array of block type for body/content field"
+  - "Includes validation rules on required fields"
+tags:
+  - schema
+  - core

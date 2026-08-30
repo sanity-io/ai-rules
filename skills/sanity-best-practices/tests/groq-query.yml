@@ -1,0 +1,10 @@
+prompt: "Write a GROQ query to fetch the 10 most recent blog posts with their author names and categories"
+expectations:
+  - "Uses proper GROQ filter syntax with _type"
+  - "Includes ordering by date (desc)"
+  - "Uses slice notation for limiting results"
+  - "Dereferences author using -> operator"
+  - "Projects specific fields rather than returning everything"
+tags:
+  - groq
+  - query
